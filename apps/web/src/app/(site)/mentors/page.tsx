@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
-import { PagePlaceholder } from '@/components/PagePlaceholder';
+import { MentorsClient } from './MentorsClient';
 
 export const metadata: Metadata = {
   title: 'المرشدين',
+  description: 'طلاب وخريجين موثقين من كل الكليات. قارن بالجامعة والتقييم والسعر واحجز جلسة.',
+  alternates: { canonical: '/mentors' },
 };
 
-/** Screen built in Phase 04 (design: route `#/mentors`). */
 export default function MentorsPage() {
-  return <PagePlaceholder title="المرشدين" />;
+  return <MentorsClient />;
 }

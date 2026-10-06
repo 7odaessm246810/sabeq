@@ -16,13 +16,16 @@
     "lint": "eslint ."
   },
   "peerDependencies": {
-    "react": "catalog:"
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "@sabeq/config": "workspace:*",
     "@types/react": "catalog:",
     "eslint": "catalog:",
     "react": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "react-dom": "catalog:",
+    "@types/react-dom": "catalog:"
   }
 }

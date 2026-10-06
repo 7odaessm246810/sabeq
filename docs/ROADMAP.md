@@ -51,8 +51,8 @@ sabeq/
 | --- | --------------------------------------------------------------------------------- | ---------------------------- |
 | 01  | Project Architecture & Technical Foundation                                       | ✅ done                      |
 | 02  | Development Environment & Docker                                                  | ✅ done — 5 services healthy |
-| 03  | Frontend Foundation (Next.js, fonts, RTL, layout, SEO, error/loading)             | 🔍 review                    |
-| 04  | Frontend Design System Implementation (components + كل الصفحات بـ mock data)      | —                            |
+| 03  | Frontend Foundation (Next.js, fonts, RTL, layout, SEO, error/loading)             | ✅ done                      |
+| 04  | Frontend Design System Implementation (components + كل الصفحات بـ mock data)      | 🔍 review                    |
 | 05  | Backend Foundation (Express 5, errors, logging, validation, `/api/v1`, health)    | —                            |
 | 06  | Database Architecture — PostgreSQL + Prisma (ERD أولًا)                           | —                            |
 | 07  | Authentication & Authorization — Phone + OTP، roles: student / mentor / admin     | —                            |
@@ -98,3 +98,9 @@ sabeq/
 | 2026-10-06 | TypeScript 6.0.3 مثبت (typescript-eslint لسه ما يدعمش 7) — ADR-0002.                      |
 
 كل القرارات بالتفصيل: [docs/adr/](adr/README.md).
+
+## Notes from Phase 04 (design port)
+
+- Every design screen is built with sample data (`apps/web/src/lib/mock/data.ts`) and a demo store (`apps/web/src/lib/demo-store.tsx`) that later phases replace with the API.
+- Prototype fixes: `.done` collided between the how-it-works steps and the booking confirmation (renamed `.done-ok`); the mentor income calculator used a 15% commission — it now reads the 10% decided in ADR-0009.
+- The mobile filter sheet button shows the result count («اعرض 12 مرشد»), as `Responsive.md` specifies.

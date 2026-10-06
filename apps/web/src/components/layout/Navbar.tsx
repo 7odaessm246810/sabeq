@@ -1,9 +1,10 @@
 'use client';
 
-import { Icon, Logo } from '@sabeq/ui';
+import { Avatar, Icon, Logo } from '@sabeq/ui';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useDemo } from '@/lib/demo-store';
 import { MAIN_NAV, isCurrent } from '@/lib/site';
 import { MobileMenu } from './MobileMenu';
 
@@ -17,6 +18,9 @@ export function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user, upcomingCount } = useDemo();
+  // Stable reference: MobileMenu re-runs its focus/scroll-lock effect when onClose changes.
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > SCROLL_THRESHOLD);
@@ -49,12 +53,29 @@ export function Navbar() {
             ))}
           </ul>
           <div className="sb-nav-end">
-            <Link className="sb-btn sb-btn--ghost sb-hide-m" href="/login">
-              تسجيل الدخول
-            </Link>
-            <Link className="sb-btn sb-btn--primary" href="/explore">
-              ابدأ الآن
-            </Link>
+            {user ? (
+              <>
+                <Link className="sb-btn sb-btn--ghost sb-hide-m" href="/sessions">
+                  <Icon name="calendar" />
+                  جلساتي
+                  {upcomingCount ? (
+                    <span className="sb-badge sb-badge--primary">{upcomingCount}</span>
+                  ) : null}
+                </Link>
+                <Link href="/sessions" className="nav-me" aria-label="حسابي">
+                  <Avatar name={user.name} size="sm" tone={2} />
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link className="sb-btn sb-btn--ghost sb-hide-m" href="/login">
+                  تسجيل الدخول
+                </Link>
+                <Link className="sb-btn sb-btn--primary" href="/explore">
+                  ابدأ الآن
+                </Link>
+              </>
+            )}
             <button
               type="button"
               className="sb-btn sb-btn--ghost sb-nav-burger"
@@ -68,7 +89,7 @@ export function Navbar() {
           </div>
         </div>
       </nav>
-      {menuOpen ? <MobileMenu onClose={() => setMenuOpen(false)} /> : null}
+      {menuOpen ? <MobileMenu signedIn={Boolean(user)} onClose={closeMenu} /> : null}
     </>
   );
 }

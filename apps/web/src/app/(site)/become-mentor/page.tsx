@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
-import { PagePlaceholder } from '@/components/PagePlaceholder';
+import { BecomeMentor } from './BecomeMentor';
 
 export const metadata: Metadata = {
   title: 'كن مرشدًا',
+  description:
+    'لو طالب في سنة تالتة أو أكتر أو خريج، ساعد طلاب الثانوية يختاروا صح، وحدد سعرك ومواعيدك بنفسك.',
+  alternates: { canonical: '/become-mentor' },
 };
 
-/** Screen built in Phase 04 (design: route `#/become-mentor`). */
 export default function BecomeMentorPage() {
-  return <PagePlaceholder title="كن مرشدًا" />;
+  return <BecomeMentor />;
 }

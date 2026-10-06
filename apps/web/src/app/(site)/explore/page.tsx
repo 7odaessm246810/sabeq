@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
-import { PagePlaceholder } from '@/components/PagePlaceholder';
+import { ExploreClient } from './ExploreClient';
 
 export const metadata: Metadata = {
   title: 'استكشف الكليات',
+  description: 'اختار الكلية اللي بتفكر فيها، وشوف مين درس فيها فعلًا.',
+  alternates: { canonical: '/explore' },
 };
 
-/** Screen built in Phase 04 (design: route `#/explore`). */
 export default function ExplorePage() {
-  return <PagePlaceholder title="استكشف الكليات" />;
+  return <ExploreClient />;
 }

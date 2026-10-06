@@ -1,11 +1,24 @@
 import type { Metadata } from 'next';
-import { PagePlaceholder } from '@/components/PagePlaceholder';
+import { notFound } from 'next/navigation';
+import { MENTORS, getMentor } from '@/lib/mock/data';
+import { MentorProfile } from './MentorProfile';
 
-export const metadata: Metadata = {
-  title: 'ملف المرشد',
-};
+export function generateStaticParams() {
+  return MENTORS.map((m) => ({ id: String(m.id) }));
+}
 
-/** Screen built in Phase 04 (design: route `#/mentor/:id`). */
-export default function MentorDetailPage() {
-  return <PagePlaceholder title="ملف المرشد" />;
+export async function generateMetadata({ params }: PageProps<'/mentor/[id]'>): Promise<Metadata> {
+  const m = getMentor((await params).id);
+  if (!m) return {};
+  return {
+    title: `${m.name} — ${m.major}`,
+    description: `${m.name}، ${m.major} · ${m.uni}. مرشد موثق على سابق. ${m.bio}`,
+    alternates: { canonical: `/mentor/${m.id}` },
+  };
+}
+
+export default async function MentorPage({ params }: PageProps<'/mentor/[id]'>) {
+  const m = getMentor((await params).id);
+  if (!m) notFound();
+  return <MentorProfile mentor={m} />;
 }

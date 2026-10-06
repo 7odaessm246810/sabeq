@@ -6,7 +6,7 @@ import { useEffect, useRef } from 'react';
 import { MOBILE_NAV } from '@/lib/site';
 
 /** Side sheet from the prototype `openMenu()`: scrim, links with chevrons, actions pinned to the bottom. */
-export function MobileMenu({ onClose }: { onClose: () => void }) {
+export function MobileMenu({ onClose, signedIn }: { onClose: () => void; signedIn: boolean }) {
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -63,13 +63,15 @@ export function MobileMenu({ onClose }: { onClose: () => void }) {
           ))}
         </nav>
         <div className="mmenu-f">
-          <Link
-            className="sb-btn sb-btn--secondary sb-btn--lg sb-btn--block"
-            href="/login"
-            onClick={onClose}
-          >
-            تسجيل الدخول
-          </Link>
+          {signedIn ? null : (
+            <Link
+              className="sb-btn sb-btn--secondary sb-btn--lg sb-btn--block"
+              href="/login"
+              onClick={onClose}
+            >
+              تسجيل الدخول
+            </Link>
+          )}
           <Link
             className="sb-btn sb-btn--primary sb-btn--lg sb-btn--block"
             href="/explore"
