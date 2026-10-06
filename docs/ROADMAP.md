@@ -47,31 +47,31 @@ sabeq/
 
 ## Phases
 
-| #   | Phase                                                                             | الحالة                                  |
-| --- | --------------------------------------------------------------------------------- | --------------------------------------- |
-| 01  | Project Architecture & Technical Foundation                                       | ✅ done                                 |
-| 02  | Development Environment & Docker                                                  | 🔍 review — مستني Docker للتشغيل الفعلي |
-| 03  | Frontend Foundation (Next.js, fonts, RTL, layout, SEO, error/loading)             | 🔍 review                               |
-| 04  | Frontend Design System Implementation (components + كل الصفحات بـ mock data)      | —                                       |
-| 05  | Backend Foundation (Express 5, errors, logging, validation, `/api/v1`, health)    | —                                       |
-| 06  | Database Architecture — PostgreSQL + Prisma (ERD أولًا)                           | —                                       |
-| 07  | Authentication & Authorization — Phone + OTP، roles: student / mentor / admin     | —                                       |
-| 08  | Student Account                                                                   | —                                       |
-| 09  | Mentor Onboarding (Draft → Submitted → Under Review → Approved/Rejected)          | —                                       |
-| 10  | Admin Verification System + Audit trail                                           | —                                       |
-| 11  | University / Faculty / Department / Specialization                                | —                                       |
-| 12  | Mentor Profiles                                                                   | —                                       |
-| 13  | Search & Discovery                                                                | —                                       |
-| 14  | Availability & Scheduling (no double booking / overlap)                           | —                                       |
-| 15  | Booking System (Pending / Confirmed / Cancelled / Completed / No-show / Refunded) | —                                       |
-| 16  | Payment System — Paymob، التأكيد من الـ Backend فقط (webhooks + HMAC)             | —                                       |
-| 17  | Session Management                                                                | —                                       |
-| 18  | Reviews & Ratings (بعد الجلسة فقط، بدون تكرار)                                    | —                                       |
-| 19  | Notifications (in-app + email، SMS لاحقًا)                                        | —                                       |
-| 20  | Admin Dashboard                                                                   | —                                       |
-| 21  | Security & Production Hardening                                                   | —                                       |
-| 22  | Testing & QA (unit / integration / E2E)                                           | —                                       |
-| 23  | Deployment & Production (web + admin + api منفصلين)                               | —                                       |
+| #   | Phase                                                                             | الحالة                       |
+| --- | --------------------------------------------------------------------------------- | ---------------------------- |
+| 01  | Project Architecture & Technical Foundation                                       | ✅ done                      |
+| 02  | Development Environment & Docker                                                  | ✅ done — 5 services healthy |
+| 03  | Frontend Foundation (Next.js, fonts, RTL, layout, SEO, error/loading)             | 🔍 review                    |
+| 04  | Frontend Design System Implementation (components + كل الصفحات بـ mock data)      | —                            |
+| 05  | Backend Foundation (Express 5, errors, logging, validation, `/api/v1`, health)    | —                            |
+| 06  | Database Architecture — PostgreSQL + Prisma (ERD أولًا)                           | —                            |
+| 07  | Authentication & Authorization — Phone + OTP، roles: student / mentor / admin     | —                            |
+| 08  | Student Account                                                                   | —                            |
+| 09  | Mentor Onboarding (Draft → Submitted → Under Review → Approved/Rejected)          | —                            |
+| 10  | Admin Verification System + Audit trail                                           | —                            |
+| 11  | University / Faculty / Department / Specialization                                | —                            |
+| 12  | Mentor Profiles                                                                   | —                            |
+| 13  | Search & Discovery                                                                | —                            |
+| 14  | Availability & Scheduling (no double booking / overlap)                           | —                            |
+| 15  | Booking System (Pending / Confirmed / Cancelled / Completed / No-show / Refunded) | —                            |
+| 16  | Payment System — Paymob، التأكيد من الـ Backend فقط (webhooks + HMAC)             | —                            |
+| 17  | Session Management                                                                | —                            |
+| 18  | Reviews & Ratings (بعد الجلسة فقط، بدون تكرار)                                    | —                            |
+| 19  | Notifications (in-app + email، SMS لاحقًا)                                        | —                            |
+| 20  | Admin Dashboard                                                                   | —                            |
+| 21  | Security & Production Hardening                                                   | —                            |
+| 22  | Testing & QA (unit / integration / E2E)                                           | —                            |
+| 23  | Deployment & Production (web + admin + api منفصلين)                               | —                            |
 
 ## ملاحظات تقنية اتضافت على الخطة (من مراجعة التصميم)
 

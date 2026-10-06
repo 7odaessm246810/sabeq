@@ -63,3 +63,8 @@ Turborepo runs tasks in strict env mode: a task only sees variables listed in `t
 
 - Docker Desktop needs WSL 2. Development is smoothest with `pnpm docker:infra` (databases in Docker, apps on the host).
 - Low space on `C:`: move Docker's disk image to another drive in Docker Desktop → Settings → Resources → Advanced → Disk image location.
+
+## Troubleshooting
+
+- **`ports are not available ... 5432`** — another PostgreSQL already listens on the host. Set `POSTGRES_HOST_PORT=5433` in `.env` (and use `localhost:5433` in `DATABASE_URL` for host tools). Containers are unaffected: they always talk to `postgres:5432`.
+- **`pnpm install` times out during `docker compose build`** — slow connection. The Dockerfiles already raise timeouts and cache registry metadata; build one service at a time: `docker compose build web`, then `admin`, then `api`.
