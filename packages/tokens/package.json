@@ -1,0 +1,28 @@
+{
+  "name": "@sabeq/tokens",
+  "version": "0.0.0",
+  "private": true,
+  "description": "SABEQ design tokens (light theme) compiled from the design handoff tokens.json into CSS variables.",
+  "type": "module",
+  "exports": {
+    "./tokens.css": "./dist/tokens.css",
+    "./tokens.json": "./src/tokens.json"
+  },
+  "files": [
+    "dist",
+    "src/tokens.json"
+  ],
+  "scripts": {
+    "build": "node scripts/build.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "test": "node --test scripts/build.test.ts",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\""
+  },
+  "devDependencies": {
+    "@sabeq/config": "workspace:*",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,0 +1,30 @@
+# deps
+node_modules/
+.pnpm-store/
+
+# builds
+dist/
+.next/
+out/
+build/
+*.tsbuildinfo
+coverage/
+.turbo/
+
+# env — never commit real secrets (only .env.example)
+.env
+.env.*
+!.env.example
+
+# logs / os / editors
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# local uploads during development
+uploads/

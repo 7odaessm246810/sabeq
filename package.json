@@ -1,0 +1,38 @@
+{
+  "name": "sabeq",
+  "private": true,
+  "description": "SABEQ (سابق) — connects high-school students with verified university mentors.",
+  "packageManager": "pnpm@11.21.0",
+  "engines": {
+    "node": ">=24.11.0 <25",
+    "pnpm": ">=11"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "pnpm format:check && turbo run lint typecheck test",
+    "clean": "turbo run clean && node -e \"require('fs').rmSync('node_modules',{recursive:true,force:true})\"",
+    "prepare": "husky",
+    "docker:dev": "docker compose up --build --watch",
+    "docker:infra": "docker compose up -d postgres redis",
+    "docker:prod": "docker compose -f compose.yaml -f compose.prod.yaml up --build -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f --tail=100"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "catalog:",
+    "@commitlint/config-conventional": "catalog:",
+    "@sabeq/config": "workspace:*",
+    "eslint": "catalog:",
+    "husky": "catalog:",
+    "lint-staged": "catalog:",
+    "prettier": "catalog:",
+    "turbo": "catalog:",
+    "typescript": "catalog:"
+  }
+}

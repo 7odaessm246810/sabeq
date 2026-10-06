@@ -1,0 +1,1 @@
+{ "extends": "@sabeq/config/tsconfig/library.json" }

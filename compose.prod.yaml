@@ -1,0 +1,42 @@
+# Production-like images on top of compose.yaml — the same images we deploy.
+#
+#   docker compose -f compose.yaml -f compose.prod.yaml up --build -d
+#
+# Use it to test the real build locally (standalone Next servers, compiled API, non-root users,
+# Docker HEALTHCHECKs). Secrets still come from .env; never commit real ones.
+#
+# Next.js build args are baked into the image (see docker/next.Dockerfile), so they are set here,
+# not under `environment`.
+
+services:
+  api:
+    build:
+      target: runner
+    environment:
+      NODE_ENV: production
+    develop: !reset null
+    restart: unless-stopped
+
+  web:
+    build:
+      target: runner
+      args:
+        NEXT_PUBLIC_SITE_URL: http://localhost:3000
+        API_INTERNAL_URL: http://api:4000/api/v1
+        APP_ENV: local
+    environment:
+      NODE_ENV: production
+    develop: !reset null
+    restart: unless-stopped
+
+  admin:
+    build:
+      target: runner
+      args:
+        NEXT_PUBLIC_SITE_URL: http://localhost:3001
+        API_INTERNAL_URL: http://api:4000/api/v1
+        APP_ENV: local
+    environment:
+      NODE_ENV: production
+    develop: !reset null
+    restart: unless-stopped

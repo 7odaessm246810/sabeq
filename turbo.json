@@ -1,0 +1,51 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "ui": "stream",
+  "globalDependencies": [".env"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "env": ["NEXT_PUBLIC_*", "API_INTERNAL_URL", "APP_ENV"]
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true,
+      "passThroughEnv": [
+        "PORT",
+        "HOSTNAME",
+        "TZ",
+        "APP_ENV",
+        "LOG_LEVEL",
+        "API_*",
+        "NEXT_PUBLIC_*",
+        "CORS_ORIGINS",
+        "DATABASE_URL",
+        "REDIS_*",
+        "POSTGRES_*",
+        "AUTH_*",
+        "OTP_*",
+        "SMS_*",
+        "STORAGE_*",
+        "PAYMOB_*",
+        "EMAIL_*",
+        "VIDEO_*",
+        "WATCHPACK_*"
+      ]
+    },
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}

@@ -1,0 +1,40 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+# One version of every shared dependency across the monorepo.
+# Apps reference these with "catalog:" instead of a version range.
+catalog:
+  # tooling
+  typescript: 6.0.3 # pinned: typescript-eslint does not support TS 7 yet (ADR-0002)
+  turbo: 2.11.7
+  eslint: 10.12.0
+  '@eslint/js': 10.0.1
+  typescript-eslint: 8.71.1
+  eslint-config-prettier: 10.1.8
+  globals: 17.13.0
+  prettier: 3.9.9
+  vitest: 5.0.3
+  husky: 9.1.7
+  lint-staged: 17.6.0
+  '@commitlint/cli': 21.2.3
+  '@commitlint/config-conventional': 21.2.3
+  '@types/node': 24.19.1
+  eslint-plugin-react-hooks: 7.1.1
+  '@next/eslint-plugin-next': 16.3.8
+  '@types/react': 19.3.0
+  '@types/react-dom': 19.3.0
+  # runtime (used from Phase 03 / 05 onward)
+  next: 16.3.8 # 16.4.0 was released 2026-10-06; wait for patches before upgrading
+  react: 19.3.0
+  react-dom: 19.3.0
+  express: 5.2.1
+  '@types/express': 5.0.6
+  tsx: 4.23.15
+  zod: 4.6.5
+
+# Exact versions only — no surprise upgrades in production.
+savePrefix: ''
+engineStrict: true
+allowBuilds:
+  esbuild: true # tsx → esbuild: installs the platform binary

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "SABEQ Node service (apps/api)",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "sourceMap": true,
+    "outDir": "${configDir}/dist",
+    "rootDir": "${configDir}/src"
+  },
+  "include": ["${configDir}/src"]
+}
