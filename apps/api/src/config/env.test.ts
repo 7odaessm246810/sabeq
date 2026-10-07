@@ -1,9 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { ConfigError, loadConfig } from './env.js';
 
+const BASE = {
+  DATABASE_URL: 'postgresql://u:p@localhost:5432/db',
+  REDIS_URL: 'redis://localhost:6379',
+};
+
 describe('loadConfig', () => {
   it('uses safe local defaults', () => {
-    const c = loadConfig({});
+    const c = loadConfig(BASE);
     expect(c).toMatchObject({
       nodeEnv: 'development',
       appEnv: 'local',
@@ -15,6 +20,7 @@ describe('loadConfig', () => {
 
   it('parses numbers and comma lists', () => {
     const c = loadConfig({
+      ...BASE,
       API_PORT: '8080',
       CORS_ORIGINS: 'https://a.example, https://b.example',
     });
@@ -24,7 +30,7 @@ describe('loadConfig', () => {
 
   it('lists every invalid variable at once', () => {
     try {
-      loadConfig({ API_PORT: 'abc', LOG_LEVEL: 'loud', CORS_ORIGINS: 'not a url' });
+      loadConfig({ ...BASE, API_PORT: 'abc', LOG_LEVEL: 'loud', CORS_ORIGINS: 'not a url' });
       expect.unreachable();
     } catch (err) {
       expect(err).toBeInstanceOf(ConfigError);
@@ -38,6 +44,7 @@ describe('loadConfig', () => {
   it('production demands https origins and a production build', () => {
     expect(() =>
       loadConfig({
+        ...BASE,
         APP_ENV: 'production',
         NODE_ENV: 'development',
         CORS_ORIGINS: 'http://sabeq.example',
@@ -45,10 +52,16 @@ describe('loadConfig', () => {
     ).toThrow(/https[\s\S]*NODE_ENV|NODE_ENV[\s\S]*https/);
     expect(
       loadConfig({
+        ...BASE,
         APP_ENV: 'production',
         NODE_ENV: 'production',
         CORS_ORIGINS: 'https://sabeq.example',
       }).appEnv,
     ).toBe('production');
+  });
+
+  it('requires the database and Redis URLs', () => {
+    expect(() => loadConfig({})).toThrow(/DATABASE_URL[\s\S]*REDIS_URL/);
+    expect(() => loadConfig({ ...BASE, DATABASE_URL: 'mysql://x@y/z' })).toThrow(/postgresql/);
   });
 });

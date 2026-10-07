@@ -4,3 +4,8 @@ dist
 .next
 .turbo
 coverage
+
+# Prisma client (generated)
+apps/api/src/generated/
+# Written by Next.js
+next-env.d.ts

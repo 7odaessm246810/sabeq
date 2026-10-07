@@ -4,13 +4,14 @@ One command runs the whole platform the same way on every machine.
 
 ## Services
 
-| Service    | Image / build                          | Local URL                         | Notes                                      |
-| ---------- | -------------------------------------- | --------------------------------- | ------------------------------------------ |
-| `postgres` | `postgres:18.6-alpine3.24`             | `127.0.0.1:5432`                  | volume `pgdata`, `pg_isready` health check |
-| `redis`    | `redis:8.8.3-alpine3.23`               | `127.0.0.1:6379`                  | AOF persistence, volume `redisdata`        |
-| `api`      | `docker/api.Dockerfile`                | http://localhost:4000/health/live | waits for postgres + redis to be healthy   |
-| `web`      | `docker/next.Dockerfile` (`APP=web`)   | http://localhost:3000             | waits for api; `/healthz`                  |
-| `admin`    | `docker/next.Dockerfile` (`APP=admin`) | http://localhost:3001             | waits for api; `/healthz`                  |
+| Service    | Image / build                              | Local URL                         | Notes                                                           |
+| ---------- | ------------------------------------------ | --------------------------------- | --------------------------------------------------------------- |
+| `postgres` | `postgres:18.6-alpine3.24`                 | `127.0.0.1:5432`                  | volume `pgdata`, `pg_isready` health check                      |
+| `redis`    | `redis:8.8.3-alpine3.23`                   | `127.0.0.1:6379`                  | AOF persistence, volume `redisdata`                             |
+| `migrate`  | `docker/api.Dockerfile` (dev / `migrator`) | —                                 | one-shot: `prisma migrate deploy`, then exits; api waits for it |
+| `api`      | `docker/api.Dockerfile`                    | http://localhost:4000/health/live | waits for postgres + redis to be healthy                        |
+| `web`      | `docker/next.Dockerfile` (`APP=web`)       | http://localhost:3000             | waits for api; `/healthz`                                       |
+| `admin`    | `docker/next.Dockerfile` (`APP=admin`)     | http://localhost:3001             | waits for api; `/healthz`                                       |
 
 Every port is bound to `127.0.0.1`, so nothing is exposed to the local network.
 

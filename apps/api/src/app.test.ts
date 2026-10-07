@@ -11,7 +11,12 @@ import { parseInput, sendData } from './core/http.js';
 const silent = pino({ level: 'silent' });
 
 function makeApp(overrides: Partial<AppDeps> = {}, env: NodeJS.ProcessEnv = {}) {
-  const config = loadConfig({ NODE_ENV: 'test', ...env });
+  const config = loadConfig({
+    NODE_ENV: 'test',
+    DATABASE_URL: 'postgresql://u:p@localhost:5432/db',
+    REDIS_URL: 'redis://localhost:6379',
+    ...env,
+  });
   return createApp({
     config,
     logger: silent,

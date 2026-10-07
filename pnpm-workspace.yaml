@@ -41,9 +41,17 @@ catalog:
   supertest: 7.3.1
   '@types/supertest': 7.2.1
   zod: 4.6.5
+  prisma: 7.10.0 # 'latest' tag points to an 8.0 release candidate
+  '@prisma/client': 7.10.0
+  '@prisma/adapter-pg': 7.10.0
+  pg: 8.23.1
+  '@types/pg': 8.23.1
+  ioredis: 6.0.0
 
 # Exact versions only — no surprise upgrades in production.
 savePrefix: ''
 engineStrict: true
 allowBuilds:
   esbuild: true # tsx → esbuild: installs the platform binary
+  '@prisma/engines': true # downloads the Prisma schema engine (migrations)
+  prisma: true

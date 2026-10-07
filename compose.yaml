@@ -47,6 +47,20 @@ services:
       timeout: 3s
       retries: 10
 
+  # One-shot: applies pending Prisma migrations, then exits. The API starts only after it succeeds.
+  migrate:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+      target: dev
+    command: ['pnpm', '--filter', '@sabeq/api', 'exec', 'prisma', 'migrate', 'deploy']
+    environment:
+      DATABASE_DIRECT_URL: postgresql://${POSTGRES_USER:-sabeq}:${POSTGRES_PASSWORD:-sabeq}@postgres:5432/${POSTGRES_DB:-sabeq}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: 'no'
+
   api:
     build:
       context: .
@@ -63,11 +77,14 @@ services:
       API_TRUST_PROXY: 1
       # Service names, not localhost: containers reach each other on the compose network.
       DATABASE_URL: postgresql://${POSTGRES_USER:-sabeq}:${POSTGRES_PASSWORD:-sabeq}@postgres:5432/${POSTGRES_DB:-sabeq}
+      DATABASE_DIRECT_URL: postgresql://${POSTGRES_USER:-sabeq}:${POSTGRES_PASSWORD:-sabeq}@postgres:5432/${POSTGRES_DB:-sabeq}
       REDIS_URL: redis://redis:6379
       CORS_ORIGINS: http://localhost:3000,http://localhost:3001
     ports:
       - '127.0.0.1:4000:4000'
     depends_on:
+      migrate:
+        condition: service_completed_successfully
       postgres:
         condition: service_healthy
       redis:

@@ -3,13 +3,17 @@
   "ui": "stream",
   "globalDependencies": [".env"],
   "tasks": {
+    "db:generate": {
+      "inputs": ["prisma/schema.prisma"],
+      "outputs": ["src/generated/**"]
+    },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "db:generate"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
       "env": ["NEXT_PUBLIC_*", "API_INTERNAL_URL", "APP_ENV"]
     },
     "dev": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "db:generate"],
       "cache": false,
       "persistent": true,
       "passThroughEnv": [
@@ -21,7 +25,7 @@
         "API_*",
         "NEXT_PUBLIC_*",
         "CORS_ORIGINS",
-        "DATABASE_URL",
+        "DATABASE_*",
         "REDIS_*",
         "POSTGRES_*",
         "AUTH_*",
@@ -35,13 +39,13 @@
       ]
     },
     "lint": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build", "db:generate"]
     },
     "typecheck": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build", "db:generate"]
     },
     "test": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "db:generate"],
       "outputs": []
     },
     "clean": {

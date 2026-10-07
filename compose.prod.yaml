@@ -9,6 +9,11 @@
 # not under `environment`.
 
 services:
+  migrate:
+    build:
+      target: migrator
+    command: !reset null
+
   api:
     build:
       target: runner

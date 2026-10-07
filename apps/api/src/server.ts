@@ -1,16 +1,18 @@
 /**
- * Process entry point: load config, build the app, listen, shut down cleanly.
+ * Process entry point: load config, connect PostgreSQL and Redis, build the app, listen, shut down
+ * cleanly (stop accepting → finish requests → close database and Redis).
  */
 import { createApp } from './app.js';
-import { ConfigError, loadConfig } from './config/env.js';
+import { ConfigError, loadConfig, type Config } from './config/env.js';
 import { createLogger } from './core/logger.js';
+import { createDb, dbReadiness } from './infra/db.js';
+import { createRedis, redisReadiness } from './infra/redis.js';
 
 const SHUTDOWN_GRACE_MS = 10_000;
 
-function main() {
-  let config;
+function readConfig(): Config {
   try {
-    config = loadConfig();
+    return loadConfig();
   } catch (err) {
     if (err instanceof ConfigError) {
       // No logger yet — the config decides its level. stderr is collected by Docker.
@@ -19,9 +21,19 @@ function main() {
     }
     throw err;
   }
+}
 
+function main() {
+  const config = readConfig();
   const logger = createLogger(config);
-  const app = createApp({ config, logger });
+  const db = createDb({ url: config.databaseUrl, poolMax: config.databasePoolMax, logger });
+  const redis = createRedis(config.redisUrl, logger);
+
+  const app = createApp({
+    config,
+    logger,
+    readinessChecks: [dbReadiness(db, logger), redisReadiness(redis)],
+  });
   const server = app.listen(config.port, () => {
     logger.info({ port: config.port }, 'sabeq-api listening');
   });
@@ -37,8 +49,10 @@ function main() {
     shuttingDown = true;
     logger.info({ signal }, 'shutting down: finishing in-flight requests');
     server.close(() => {
-      logger.info('server closed');
-      process.exit(0);
+      void Promise.allSettled([db.$disconnect(), redis.quit()]).then(() => {
+        logger.info('server closed');
+        process.exit(0);
+      });
     });
     server.closeIdleConnections();
     setTimeout(() => {

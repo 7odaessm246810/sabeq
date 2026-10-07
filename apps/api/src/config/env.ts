@@ -30,6 +30,10 @@ const schema = z
     API_RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
     /** Requests per client IP per window on /api/v1. */
     API_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(300),
+    DATABASE_URL: z.url({ protocol: /^postgres(ql)?$/, message: 'must be a postgresql:// URL' }),
+    /** Connections per API container (N containers × this ≤ what the database / pooler allows). */
+    DATABASE_POOL_MAX: z.coerce.number().int().min(1).max(100).default(10),
+    REDIS_URL: z.url({ protocol: /^rediss?$/, message: 'must be a redis:// or rediss:// URL' }),
     API_BODY_LIMIT: z
       .string()
       .regex(/^\d+(kb|mb)$/, 'e.g. 100kb or 1mb')
@@ -65,6 +69,9 @@ export interface Config {
   trustProxy: number;
   rateLimit: { windowMs: number; max: number };
   bodyLimit: string;
+  databaseUrl: string;
+  databasePoolMax: number;
+  redisUrl: string;
 }
 
 export class ConfigError extends Error {
@@ -90,5 +97,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     trustProxy: e.API_TRUST_PROXY,
     rateLimit: { windowMs: e.API_RATE_LIMIT_WINDOW_MS, max: e.API_RATE_LIMIT_MAX },
     bodyLimit: e.API_BODY_LIMIT,
+    databaseUrl: e.DATABASE_URL,
+    databasePoolMax: e.DATABASE_POOL_MAX,
+    redisUrl: e.REDIS_URL,
   };
 }

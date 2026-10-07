@@ -53,8 +53,8 @@ sabeq/
 | 02  | Development Environment & Docker                                                  | ✅ done — 5 services healthy |
 | 03  | Frontend Foundation (Next.js, fonts, RTL, layout, SEO, error/loading)             | ✅ done                      |
 | 04  | Frontend Design System Implementation (components + كل الصفحات بـ mock data)      | ✅ done                      |
-| 05  | Backend Foundation (Express 5, errors, logging, validation, `/api/v1`, health)    | 🔍 review                    |
-| 06  | Database Architecture — PostgreSQL + Prisma (ERD أولًا)                           | —                            |
+| 05  | Backend Foundation (Express 5, errors, logging, validation, `/api/v1`, health)    | ✅ done                      |
+| 06  | Database Architecture — PostgreSQL + Prisma (ERD أولًا)                           | 🔍 review                    |
 | 07  | Authentication & Authorization — Phone + OTP، roles: student / mentor / admin     | —                            |
 | 08  | Student Account                                                                   | —                            |
 | 09  | Mentor Onboarding (Draft → Submitted → Under Review → Approved/Rejected)          | —                            |
@@ -84,18 +84,20 @@ sabeq/
 
 ## Decisions log
 
-| التاريخ    | القرار                                                                                    |
-| ---------- | ----------------------------------------------------------------------------------------- |
-| 2026-10-06 | Light mode فقط. Monorepo. Next.js + Express 5 + TS. Node 24 LTS.                          |
-| 2026-10-06 | Auth = Phone + OTP (email اختياري).                                                       |
-| 2026-10-06 | Database = PostgreSQL + Prisma.                                                           |
-| 2026-10-06 | Payments = Paymob (بطاقة + محافظ + فوري/كشك) خلف payment abstraction.                     |
-| 2026-10-06 | كل صفحات التصميم تتبني في Phase 03–04 بـ mock data، وكل Phase بعدها تربط صفحتها بالـ API. |
-| 2026-10-06 | حساب واحد = دور واحد (طالب أو مرشد أو أدمن) — ADR-0008.                                   |
-| 2026-10-06 | الفيديو جوه الموقع (provider يتحدد في Phase 17).                                          |
-| 2026-10-06 | عمولة المنصة 10%؛ تحويل المرشد: بنكي / InstaPay / Vodafone Cash — ADR-0009.               |
-| 2026-10-06 | SMS: local Egyptian provider + Twilio Verify fallback (مقترح) — ADR-0011.                 |
-| 2026-10-06 | TypeScript 6.0.3 مثبت (typescript-eslint لسه ما يدعمش 7) — ADR-0002.                      |
+| التاريخ    | القرار                                                                                                    |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| 2026-10-06 | Light mode فقط. Monorepo. Next.js + Express 5 + TS. Node 24 LTS.                                          |
+| 2026-10-06 | Auth = Phone + OTP (email اختياري).                                                                       |
+| 2026-10-06 | Database = PostgreSQL + Prisma.                                                                           |
+| 2026-10-06 | Payments = Paymob (بطاقة + محافظ + فوري/كشك) خلف payment abstraction.                                     |
+| 2026-10-06 | كل صفحات التصميم تتبني في Phase 03–04 بـ mock data، وكل Phase بعدها تربط صفحتها بالـ API.                 |
+| 2026-10-06 | حساب واحد = دور واحد (طالب أو مرشد أو أدمن) — ADR-0008.                                                   |
+| 2026-10-06 | الفيديو جوه الموقع (provider يتحدد في Phase 17).                                                          |
+| 2026-10-06 | عمولة المنصة 10%؛ تحويل المرشد: بنكي / InstaPay / Vodafone Cash — ADR-0009.                               |
+| 2026-10-06 | SMS: local Egyptian provider + Twilio Verify fallback (مقترح) — ADR-0011.                                 |
+| 2026-10-07 | Neon (PostgreSQL, Frankfurt) + Upstash (Redis) لـ staging/production؛ Docker محليًا.                      |
+| 2026-10-07 | المرشدين: خريج / معيد / دكتور فقط. سعر أساسي واحد. إلغاء متأخر = استرداد 50%. صور البطاقات محفوظة مشفّرة. |
+| 2026-10-06 | TypeScript 6.0.3 مثبت (typescript-eslint لسه ما يدعمش 7) — ADR-0002.                                      |
 
 كل القرارات بالتفصيل: [docs/adr/](adr/README.md).
 

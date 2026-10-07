@@ -12,10 +12,17 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.check.json",
     "lint": "eslint .",
+    "test": "vitest run",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:seed": "prisma db seed",
+    "db:reset": "prisma migrate reset",
+    "db:studio": "prisma studio",
     "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
-    "test": "vitest run"
+    "test:db": "prisma generate && tsx scripts/test-db.ts"
   },
   "dependencies": {
     "@sabeq/types": "workspace:*",
@@ -25,7 +32,11 @@
     "helmet": "catalog:",
     "pino": "catalog:",
     "pino-http": "catalog:",
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "@prisma/client": "catalog:",
+    "@prisma/adapter-pg": "catalog:",
+    "pg": "catalog:",
+    "ioredis": "catalog:"
   },
   "devDependencies": {
     "@sabeq/config": "workspace:*",
@@ -38,6 +49,8 @@
     "@types/supertest": "catalog:",
     "pino-pretty": "catalog:",
     "supertest": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "prisma": "catalog:",
+    "@types/pg": "catalog:"
   }
 }

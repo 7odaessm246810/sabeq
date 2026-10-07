@@ -1,0 +1,12 @@
+{
+  "extends": "@sabeq/config/tsconfig/node.json",
+  "compilerOptions": { "noEmit": true, "rootDir": "." },
+  "include": [
+    "src",
+    "prisma",
+    "scripts",
+    "prisma.config.ts",
+    "vitest.config.ts",
+    "vitest.db.config.ts"
+  ]
+}

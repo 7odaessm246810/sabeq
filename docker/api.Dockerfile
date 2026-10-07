@@ -55,6 +55,15 @@ COPY docker/inline-workspace-deps.sh /usr/local/bin/inline-workspace-deps
 RUN sh /usr/local/bin/inline-workspace-deps /prod/api
 
 # ---------------------------------------------------------------------------
+# One-shot release step: apply pending migrations, then exit. Run it before rolling out new API
+# containers (Phase 23 pipeline). Needs DATABASE_DIRECT_URL — on Neon the non-pooled host.
+FROM builder AS migrator
+ENV PRISMA_HIDE_UPDATE_MESSAGE=1
+WORKDIR /app/apps/api
+# The binary directly: `pnpm exec` would re-check installed deps against NODE_ENV and try to reinstall.
+CMD ["./node_modules/.bin/prisma", "migrate", "deploy"]
+
+# ---------------------------------------------------------------------------
 FROM ${NODE_IMAGE} AS runner
 ENV NODE_ENV=production \
     API_PORT=4000

@@ -1,0 +1,824 @@
+// SABEQ database schema — design: docs/database.md (ADR-0007).
+// Conventions: UUID v7 ids, timestamptz, money as integer piasters, snake_case tables/columns.
+// Constraints Prisma cannot express (exclusion, CHECK) live in the migration SQL — see docs/database.md.
+
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "esm"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ───────────────────────────── enums ─────────────────────────────
+
+enum UserRole {
+  student
+  mentor
+  admin
+}
+
+enum AccountStatus {
+  active
+  suspended
+  deleted
+}
+
+enum AdminRole {
+  super_admin
+  verifier
+  support
+  finance
+}
+
+enum ClientApp {
+  web
+  admin
+}
+
+enum StudentTrack {
+  science_math
+  science_bio
+  literary
+  azhar
+  other
+}
+
+enum UniversityType {
+  public
+  private
+  national
+  azhar
+}
+
+enum FacultyCategory {
+  medical
+  engineering
+  science
+  literary
+  arts
+}
+
+/// Launch decision (2026-10-07): graduates, teaching assistants and professors — no current students.
+enum MentorKind {
+  graduate
+  teaching_assistant
+  professor
+}
+
+enum MentorApplicationStatus {
+  draft
+  submitted
+  under_review
+  changes_requested
+  approved
+  rejected
+}
+
+enum DocumentKind {
+  graduation_certificate
+  employment_proof
+  national_id_front
+}
+
+enum SessionKind {
+  consultation
+  comparison
+  quick_call
+}
+
+enum SessionMedium {
+  video
+  audio
+}
+
+enum AvailabilityExceptionKind {
+  blocked
+  extra
+}
+
+enum PayoutMethod {
+  bank_transfer
+  instapay
+  vodafone_cash
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  cancelled
+  completed
+  no_show
+  refunded
+}
+
+enum PaymentProvider {
+  paymob
+}
+
+enum PaymentMethod {
+  card
+  wallet
+  kiosk
+}
+
+enum PaymentStatus {
+  pending
+  succeeded
+  failed
+  refunded
+  partially_refunded
+}
+
+enum RefundStatus {
+  pending
+  succeeded
+  failed
+}
+
+enum LedgerEntryType {
+  mentor_earning
+  platform_fee
+  refund_reversal
+  payout
+}
+
+enum PayoutStatus {
+  pending
+  processing
+  paid
+  failed
+}
+
+enum ReviewStatus {
+  published
+  hidden
+  flagged
+}
+
+enum DeliveryChannel {
+  email
+  sms
+  in_app
+}
+
+enum DeliveryStatus {
+  queued
+  sent
+  failed
+}
+
+enum ReportTarget {
+  mentor
+  review
+  booking
+}
+
+enum ReportStatus {
+  open
+  resolved
+  dismissed
+}
+
+// ─────────────────────── identity & access ───────────────────────
+
+/// One account = one role (ADR-0008). Phone (E.164) is the login (ADR-0005).
+model User {
+  id              String        @id @default(uuid(7)) @db.Uuid
+  phone           String        @unique @db.VarChar(16)
+  role            UserRole
+  status          AccountStatus @default(active)
+  fullName        String        @map("full_name") @db.VarChar(120)
+  email           String?       @unique @db.VarChar(254)
+  emailVerifiedAt DateTime?     @map("email_verified_at") @db.Timestamptz
+  avatarKey       String?       @map("avatar_key")
+  lastLoginAt     DateTime?     @map("last_login_at") @db.Timestamptz
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt       DateTime?     @map("deleted_at") @db.Timestamptz
+
+  student       Student?
+  mentor        Mentor?
+  admin         Admin?
+  authSessions  AuthSession[]
+  notifications Notification[]
+  auditLogs     AuditLog[]
+  reportsFiled  Report[]       @relation("ReportReporter")
+
+  reviewedApplications MentorApplication[] @relation("ApplicationReviewer")
+  cancelledBookings    Booking[]           @relation("BookingCancelledBy")
+  requestedRefunds     Refund[]            @relation("RefundRequestedBy")
+  processedPayouts     Payout[]            @relation("PayoutProcessedBy")
+  moderatedReviews     Review[]            @relation("ReviewModeratedBy")
+  handledReports       Report[]            @relation("ReportHandler")
+
+  @@map("users")
+}
+
+model Student {
+  userId      String        @id @map("user_id") @db.Uuid
+  track       StudentTrack?
+  schoolYear  Int?          @map("school_year") @db.SmallInt
+  governorate String?       @db.VarChar(60)
+
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  saved     SavedMentor[]
+  interests StudentInterest[]
+  bookings  Booking[]
+  reviews   Review[]
+
+  @@map("students")
+}
+
+/// Admins use a second factor; the TOTP secret is encrypted by the API before it is stored.
+model Admin {
+  userId        String    @id @map("user_id") @db.Uuid
+  adminRole     AdminRole @map("admin_role")
+  totpSecretEnc String?   @map("totp_secret_enc")
+  totpEnabledAt DateTime? @map("totp_enabled_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("admins")
+}
+
+/// Refresh tokens are stored hashed only. OTP codes live in Redis, never here.
+model AuthSession {
+  id               String    @id @default(uuid(7)) @db.Uuid
+  userId           String    @map("user_id") @db.Uuid
+  app              ClientApp
+  refreshTokenHash String    @unique @map("refresh_token_hash") @db.VarChar(128)
+  userAgent        String?   @map("user_agent") @db.VarChar(400)
+  ip               String?   @db.Inet
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  lastUsedAt       DateTime  @default(now()) @map("last_used_at") @db.Timestamptz
+  expiresAt        DateTime  @map("expires_at") @db.Timestamptz
+  revokedAt        DateTime? @map("revoked_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("auth_sessions")
+}
+
+// ───────────────────────── education catalog ─────────────────────────
+
+model University {
+  id          String         @id @default(uuid(7)) @db.Uuid
+  slug        String         @unique @db.VarChar(60)
+  nameAr      String         @map("name_ar") @db.VarChar(120)
+  nameEn      String?        @map("name_en") @db.VarChar(120)
+  type        UniversityType
+  governorate String         @db.VarChar(60)
+  isActive    Boolean        @default(true) @map("is_active")
+  sortOrder   Int            @default(0) @map("sort_order")
+
+  faculties Faculty[]
+
+  @@map("universities")
+}
+
+/// A kind of faculty («الهندسة») — what students browse across universities.
+model FacultyKind {
+  id          String          @id @default(uuid(7)) @db.Uuid
+  slug        String          @unique @db.VarChar(40)
+  nameAr      String          @map("name_ar") @db.VarChar(80)
+  fullNameAr  String          @map("full_name_ar") @db.VarChar(120)
+  icon        String          @db.VarChar(40)
+  category    FacultyCategory
+  studyYears  Int             @map("study_years") @db.SmallInt
+  summary     String          @db.VarChar(200)
+  about       String
+  genericInfo String          @map("generic_info")
+  sortOrder   Int             @default(0) @map("sort_order")
+  isActive    Boolean         @default(true) @map("is_active")
+
+  faculties Faculty[]
+  insights  FacultyInsight[]
+  interests StudentInterest[]
+
+  @@map("faculty_kinds")
+}
+
+/// A specific faculty of a specific university («هندسة القاهرة»).
+model Faculty {
+  id           String  @id @default(uuid(7)) @db.Uuid
+  universityId String  @map("university_id") @db.Uuid
+  kindId       String  @map("kind_id") @db.Uuid
+  nameAr       String? @map("name_ar") @db.VarChar(160)
+  isActive     Boolean @default(true) @map("is_active")
+
+  university  University   @relation(fields: [universityId], references: [id])
+  kind        FacultyKind  @relation(fields: [kindId], references: [id])
+  departments Department[]
+  mentors     Mentor[]
+
+  @@unique([universityId, kindId])
+  @@index([kindId])
+  @@map("faculties")
+}
+
+model Department {
+  id        String  @id @default(uuid(7)) @db.Uuid
+  facultyId String  @map("faculty_id") @db.Uuid
+  slug      String  @db.VarChar(60)
+  nameAr    String  @map("name_ar") @db.VarChar(120)
+  isActive  Boolean @default(true) @map("is_active")
+
+  faculty         Faculty          @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+  specializations Specialization[]
+  mentors         Mentor[]
+
+  @@unique([facultyId, slug])
+  @@map("departments")
+}
+
+model Specialization {
+  id           String @id @default(uuid(7)) @db.Uuid
+  departmentId String @map("department_id") @db.Uuid
+  slug         String @db.VarChar(60)
+  nameAr       String @map("name_ar") @db.VarChar(120)
+
+  department Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  mentors    Mentor[]
+
+  @@unique([departmentId, slug])
+  @@map("specializations")
+}
+
+/// «اللي الخريجين بيقولوه» quotes on faculty pages, curated by admins.
+model FacultyInsight {
+  id          String  @id @default(uuid(7)) @db.Uuid
+  kindId      String  @map("kind_id") @db.Uuid
+  quote       String  @db.VarChar(400)
+  mentorId    String? @map("mentor_id") @db.Uuid
+  sortOrder   Int     @default(0) @map("sort_order")
+  isPublished Boolean @default(true) @map("is_published")
+
+  kind   FacultyKind @relation(fields: [kindId], references: [id], onDelete: Cascade)
+  mentor Mentor?     @relation(fields: [mentorId], references: [userId], onDelete: SetNull)
+
+  @@index([kindId, isPublished, sortOrder])
+  @@map("faculty_insights")
+}
+
+// ──────────────────────────────── mentors ────────────────────────────────
+
+/// Visible to students only when `isListed` — set only by an approved application (Phase 10).
+/// Rating/session counters are denormalised for fast cards and updated in the same transaction.
+model Mentor {
+  userId            String     @id @map("user_id") @db.Uuid
+  slug              String     @unique @db.VarChar(80)
+  kind              MentorKind
+  facultyId         String     @map("faculty_id") @db.Uuid
+  departmentId      String?    @map("department_id") @db.Uuid
+  specializationId  String?    @map("specialization_id") @db.Uuid
+  majorLabel        String     @map("major_label") @db.VarChar(120)
+  graduationYear    Int?       @map("graduation_year") @db.SmallInt
+  bio               String     @default("")
+  city              String?    @db.VarChar(60)
+  /// Consultation price; comparison and quick-call prices derive from it (decision 2026-10-07).
+  basePricePiasters Int?       @map("base_price_piasters")
+  isListed          Boolean    @default(false) @map("is_listed")
+  listedAt          DateTime?  @map("listed_at") @db.Timestamptz
+  acceptsBookings   Boolean    @default(true) @map("accepts_bookings")
+  ratingAvg         Decimal    @default(0) @map("rating_avg") @db.Decimal(3, 2)
+  ratingCount       Int        @default(0) @map("rating_count")
+  sessionsCompleted Int        @default(0) @map("sessions_completed")
+  createdAt         DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime   @updatedAt @map("updated_at") @db.Timestamptz
+
+  user           User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  faculty        Faculty                  @relation(fields: [facultyId], references: [id])
+  department     Department?              @relation(fields: [departmentId], references: [id])
+  specialization Specialization?          @relation(fields: [specializationId], references: [id])
+  topics         MentorTopic[]
+  applications   MentorApplication[]
+  offerings      SessionOffering[]
+  availability   AvailabilityRule[]
+  exceptions     AvailabilityException[]
+  payoutAccount  PayoutAccount?
+  savedBy        SavedMentor[]
+  bookings       Booking[]
+  reviews        Review[]
+  ledger         LedgerEntry[]
+  payouts        Payout[]
+  insights       FacultyInsight[]
+
+  @@index([facultyId, isListed, ratingAvg(sort: Desc)])
+  @@index([isListed, basePricePiasters])
+  @@map("mentors")
+}
+
+model MentorTopic {
+  id        String @id @default(uuid(7)) @db.Uuid
+  mentorId  String @map("mentor_id") @db.Uuid
+  label     String @db.VarChar(80)
+  sortOrder Int    @default(0) @map("sort_order")
+
+  mentor Mentor @relation(fields: [mentorId], references: [userId], onDelete: Cascade)
+
+  @@index([mentorId, sortOrder])
+  @@map("mentor_topics")
+}
+
+/// Every status change is also written to audit_logs (Phase 10).
+model MentorApplication {
+  id           String                  @id @default(uuid(7)) @db.Uuid
+  mentorId     String                  @map("mentor_id") @db.Uuid
+  status       MentorApplicationStatus @default(draft)
+  payload      Json                    @db.JsonB
+  submittedAt  DateTime?               @map("submitted_at") @db.Timestamptz
+  reviewerId   String?                 @map("reviewer_id") @db.Uuid
+  decidedAt    DateTime?               @map("decided_at") @db.Timestamptz
+  decisionNote String?                 @map("decision_note") @db.VarChar(1000)
+  createdAt    DateTime                @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime                @updatedAt @map("updated_at") @db.Timestamptz
+
+  mentor    Mentor           @relation(fields: [mentorId], references: [userId], onDelete: Cascade)
+  reviewer  User?            @relation("ApplicationReviewer", fields: [reviewerId], references: [id])
+  documents MentorDocument[]
+
+  @@index([mentorId, createdAt(sort: Desc)])
+  @@index([status, submittedAt])
+  @@map("mentor_applications")
+}
+
+/// Files live in the private bucket, encrypted (decision 2026-10-07: ID images are kept, encrypted).
+/// The row stores the object key, never the file.
+model MentorDocument {
+  id              String       @id @default(uuid(7)) @db.Uuid
+  applicationId   String       @map("application_id") @db.Uuid
+  kind            DocumentKind
+  storageKey      String       @unique @map("storage_key") @db.VarChar(300)
+  mimeType        String       @map("mime_type") @db.VarChar(80)
+  sizeBytes       Int          @map("size_bytes")
+  sha256          String       @db.Char(64)
+  encryptionKeyId String?      @map("encryption_key_id") @db.VarChar(120)
+  uploadedAt      DateTime     @default(now()) @map("uploaded_at") @db.Timestamptz
+
+  application MentorApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+  @@map("mentor_documents")
+}
+
+/// Which of the three session types a mentor offers. Duration and price multiplier come from code;
+/// the booking snapshots the final values.
+model SessionOffering {
+  id          String        @id @default(uuid(7)) @db.Uuid
+  mentorId    String        @map("mentor_id") @db.Uuid
+  kind        SessionKind
+  durationMin Int           @map("duration_min") @db.SmallInt
+  medium      SessionMedium
+  isActive    Boolean       @default(true) @map("is_active")
+
+  mentor   Mentor    @relation(fields: [mentorId], references: [userId], onDelete: Cascade)
+  bookings Booking[]
+
+  @@unique([mentorId, kind])
+  @@map("session_offerings")
+}
+
+/// Weekly pattern in Cairo time: minutes since midnight.
+model AvailabilityRule {
+  id          String @id @default(uuid(7)) @db.Uuid
+  mentorId    String @map("mentor_id") @db.Uuid
+  weekday     Int    @db.SmallInt
+  startMinute Int    @map("start_minute") @db.SmallInt
+  endMinute   Int    @map("end_minute") @db.SmallInt
+
+  mentor Mentor @relation(fields: [mentorId], references: [userId], onDelete: Cascade)
+
+  @@index([mentorId, weekday])
+  @@map("availability_rules")
+}
+
+model AvailabilityException {
+  id          String                    @id @default(uuid(7)) @db.Uuid
+  mentorId    String                    @map("mentor_id") @db.Uuid
+  date        DateTime                  @db.Date
+  startMinute Int?                      @map("start_minute") @db.SmallInt
+  endMinute   Int?                      @map("end_minute") @db.SmallInt
+  kind        AvailabilityExceptionKind
+
+  mentor Mentor @relation(fields: [mentorId], references: [userId], onDelete: Cascade)
+
+  @@index([mentorId, date])
+  @@map("availability_exceptions")
+}
+
+/// Account numbers are encrypted by the API before storage (ADR-0009).
+model PayoutAccount {
+  mentorId   String       @id @map("mentor_id") @db.Uuid
+  method     PayoutMethod
+  detailsEnc String       @map("details_enc")
+  verifiedAt DateTime?    @map("verified_at") @db.Timestamptz
+  updatedAt  DateTime     @updatedAt @map("updated_at") @db.Timestamptz
+
+  mentor Mentor @relation(fields: [mentorId], references: [userId], onDelete: Cascade)
+
+  @@map("payout_accounts")
+}
+
+// ─────────────────────────── students' data ───────────────────────────
+
+model SavedMentor {
+  studentId String   @map("student_id") @db.Uuid
+  mentorId  String   @map("mentor_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  student Student @relation(fields: [studentId], references: [userId], onDelete: Cascade)
+  mentor  Mentor  @relation(fields: [mentorId], references: [userId], onDelete: Cascade)
+
+  @@id([studentId, mentorId])
+  @@index([mentorId])
+  @@map("saved_mentors")
+}
+
+model StudentInterest {
+  studentId String @map("student_id") @db.Uuid
+  kindId    String @map("kind_id") @db.Uuid
+
+  student Student     @relation(fields: [studentId], references: [userId], onDelete: Cascade)
+  kind    FacultyKind @relation(fields: [kindId], references: [id], onDelete: Cascade)
+
+  @@id([studentId, kindId])
+  @@map("student_interests")
+}
+
+// ─────────────────── bookings, sessions, payments ───────────────────
+
+/// Price, duration and type are snapshots taken at booking time.
+/// The migration adds an EXCLUSION constraint: two pending/confirmed bookings of one mentor can never
+/// overlap — a slot cannot be sold twice, even under concurrent requests.
+model Booking {
+  id             String        @id @default(uuid(7)) @db.Uuid
+  studentId      String        @map("student_id") @db.Uuid
+  mentorId       String        @map("mentor_id") @db.Uuid
+  offeringId     String?       @map("offering_id") @db.Uuid
+  kind           SessionKind
+  durationMin    Int           @map("duration_min") @db.SmallInt
+  medium         SessionMedium
+  pricePiasters  Int           @map("price_piasters")
+  feePiasters    Int           @map("fee_piasters")
+  totalPiasters  Int           @map("total_piasters")
+  commissionBps  Int           @map("commission_bps") @db.SmallInt
+  currency       String        @default("EGP") @db.Char(3)
+  startsAt       DateTime      @map("starts_at") @db.Timestamptz
+  endsAt         DateTime      @map("ends_at") @db.Timestamptz
+  status         BookingStatus @default(pending)
+  holdExpiresAt  DateTime?     @map("hold_expires_at") @db.Timestamptz
+  studentNote    String?       @map("student_note") @db.VarChar(1000)
+  cancelledAt    DateTime?     @map("cancelled_at") @db.Timestamptz
+  cancelledById  String?       @map("cancelled_by_id") @db.Uuid
+  cancelReason   String?       @map("cancel_reason") @db.VarChar(500)
+  /// 10000 = full refund, 5000 = the 50% late-cancellation refund (decision 2026-10-07).
+  refundShareBps Int?          @map("refund_share_bps") @db.SmallInt
+  completedAt    DateTime?     @map("completed_at") @db.Timestamptz
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+
+  student     Student          @relation(fields: [studentId], references: [userId])
+  mentor      Mentor           @relation(fields: [mentorId], references: [userId])
+  offering    SessionOffering? @relation(fields: [offeringId], references: [id], onDelete: SetNull)
+  cancelledBy User?            @relation("BookingCancelledBy", fields: [cancelledById], references: [id])
+  meeting     Meeting?
+  payments    Payment[]
+  review      Review?
+  ledger      LedgerEntry[]
+
+  @@index([mentorId, startsAt])
+  @@index([studentId, startsAt(sort: Desc)])
+  @@index([status, holdExpiresAt])
+  @@map("bookings")
+}
+
+model Meeting {
+  bookingId       String    @id @map("booking_id") @db.Uuid
+  provider        String    @db.VarChar(40)
+  roomId          String    @map("room_id") @db.VarChar(200)
+  startsAt        DateTime  @map("starts_at") @db.Timestamptz
+  endedAt         DateTime? @map("ended_at") @db.Timestamptz
+  studentJoinedAt DateTime? @map("student_joined_at") @db.Timestamptz
+  mentorJoinedAt  DateTime? @map("mentor_joined_at") @db.Timestamptz
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("meetings")
+}
+
+/// Status changes only from verified Paymob webhooks (ADR-0006).
+model Payment {
+  id              String          @id @default(uuid(7)) @db.Uuid
+  bookingId       String          @map("booking_id") @db.Uuid
+  provider        PaymentProvider @default(paymob)
+  method          PaymentMethod
+  amountPiasters  Int             @map("amount_piasters")
+  currency        String          @default("EGP") @db.Char(3)
+  status          PaymentStatus   @default(pending)
+  providerOrderId String?         @map("provider_order_id") @db.VarChar(100)
+  providerTxnId   String?         @unique @map("provider_txn_id") @db.VarChar(100)
+  kioskReference  String?         @map("kiosk_reference") @db.VarChar(40)
+  failureReason   String?         @map("failure_reason") @db.VarChar(300)
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime        @updatedAt @map("updated_at") @db.Timestamptz
+  succeededAt     DateTime?       @map("succeeded_at") @db.Timestamptz
+
+  booking Booking        @relation(fields: [bookingId], references: [id])
+  events  PaymentEvent[]
+  refunds Refund[]
+
+  @@index([bookingId])
+  @@index([providerOrderId])
+  @@map("payments")
+}
+
+/// Every webhook is stored before it is processed; the unique event id makes replays harmless.
+model PaymentEvent {
+  id              String    @id @default(uuid(7)) @db.Uuid
+  paymentId       String?   @map("payment_id") @db.Uuid
+  providerEventId String    @unique @map("provider_event_id") @db.VarChar(120)
+  type            String    @db.VarChar(80)
+  payload         Json      @db.JsonB
+  hmacValid       Boolean   @map("hmac_valid")
+  receivedAt      DateTime  @default(now()) @map("received_at") @db.Timestamptz
+  processedAt     DateTime? @map("processed_at") @db.Timestamptz
+  processingError String?   @map("processing_error") @db.VarChar(500)
+
+  payment Payment? @relation(fields: [paymentId], references: [id])
+
+  @@index([paymentId])
+  @@map("payment_events")
+}
+
+model Refund {
+  id               String       @id @default(uuid(7)) @db.Uuid
+  paymentId        String       @map("payment_id") @db.Uuid
+  amountPiasters   Int          @map("amount_piasters")
+  status           RefundStatus @default(pending)
+  reason           String       @db.VarChar(300)
+  providerRefundId String?      @unique @map("provider_refund_id") @db.VarChar(100)
+  requestedById    String?      @map("requested_by_id") @db.Uuid
+  createdAt        DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime     @updatedAt @map("updated_at") @db.Timestamptz
+
+  payment     Payment @relation(fields: [paymentId], references: [id])
+  requestedBy User?   @relation("RefundRequestedBy", fields: [requestedById], references: [id])
+
+  @@index([paymentId])
+  @@map("refunds")
+}
+
+/// Append-only. A mentor's balance is the sum of their entries.
+model LedgerEntry {
+  id             String          @id @default(uuid(7)) @db.Uuid
+  mentorId       String          @map("mentor_id") @db.Uuid
+  bookingId      String?         @map("booking_id") @db.Uuid
+  payoutId       String?         @map("payout_id") @db.Uuid
+  type           LedgerEntryType
+  amountPiasters Int             @map("amount_piasters")
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz
+
+  mentor  Mentor   @relation(fields: [mentorId], references: [userId])
+  booking Booking? @relation(fields: [bookingId], references: [id])
+  payout  Payout?  @relation(fields: [payoutId], references: [id])
+
+  @@index([mentorId, createdAt])
+  @@index([bookingId])
+  @@map("ledger_entries")
+}
+
+model Payout {
+  id             String       @id @default(uuid(7)) @db.Uuid
+  mentorId       String       @map("mentor_id") @db.Uuid
+  amountPiasters Int          @map("amount_piasters")
+  method         PayoutMethod
+  status         PayoutStatus @default(pending)
+  reference      String?      @db.VarChar(120)
+  processedById  String?      @map("processed_by_id") @db.Uuid
+  periodStart    DateTime     @map("period_start") @db.Date
+  periodEnd      DateTime     @map("period_end") @db.Date
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  paidAt         DateTime?    @map("paid_at") @db.Timestamptz
+
+  mentor      Mentor        @relation(fields: [mentorId], references: [userId])
+  processedBy User?         @relation("PayoutProcessedBy", fields: [processedById], references: [id])
+  entries     LedgerEntry[]
+
+  @@index([mentorId, createdAt(sort: Desc)])
+  @@index([status])
+  @@map("payouts")
+}
+
+// ─────────────── reviews, notifications, trust ───────────────
+
+/// One review per booking; only for completed sessions (service rule + trigger in a later phase).
+model Review {
+  id            String       @id @default(uuid(7)) @db.Uuid
+  bookingId     String       @unique @map("booking_id") @db.Uuid
+  studentId     String       @map("student_id") @db.Uuid
+  mentorId      String       @map("mentor_id") @db.Uuid
+  rating        Int          @db.SmallInt
+  text          String?      @db.VarChar(2000)
+  topic         String?      @db.VarChar(120)
+  status        ReviewStatus @default(published)
+  moderatedById String?      @map("moderated_by_id") @db.Uuid
+  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime     @updatedAt @map("updated_at") @db.Timestamptz
+
+  booking     Booking @relation(fields: [bookingId], references: [id])
+  student     Student @relation(fields: [studentId], references: [userId])
+  mentor      Mentor  @relation(fields: [mentorId], references: [userId])
+  moderatedBy User?   @relation("ReviewModeratedBy", fields: [moderatedById], references: [id])
+
+  @@index([mentorId, status, createdAt(sort: Desc)])
+  @@map("reviews")
+}
+
+model Notification {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  type      String    @db.VarChar(60)
+  title     String    @db.VarChar(160)
+  body      String    @db.VarChar(1000)
+  data      Json?     @db.JsonB
+  readAt    DateTime? @map("read_at") @db.Timestamptz
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  user       User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deliveries NotificationDelivery[]
+
+  @@index([userId, readAt, createdAt(sort: Desc)])
+  @@map("notifications")
+}
+
+model NotificationDelivery {
+  id                String          @id @default(uuid(7)) @db.Uuid
+  notificationId    String          @map("notification_id") @db.Uuid
+  channel           DeliveryChannel
+  status            DeliveryStatus  @default(queued)
+  providerMessageId String?         @map("provider_message_id") @db.VarChar(120)
+  attempts          Int             @default(0) @db.SmallInt
+  lastError         String?         @map("last_error") @db.VarChar(500)
+  createdAt         DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  sentAt            DateTime?       @map("sent_at") @db.Timestamptz
+
+  notification Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+
+  @@index([notificationId])
+  @@index([status, createdAt])
+  @@map("notification_deliveries")
+}
+
+model Report {
+  id          String       @id @default(uuid(7)) @db.Uuid
+  reporterId  String       @map("reporter_id") @db.Uuid
+  targetType  ReportTarget @map("target_type")
+  targetId    String       @map("target_id") @db.Uuid
+  reason      String       @db.VarChar(1000)
+  status      ReportStatus @default(open)
+  handledById String?      @map("handled_by_id") @db.Uuid
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  resolvedAt  DateTime?    @map("resolved_at") @db.Timestamptz
+
+  reporter  User  @relation("ReportReporter", fields: [reporterId], references: [id])
+  handledBy User? @relation("ReportHandler", fields: [handledById], references: [id])
+
+  @@index([status, createdAt])
+  @@index([targetType, targetId])
+  @@map("reports")
+}
+
+/// Append-only: every admin action and every money movement.
+model AuditLog {
+  id          String   @id @default(uuid(7)) @db.Uuid
+  actorUserId String?  @map("actor_user_id") @db.Uuid
+  actorRole   String   @map("actor_role") @db.VarChar(30)
+  action      String   @db.VarChar(80)
+  entityType  String   @map("entity_type") @db.VarChar(60)
+  entityId    String   @map("entity_id") @db.VarChar(80)
+  before      Json?    @db.JsonB
+  after       Json?    @db.JsonB
+  ip          String?  @db.Inet
+  requestId   String?  @map("request_id") @db.VarChar(64)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  actor User? @relation(fields: [actorUserId], references: [id])
+
+  @@index([entityType, entityId, createdAt])
+  @@index([actorUserId, createdAt])
+  @@map("audit_logs")
+}
+
+model NewsletterSubscriber {
+  email          String    @id @db.VarChar(254)
+  source         String    @db.VarChar(40)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  unsubscribedAt DateTime? @map("unsubscribed_at") @db.Timestamptz
+
+  @@map("newsletter_subscribers")
+}
