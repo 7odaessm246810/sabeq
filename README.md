@@ -35,6 +35,7 @@ Details, production-like images and Windows notes: [docs/docker.md](docs/docker.
 ## Docs
 
 - [Docker](docs/docker.md)
+- [API foundation](docs/api.md)
 - [Roadmap — 23 phases](docs/ROADMAP.md)
 - [Architecture](docs/architecture.md)
 - [Conventions](docs/conventions.md)

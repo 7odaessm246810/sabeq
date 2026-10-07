@@ -1,1 +1,4 @@
-{ "extends": "@sabeq/config/tsconfig/node.json" }
+{
+  "extends": "@sabeq/config/tsconfig/node.json",
+  "exclude": ["src/**/*.test.ts"]
+}

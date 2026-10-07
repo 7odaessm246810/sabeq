@@ -50,6 +50,9 @@ RUN turbo run build --filter=@sabeq/api
 # Self-contained folder: compiled API + production dependencies (workspace packages copied, not linked).
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
     pnpm --filter @sabeq/api deploy --prod --legacy --store-dir /pnpm/store /prod/api
+# --legacy links workspace packages to /app/packages/* — replace those links with real copies.
+COPY docker/inline-workspace-deps.sh /usr/local/bin/inline-workspace-deps
+RUN sh /usr/local/bin/inline-workspace-deps /prod/api
 
 # ---------------------------------------------------------------------------
 FROM ${NODE_IMAGE} AS runner

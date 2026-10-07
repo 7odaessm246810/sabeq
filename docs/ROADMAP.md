@@ -52,8 +52,8 @@ sabeq/
 | 01  | Project Architecture & Technical Foundation                                       | ✅ done                      |
 | 02  | Development Environment & Docker                                                  | ✅ done — 5 services healthy |
 | 03  | Frontend Foundation (Next.js, fonts, RTL, layout, SEO, error/loading)             | ✅ done                      |
-| 04  | Frontend Design System Implementation (components + كل الصفحات بـ mock data)      | 🔍 review                    |
-| 05  | Backend Foundation (Express 5, errors, logging, validation, `/api/v1`, health)    | —                            |
+| 04  | Frontend Design System Implementation (components + كل الصفحات بـ mock data)      | ✅ done                      |
+| 05  | Backend Foundation (Express 5, errors, logging, validation, `/api/v1`, health)    | 🔍 review                    |
 | 06  | Database Architecture — PostgreSQL + Prisma (ERD أولًا)                           | —                            |
 | 07  | Authentication & Authorization — Phone + OTP، roles: student / mentor / admin     | —                            |
 | 08  | Student Account                                                                   | —                            |

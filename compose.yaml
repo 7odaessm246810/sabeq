@@ -59,6 +59,8 @@ services:
       <<: *app-env
       NODE_ENV: development
       API_PORT: 4000
+      # Browser → Next.js rewrite → API: one proxy hop, so req.ip is the real client (rate limits).
+      API_TRUST_PROXY: 1
       # Service names, not localhost: containers reach each other on the compose network.
       DATABASE_URL: postgresql://${POSTGRES_USER:-sabeq}:${POSTGRES_PASSWORD:-sabeq}@postgres:5432/${POSTGRES_DB:-sabeq}
       REDIS_URL: redis://redis:6379

@@ -2,7 +2,7 @@
   "name": "@sabeq/api",
   "version": "0.0.0",
   "private": true,
-  "description": "SABEQ REST API (Express 5). Phase 02 skeleton: health endpoints only — the full foundation lands in Phase 05.",
+  "description": "SABEQ REST API (Express 5) — /api/v1, health checks, error envelope, security middleware.",
   "type": "module",
   "main": "dist/server.js",
   "files": [
@@ -14,11 +14,18 @@
     "start": "node dist/server.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint .",
-    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\""
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
+    "test": "vitest run"
   },
   "dependencies": {
     "@sabeq/types": "workspace:*",
-    "express": "catalog:"
+    "express": "catalog:",
+    "cors": "catalog:",
+    "express-rate-limit": "catalog:",
+    "helmet": "catalog:",
+    "pino": "catalog:",
+    "pino-http": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@sabeq/config": "workspace:*",
@@ -26,6 +33,11 @@
     "@types/node": "catalog:",
     "eslint": "catalog:",
     "tsx": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@types/cors": "catalog:",
+    "@types/supertest": "catalog:",
+    "pino-pretty": "catalog:",
+    "supertest": "catalog:",
+    "vitest": "catalog:"
   }
 }

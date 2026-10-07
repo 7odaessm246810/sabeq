@@ -1,39 +1,63 @@
 /**
- * Phase 02 skeleton: just enough of the API for containers, health checks and the web proxy to work.
- * Phase 05 replaces this with the real foundation (config, logging, errors, security, /api/v1 modules).
+ * Process entry point: load config, build the app, listen, shut down cleanly.
  */
-import { PLATFORM } from '@sabeq/types';
-import express from 'express';
+import { createApp } from './app.js';
+import { ConfigError, loadConfig } from './config/env.js';
+import { createLogger } from './core/logger.js';
 
-const port = Number(process.env.API_PORT ?? 4000);
-const startedAt = new Date();
+const SHUTDOWN_GRACE_MS = 10_000;
 
-const app = express();
-app.disable('x-powered-by');
+function main() {
+  let config;
+  try {
+    config = loadConfig();
+  } catch (err) {
+    if (err instanceof ConfigError) {
+      // No logger yet — the config decides its level. stderr is collected by Docker.
+      process.stderr.write(`${err.message}\n`);
+      process.exit(1);
+    }
+    throw err;
+  }
 
-/** Liveness: the process is up. Used by Docker HEALTHCHECK and load balancers. */
-app.get('/health/live', (_req, res) => {
-  res.json({ status: 'ok' });
-});
+  const logger = createLogger(config);
+  const app = createApp({ config, logger });
+  const server = app.listen(config.port, () => {
+    logger.info({ port: config.port }, 'sabeq-api listening');
+  });
 
-/** Readiness: dependencies are reachable. Database and Redis checks are added in Phase 05–06. */
-app.get('/health/ready', (_req, res) => {
-  res.json({ status: 'ok', checks: {}, uptimeSeconds: Math.round(process.uptime()) });
-});
+  // Load balancers keep idle connections ~60s; the server must outlive them to avoid 502s.
+  server.keepAliveTimeout = 65_000;
+  server.headersTimeout = 66_000;
+  server.requestTimeout = 30_000;
 
-app.get(`/api/${PLATFORM.apiVersion}`, (_req, res) => {
-  res.json({ data: { name: 'sabeq-api', version: PLATFORM.apiVersion, startedAt } });
-});
+  let shuttingDown = false;
+  const shutdown = (signal: string) => {
+    if (shuttingDown) return;
+    shuttingDown = true;
+    logger.info({ signal }, 'shutting down: finishing in-flight requests');
+    server.close(() => {
+      logger.info('server closed');
+      process.exit(0);
+    });
+    server.closeIdleConnections();
+    setTimeout(() => {
+      logger.error('forced exit after grace period');
+      process.exit(1);
+    }, SHUTDOWN_GRACE_MS).unref();
+  };
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
 
-const server = app.listen(port, () => {
-  process.stdout.write(`sabeq-api listening on :${port}\n`);
-});
-
-/** Containers are stopped with SIGTERM; finish in-flight requests before exiting. */
-function shutdown(signal: string) {
-  process.stdout.write(`${signal} received, closing server\n`);
-  server.close(() => process.exit(0));
-  setTimeout(() => process.exit(1), 10_000).unref();
+  // A crashed process is restarted by the orchestrator; log why first.
+  process.on('unhandledRejection', (reason) => {
+    logger.fatal({ err: reason }, 'unhandled promise rejection');
+    process.exit(1);
+  });
+  process.on('uncaughtException', (err) => {
+    logger.fatal({ err }, 'uncaught exception');
+    process.exit(1);
+  });
 }
-process.on('SIGTERM', () => shutdown('SIGTERM'));
-process.on('SIGINT', () => shutdown('SIGINT'));
+
+main();
