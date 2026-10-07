@@ -1,13 +1,31 @@
 'use client';
 
-import { Icon, Logo } from '@sabeq/ui';
+import { Icon, Logo, useToast } from '@sabeq/ui';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { MOBILE_NAV } from '@/lib/site';
+import { useSignOut } from '@/lib/use-signed-in';
+
+const ACCOUNT_NAV = [
+  { href: '/sessions', label: 'جلساتي' },
+  { href: '/account', label: 'حسابي' },
+] as const;
 
 /** Side sheet from the prototype `openMenu()`: scrim, links with chevrons, actions pinned to the bottom. */
 export function MobileMenu({ onClose, signedIn }: { onClose: () => void; signedIn: boolean }) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const signOutAndLeave = useSignOut();
+  const toast = useToast();
+
+  async function signOut() {
+    onClose();
+    try {
+      await signOutAndLeave();
+      toast({ kind: 'success', title: 'سجلت خروجك', description: 'نشوفك قريب.' });
+    } catch {
+      toast({ kind: 'error', title: 'ما قدرناش نخرجك. جرّب تاني.' });
+    }
+  }
 
   useEffect(() => {
     const opener = document.activeElement as HTMLElement | null;
@@ -53,7 +71,7 @@ export function MobileMenu({ onClose, signedIn }: { onClose: () => void; signedI
           </button>
         </div>
         <nav aria-label="القائمة">
-          {MOBILE_NAV.map((link) => (
+          {[...(signedIn ? ACCOUNT_NAV : []), ...MOBILE_NAV].map((link) => (
             <Link key={link.href} href={link.href} onClick={onClose}>
               {link.label}
               <span>
@@ -63,7 +81,15 @@ export function MobileMenu({ onClose, signedIn }: { onClose: () => void; signedI
           ))}
         </nav>
         <div className="mmenu-f">
-          {signedIn ? null : (
+          {signedIn ? (
+            <button
+              type="button"
+              className="sb-btn sb-btn--secondary sb-btn--lg sb-btn--block"
+              onClick={() => void signOut()}
+            >
+              تسجيل الخروج
+            </button>
+          ) : (
             <Link
               className="sb-btn sb-btn--secondary sb-btn--lg sb-btn--block"
               href="/login"

@@ -2,8 +2,9 @@
 
 import { Banner, FieldError, Icon, Stepper, SuccessRing, cx } from '@sabeq/ui';
 import Link from 'next/link';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Crumb } from '@/components/Crumb';
+import { Field, Select } from '@/components/form';
 import { FACULTIES, UNIVERSITIES } from '@/lib/mock/data';
 
 const STEPS = ['بياناتك', 'دراستك', 'التوثيق', 'الجلسات', 'مراجعة'];
@@ -30,63 +31,6 @@ interface Application {
 type Errors = Partial<
   Record<'name' | 'phone' | 'uni' | 'fac' | 'major' | 'year' | 'files' | 'days', string>
 >;
-
-function Field({
-  id,
-  label,
-  error,
-  children,
-}: {
-  id: string;
-  label: string;
-  error: string | undefined;
-  children: ReactNode;
-}) {
-  return (
-    <div className={cx('sb-field', error && 'sb-field--error')}>
-      <label className="sb-label" htmlFor={id}>
-        {label}
-      </label>
-      {children}
-      {error ? <FieldError id={`${id}-err`}>{error}</FieldError> : null}
-    </div>
-  );
-}
-
-function Select({
-  id,
-  value,
-  options,
-  error,
-  onChange,
-}: {
-  id: string;
-  value: string;
-  options: readonly string[];
-  error: string | undefined;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div className="sb-select-wrap">
-      <select
-        className="sb-input sb-select"
-        id={id}
-        value={value}
-        aria-invalid={Boolean(error)}
-        aria-describedby={error ? `${id}-err` : undefined}
-        onChange={(e) => onChange(e.target.value)}
-      >
-        <option value="">اختار</option>
-        {options.map((o) => (
-          <option key={o}>{o}</option>
-        ))}
-      </select>
-      <span>
-        <Icon name="chevron" />
-      </span>
-    </div>
-  );
-}
 
 /**
  * Mentor application — 5 steps (prototype `P.apply`). Phase 09 posts it to the API and uploads the

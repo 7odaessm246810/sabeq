@@ -965,3 +965,74 @@
     width: 100%;
   }
 }
+
+/* ===== account (Phase 08 — not in the handoff; built from design-system pieces) ===== */
+.acct {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 820px;
+}
+.acct-card {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.acct-card .view {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.acct-devices {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.acct-devices li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+}
+.acct-devices li:first-child {
+  border-top: 0;
+}
+.acct-devices .i22 {
+  color: var(--muted);
+}
+.acct-devices .g {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.acct-out {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.acct-out-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.acct-danger {
+  color: var(--error);
+}
+@media (max-width: 720px) {
+  .acct-card {
+    padding: 20px;
+  }
+  .acct-out {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .acct-out-actions .sb-btn {
+    flex: 1;
+  }
+}

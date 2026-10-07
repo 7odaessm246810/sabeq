@@ -35,6 +35,7 @@ const env = {
   ...process.env,
   DATABASE_URL: testUrl.toString(),
   DATABASE_DIRECT_URL: testUrl.toString(),
+  APP_ENV: 'staging',
 };
 // Run the CLIs' JS entry points with this Node — no shell, no argument concatenation.
 const require = createRequire(import.meta.url);
@@ -44,6 +45,8 @@ const run = (bin: string, args: string[]) => {
 };
 
 run(require.resolve('prisma/build/index.js'), ['migrate', 'deploy']);
+// The catalog (universities, faculty kinds …) is reference data tests rely on; demo mentors are not.
+run(require.resolve('tsx/cli'), [path.join(import.meta.dirname, '../prisma/seed.ts')]);
 run(path.join(path.dirname(require.resolve('vitest/package.json')), 'vitest.mjs'), [
   'run',
   '--config',

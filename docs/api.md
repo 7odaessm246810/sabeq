@@ -92,6 +92,21 @@ Phone + OTP (ADR-0005), opaque session cookies (ADR-0015). Module: `src/modules/
 - **Protecting routes:** `router.use(auth.authenticate('web' | 'admin'))`, then `requireAuth()`, `requireRole('student')`, `requireAdmin('finance')` (`super_admin` passes every admin check). No session → `401`; wrong role → `403`.
 - **Revocation:** `sessions.revokeAll(userId)` on suspension / role change — takes effect immediately (Redis cache entry deleted).
 
+## Account (Phase 08)
+
+Website user's own account under `/api/v1/me` (module `src/modules/account`, website session required).
+
+| Endpoint             | Body                                                           | Result                                              |
+| -------------------- | -------------------------------------------------------------- | --------------------------------------------------- |
+| `GET profile`        | —                                                              | `{ profile: { fullName, phone, role, student } }`   |
+| `PATCH profile`      | `{ fullName?, track?, schoolYear?, governorate?, interests? }` | updated profile                                     |
+| `GET devices`        | —                                                              | live website sessions, `current` flagged            |
+| `DELETE devices/:id` | —                                                              | signs that device out (own sessions only, else 404) |
+
+- Student fields (`track`, `schoolYear` 1–3, `governorate` from the 27, `interests` ≤ 5 faculty-kind slugs) are refused for mentors. `null` clears a field; omitted fields are untouched. Unknown fields → 400.
+- The vocabulary (tracks, years, governorates, labels) lives in `@sabeq/types` (`student.ts`), shared with the web app.
+- Integration tests seed the catalog (`scripts/test-db.ts` runs `prisma/seed.ts` without demo mentors).
+
 ## Operations
 
 - Graceful shutdown on `SIGTERM`/`SIGINT`: stop accepting, finish in-flight requests, exit within 10 s.

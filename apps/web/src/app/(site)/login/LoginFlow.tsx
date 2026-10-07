@@ -98,6 +98,11 @@ export function LoginFlow() {
         title: first ? `أهلًا ${first}` : 'أهلًا بيك في سابق',
         description: 'سجلت دخولك.',
       });
+      // First login: name (and student details) first; /welcome then continues to `after`.
+      if (user.needsProfile) {
+        router.push('/welcome');
+        return;
+      }
       const target = demo.after ?? (user.role === 'mentor' ? '/become-mentor' : '/sessions');
       demo.setAfter(null);
       router.push(target);

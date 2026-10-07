@@ -70,6 +70,8 @@ const KEY = 'sabeq-demo-v1';
 
 interface DemoApi extends DemoState {
   signIn: (name: string) => void;
+  /** Drops the demo user too, so signing out never leaves the booking demo "signed in". */
+  forgetUser: () => void;
   toggleSaved: (mentorId: number) => void;
   addSession: (s: DemoSession) => void;
   updateSession: (id: string, patch: Partial<DemoSession>) => void;
@@ -109,6 +111,7 @@ export function DemoStoreProvider({ children }: { children: ReactNode }) {
   }, [state, ready]);
 
   const signIn = useCallback((name: string) => setState((s) => ({ ...s, user: { name } })), []);
+  const forgetUser = useCallback(() => setState((s) => ({ ...s, user: null, after: null })), []);
   const toggleSaved = useCallback(
     (mentorId: number) =>
       setState((s) => ({ ...s, saved: { ...s.saved, [mentorId]: !s.saved[mentorId] } })),
@@ -134,6 +137,7 @@ export function DemoStoreProvider({ children }: { children: ReactNode }) {
       ...state,
       user: auth.user ? { name: auth.user.fullName ?? '' } : state.user,
       signIn,
+      forgetUser,
       toggleSaved,
       addSession,
       updateSession,
@@ -148,6 +152,7 @@ export function DemoStoreProvider({ children }: { children: ReactNode }) {
       auth.user,
       auth.status,
       signIn,
+      forgetUser,
       toggleSaved,
       addSession,
       updateSession,

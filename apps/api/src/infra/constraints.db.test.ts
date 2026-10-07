@@ -215,12 +215,14 @@ describe('value rules', () => {
   it('phones must be E.164 and unique', async () => {
     expect(
       await rejection(
-        db.user.create({ data: { phone: '01012345678', role: 'student', fullName: 'x' } }),
+        db.user.create({ data: { phone: '01012345678', role: 'student', fullName: 'Test User' } }),
       ),
     ).toMatch(/users_phone_e164|23514/);
     expect(
       await rejection(
-        db.user.create({ data: { phone: '+201099900001', role: 'student', fullName: 'x' } }),
+        db.user.create({
+          data: { phone: '+201099900001', role: 'student', fullName: 'Test User' },
+        }),
       ),
     ).toMatch(/P2002|Unique constraint/);
   });

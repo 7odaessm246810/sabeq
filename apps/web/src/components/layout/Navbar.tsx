@@ -62,7 +62,7 @@ export function Navbar() {
                     <span className="sb-badge sb-badge--primary">{upcomingCount}</span>
                   ) : null}
                 </Link>
-                <Link href="/sessions" className="nav-me" aria-label="حسابي">
+                <Link href="/account" className="nav-me" aria-label="حسابي">
                   <Avatar name={user.name || 'حسابي'} size="sm" tone={2} />
                 </Link>
               </>
