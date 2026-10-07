@@ -9,3 +9,7 @@ coverage
 apps/api/src/generated/
 # Written by Next.js
 next-env.d.ts
+# Third-party agent skills (installed by `neon skills`)
+.agents/
+.claude/skills/
+skills-lock.json

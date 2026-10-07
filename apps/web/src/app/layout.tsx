@@ -9,6 +9,7 @@ import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import { Footer } from '@/components/layout/Footer';
 import { Navbar } from '@/components/layout/Navbar';
+import { AuthProvider } from '@/lib/auth';
 import { DemoStoreProvider } from '@/lib/demo-store';
 import { fontVariables } from '@/lib/fonts';
 import { SITE } from '@/lib/site';
@@ -40,14 +41,16 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="ar" dir="rtl" className={fontVariables}>
       <body className="sb">
         <ToastProvider>
-          <DemoStoreProvider>
-            <a className="skip-link" href="#main">
-              انتقل للمحتوى
-            </a>
-            <Navbar />
-            <main id="main">{children}</main>
-            <Footer />
-          </DemoStoreProvider>
+          <AuthProvider>
+            <DemoStoreProvider>
+              <a className="skip-link" href="#main">
+                انتقل للمحتوى
+              </a>
+              <Navbar />
+              <main id="main">{children}</main>
+              <Footer />
+            </DemoStoreProvider>
+          </AuthProvider>
         </ToastProvider>
       </body>
     </html>

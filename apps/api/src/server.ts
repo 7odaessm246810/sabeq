@@ -7,6 +7,7 @@ import { ConfigError, loadConfig, type Config } from './config/env.js';
 import { createLogger } from './core/logger.js';
 import { createDb, dbReadiness } from './infra/db.js';
 import { createRedis, redisReadiness } from './infra/redis.js';
+import { createAuthModule } from './modules/auth/index.js';
 
 const SHUTDOWN_GRACE_MS = 10_000;
 
@@ -29,10 +30,15 @@ function main() {
   const db = createDb({ url: config.databaseUrl, poolMax: config.databasePoolMax, logger });
   const redis = createRedis(config.redisUrl, logger);
 
+  const auth = createAuthModule({ config, db, redis, logger });
+
   const app = createApp({
     config,
     logger,
     readinessChecks: [dbReadiness(db, logger), redisReadiness(redis)],
+    mountV1: (v1) => {
+      auth.mount(v1);
+    },
   });
   const server = app.listen(config.port, () => {
     logger.info({ port: config.port }, 'sabeq-api listening');

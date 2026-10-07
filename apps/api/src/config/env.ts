@@ -34,6 +34,10 @@ const schema = z
     /** Connections per API container (N containers × this ≤ what the database / pooler allows). */
     DATABASE_POOL_MAX: z.coerce.number().int().min(1).max(100).default(10),
     REDIS_URL: z.url({ protocol: /^rediss?$/, message: 'must be a redis:// or rediss:// URL' }),
+    /** HMAC key for OTP codes at rest (Redis). One per environment, never shared. */
+    AUTH_OTP_SECRET: z.string().min(32, 'must be at least 32 characters'),
+    /** Where OTP codes go. `console` logs them — never allowed in production. */
+    SMS_PROVIDER: z.enum(['console']).default('console'),
     API_BODY_LIMIT: z
       .string()
       .regex(/^\d+(kb|mb)$/, 'e.g. 100kb or 1mb')
@@ -49,6 +53,13 @@ const schema = z
             message: `production origins must use https (got ${origin})`,
           });
         }
+      }
+      if (env.SMS_PROVIDER === 'console') {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['SMS_PROVIDER'],
+          message: 'production needs a real SMS provider (console only logs codes)',
+        });
       }
       if (env.NODE_ENV !== 'production') {
         ctx.addIssue({
@@ -72,6 +83,12 @@ export interface Config {
   databaseUrl: string;
   databasePoolMax: number;
   redisUrl: string;
+  auth: {
+    otpSecret: string;
+    smsProvider: 'console';
+    /** Secure + `__Host-` cookies everywhere except plain-http local development. */
+    secureCookies: boolean;
+  };
 }
 
 export class ConfigError extends Error {
@@ -100,5 +117,10 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     databaseUrl: e.DATABASE_URL,
     databasePoolMax: e.DATABASE_POOL_MAX,
     redisUrl: e.REDIS_URL,
+    auth: {
+      otpSecret: e.AUTH_OTP_SECRET,
+      smsProvider: e.SMS_PROVIDER,
+      secureCookies: e.APP_ENV !== 'local',
+    },
   };
 }

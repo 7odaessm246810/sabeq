@@ -15,6 +15,7 @@ function makeApp(overrides: Partial<AppDeps> = {}, env: NodeJS.ProcessEnv = {}) 
     NODE_ENV: 'test',
     DATABASE_URL: 'postgresql://u:p@localhost:5432/db',
     REDIS_URL: 'redis://localhost:6379',
+    AUTH_OTP_SECRET: 'test-secret-test-secret-test-secret-00',
     ...env,
   });
   return createApp({

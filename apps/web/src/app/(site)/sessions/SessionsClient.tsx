@@ -111,7 +111,10 @@ export function SessionsClient() {
         <div className="ph-row">
           <div>
             <h1 className="sb-h1">جلساتي</h1>
-            <p className="sb-lead">أهلًا {user.name.split(' ')[0]}. كل حجوزاتك في مكان واحد.</p>
+            <p className="sb-lead">
+              {user.name ? `أهلًا ${user.name.split(' ')[0]}.` : 'أهلًا بيك.'} كل حجوزاتك في مكان
+              واحد.
+            </p>
           </div>
           <Link className="sb-btn sb-btn--primary" href="/mentors">
             احجز جلسة جديدة

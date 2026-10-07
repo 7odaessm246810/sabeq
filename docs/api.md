@@ -76,6 +76,22 @@ An invalid value stops the process with a list of every problem.
 - `GET /health/live` → `200 {status:"ok"}` while the process runs (restart if not).
 - `GET /health/ready` → `200` when every registered check passes, `503` otherwise. Checks time out after 2 s. PostgreSQL and Redis checks are registered in Phase 06.
 
+## Authentication (Phase 07)
+
+Phone + OTP (ADR-0005), opaque session cookies (ADR-0015). Module: `src/modules/auth`.
+
+| Endpoint (website: `/api/v1/auth`, admin app: `/api/v1/admin/auth`) | Body                     | Result                                                                                       |
+| ------------------------------------------------------------------- | ------------------------ | -------------------------------------------------------------------------------------------- |
+| `POST otp/request`                                                  | `{ phone }`              | `202 { expiresInSeconds, resendAfterSeconds, devCode? }` — `devCode` only in `APP_ENV=local` |
+| `POST otp/verify`                                                   | `{ phone, code, role? }` | `200 { user, isNew }` + session cookie                                                       |
+| `GET me`                                                            | —                        | `200 { user, session }` / `401`                                                              |
+| `POST logout` · `POST logout-all`                                   | —                        | `200`, cookie cleared                                                                        |
+
+- **OTP:** 6 digits, 5 minutes, single use, 5 wrong guesses burn it. Stored as an HMAC in Redis. Throttled: 30 s between sends, 10 per number per day, 30 sends and 60 checks per IP per hour (`429` + `Retry-After`).
+- **Accounts:** a new number on the website becomes a student (with a student profile) or a mentor applicant, as picked on the login screen. An existing account keeps its role. Admin numbers cannot log into the website; admins log in only through `/admin/auth` and only if created with `pnpm admin:create` (no SMS is sent to other numbers there, same answer either way).
+- **Protecting routes:** `router.use(auth.authenticate('web' | 'admin'))`, then `requireAuth()`, `requireRole('student')`, `requireAdmin('finance')` (`super_admin` passes every admin check). No session → `401`; wrong role → `403`.
+- **Revocation:** `sessions.revokeAll(userId)` on suspension / role change — takes effect immediately (Redis cache entry deleted).
+
 ## Operations
 
 - Graceful shutdown on `SIGTERM`/`SIGINT`: stop accepting, finish in-flight requests, exit within 10 s.
@@ -85,7 +101,8 @@ An invalid value stops the process with a list of every problem.
 ## Known limits (tracked)
 
 - Rate limits use an in-memory store — exact per instance. **Phase 21** switches to Redis so the budget is shared across containers.
-- No authentication yet — **Phase 07**.
+- OTP codes are logged (console SMS) — a real SMS provider is required before production; config refuses `SMS_PROVIDER=console` there.
+- Admin second factor (TOTP) — **Phase 21**.
 
 ## Tests
 

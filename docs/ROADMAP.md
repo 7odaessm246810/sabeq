@@ -54,8 +54,8 @@ sabeq/
 | 03  | Frontend Foundation (Next.js, fonts, RTL, layout, SEO, error/loading)             | ✅ done                      |
 | 04  | Frontend Design System Implementation (components + كل الصفحات بـ mock data)      | ✅ done                      |
 | 05  | Backend Foundation (Express 5, errors, logging, validation, `/api/v1`, health)    | ✅ done                      |
-| 06  | Database Architecture — PostgreSQL + Prisma (ERD أولًا)                           | 🔍 review                    |
-| 07  | Authentication & Authorization — Phone + OTP، roles: student / mentor / admin     | —                            |
+| 06  | Database Architecture — PostgreSQL + Prisma (ERD أولًا)                           | ✅ done                      |
+| 07  | Authentication & Authorization — Phone + OTP، roles: student / mentor / admin     | 🔍 review                    |
 | 08  | Student Account                                                                   | —                            |
 | 09  | Mentor Onboarding (Draft → Submitted → Under Review → Approved/Rejected)          | —                            |
 | 10  | Admin Verification System + Audit trail                                           | —                            |

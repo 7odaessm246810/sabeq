@@ -4,6 +4,8 @@
  * Demo state that the prototype kept in a global `state` object: the signed-in user, booked sessions
  * and saved mentors. Persisted in sessionStorage so a reload keeps the demo flow.
  * Phases 07 (auth), 08 (student account) and 15 (booking) replace this with the API.
+ * Since Phase 07 the signed-in user comes from the real session (lib/auth.tsx); the demo user is
+ * only a fallback for the booking demo until Phase 15.
  */
 import {
   createContext,
@@ -14,6 +16,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { useAuth } from './auth';
 
 export type SessionStatus = 'upcoming' | 'done' | 'cancelled';
 
@@ -82,6 +85,7 @@ const Ctx = createContext<DemoApi | null>(null);
 export function DemoStoreProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<DemoState>(INITIAL);
   const [ready, setReady] = useState(false);
+  const auth = useAuth();
 
   useEffect(() => {
     try {
@@ -128,6 +132,7 @@ export function DemoStoreProvider({ children }: { children: ReactNode }) {
   const value = useMemo<DemoApi>(
     () => ({
       ...state,
+      user: auth.user ? { name: auth.user.fullName ?? '' } : state.user,
       signIn,
       toggleSaved,
       addSession,
@@ -135,9 +140,20 @@ export function DemoStoreProvider({ children }: { children: ReactNode }) {
       setAfter,
       setPre,
       upcomingCount: state.sessions.filter((s) => s.status === 'upcoming').length,
-      ready,
+      ready: ready && auth.status !== 'loading',
     }),
-    [state, ready, signIn, toggleSaved, addSession, updateSession, setAfter, setPre],
+    [
+      state,
+      ready,
+      auth.user,
+      auth.status,
+      signIn,
+      toggleSaved,
+      addSession,
+      updateSession,
+      setAfter,
+      setPre,
+    ],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

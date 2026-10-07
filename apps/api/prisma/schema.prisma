@@ -191,7 +191,8 @@ model User {
   phone           String        @unique @db.VarChar(16)
   role            UserRole
   status          AccountStatus @default(active)
-  fullName        String        @map("full_name") @db.VarChar(120)
+  /// Null until the person fills their profile after the first login (Phase 08).
+  fullName        String?       @map("full_name") @db.VarChar(120)
   email           String?       @unique @db.VarChar(254)
   emailVerifiedAt DateTime?     @map("email_verified_at") @db.Timestamptz
   avatarKey       String?       @map("avatar_key")
@@ -250,7 +251,8 @@ model AuthSession {
   id               String    @id @default(uuid(7)) @db.Uuid
   userId           String    @map("user_id") @db.Uuid
   app              ClientApp
-  refreshTokenHash String    @unique @map("refresh_token_hash") @db.VarChar(128)
+  /// SHA-256 of the opaque session token in the cookie; the token itself is never stored.
+  tokenHash        String    @unique @map("token_hash") @db.VarChar(64)
   userAgent        String?   @map("user_agent") @db.VarChar(400)
   ip               String?   @db.Inet
   createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz

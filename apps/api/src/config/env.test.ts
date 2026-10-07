@@ -4,6 +4,7 @@ import { ConfigError, loadConfig } from './env.js';
 const BASE = {
   DATABASE_URL: 'postgresql://u:p@localhost:5432/db',
   REDIS_URL: 'redis://localhost:6379',
+  AUTH_OTP_SECRET: 'test-secret-test-secret-test-secret-00',
 };
 
 describe('loadConfig', () => {
@@ -50,14 +51,21 @@ describe('loadConfig', () => {
         CORS_ORIGINS: 'http://sabeq.example',
       }),
     ).toThrow(/https[\s\S]*NODE_ENV|NODE_ENV[\s\S]*https/);
-    expect(
+    // Until a real SMS provider exists, production refuses to start rather than log OTP codes.
+    expect(() =>
       loadConfig({
         ...BASE,
         APP_ENV: 'production',
         NODE_ENV: 'production',
         CORS_ORIGINS: 'https://sabeq.example',
-      }).appEnv,
-    ).toBe('production');
+      }),
+    ).toThrow(/SMS_PROVIDER/);
+  });
+
+  it('requires a long OTP secret and uses secure cookies outside local', () => {
+    expect(() => loadConfig({ ...BASE, AUTH_OTP_SECRET: 'short' })).toThrow(/AUTH_OTP_SECRET/);
+    expect(loadConfig(BASE).auth.secureCookies).toBe(false);
+    expect(loadConfig({ ...BASE, APP_ENV: 'staging' }).auth.secureCookies).toBe(true);
   });
 
   it('requires the database and Redis URLs', () => {

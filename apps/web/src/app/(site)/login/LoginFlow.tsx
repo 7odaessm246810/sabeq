@@ -4,33 +4,38 @@ import { FieldError, Logo, Segmented, cx, useToast } from '@sabeq/ui';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { ApiError } from '@/lib/api';
+import { useAuth } from '@/lib/auth';
 import { useDemo } from '@/lib/demo-store';
 
 type Role = 'student' | 'mentor';
-const RESEND_SECONDS = 30;
+const EMPTY = ['', '', '', '', '', ''];
+
+const messageOf = (err: unknown, field?: string) => {
+  const e = err instanceof ApiError ? err : null;
+  return (field && e?.fields[field]) || e?.message || 'حصلت مشكلة. جرّب تاني.';
+};
 
 /**
- * Passwordless login: phone → 6-digit OTP (ADR-0005). The demo accepts any 6 digits;
- * Phase 07 connects this to the API (send-otp / verify-otp).
+ * Passwordless login: phone → 6-digit OTP (ADR-0005), against the API (Phase 07).
+ * The role picked here only matters for a new number; an existing account keeps its role.
  */
 export function LoginFlow() {
   const router = useRouter();
   const toast = useToast();
   const demo = useDemo();
+  const auth = useAuth();
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [role, setRole] = useState<Role>('student');
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [digits, setDigits] = useState<string[]>(['', '', '', '', '', '']);
-  const [seconds, setSeconds] = useState(RESEND_SECONDS);
+  const [digits, setDigits] = useState<string[]>(EMPTY);
+  const [codeError, setCodeError] = useState<string | null>(null);
+  /** Shown on the page in local development only (the API returns it there). */
+  const [devCode, setDevCode] = useState<string | null>(null);
+  const [seconds, setSeconds] = useState(0);
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
-  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
-
-  useEffect(() => {
-    const pending = timers.current;
-    return () => pending.forEach(clearTimeout);
-  }, []);
 
   // Resend countdown on the OTP step.
   useEffect(() => {
@@ -43,39 +48,65 @@ export function LoginFlow() {
     if (step === 'otp') inputs.current[0]?.focus();
   }, [step]);
 
-  function sendCode() {
+  const fullPhone = () => `+20${phone.replace(/\D/g, '')}`;
+
+  async function sendCode() {
+    if (busy) return;
     if (phone.replace(/\D/g, '').length < 10) {
       setPhoneError('الرقم ناقص. اكتب 10 أرقام بعد +20.');
       return;
     }
     setBusy(true);
-    timers.current.push(
-      setTimeout(() => {
-        setBusy(false);
-        setDigits(['', '', '', '', '', '']);
-        setSeconds(RESEND_SECONDS);
-        setStep('otp');
-      }, 700),
-    );
+    try {
+      const sent = await auth.requestCode(fullPhone());
+      setDevCode(sent.devCode ?? null);
+      setDigits(EMPTY);
+      setCodeError(null);
+      setSeconds(sent.resendAfterSeconds);
+      setStep('otp');
+    } catch (err) {
+      setPhoneError(messageOf(err, 'phone'));
+    } finally {
+      setBusy(false);
+    }
   }
 
-  function verify(code: string[]) {
-    if (code.some((d) => !d)) return;
+  async function resend() {
+    try {
+      const sent = await auth.requestCode(fullPhone());
+      setDevCode(sent.devCode ?? null);
+      setSeconds(sent.resendAfterSeconds);
+      setDigits(EMPTY);
+      setCodeError(null);
+      inputs.current[0]?.focus();
+      toast({ kind: 'info', title: 'بعتنالك كود جديد' });
+    } catch (err) {
+      if (err instanceof ApiError && err.retryAfter) setSeconds(err.retryAfter);
+      toast({ kind: 'error', title: messageOf(err) });
+    }
+  }
+
+  async function verify(code: string[]) {
+    if (code.some((d) => !d) || busy) return;
     setBusy(true);
-    timers.current.push(
-      setTimeout(() => {
-        const name = role === 'mentor' ? 'أحمد محمد' : 'ملك أشرف';
-        demo.signIn(name);
-        toast({
-          kind: 'success',
-          title: `أهلًا ${name.split(' ')[0]}`,
-          description: 'سجلت دخولك.',
-        });
-        const target = demo.after ?? (role === 'mentor' ? '/become-mentor' : '/sessions');
-        demo.setAfter(null);
-        router.push(target);
-      }, 600),
-    );
+    setCodeError(null);
+    try {
+      const { user } = await auth.verifyCode(fullPhone(), code.join(''), role);
+      const first = user.fullName?.split(' ')[0];
+      toast({
+        kind: 'success',
+        title: first ? `أهلًا ${first}` : 'أهلًا بيك في سابق',
+        description: 'سجلت دخولك.',
+      });
+      const target = demo.after ?? (user.role === 'mentor' ? '/become-mentor' : '/sessions');
+      demo.setAfter(null);
+      router.push(target);
+    } catch (err) {
+      setCodeError(messageOf(err, 'code'));
+      setDigits(EMPTY);
+      inputs.current[0]?.focus();
+      setBusy(false);
+    }
   }
 
   function setDigit(i: number, raw: string) {
@@ -86,14 +117,15 @@ export function LoginFlow() {
       const filled = [...next, ...Array<string>(6 - next.length).fill('')];
       setDigits(filled);
       inputs.current[Math.min(next.length, 5)]?.focus();
-      verify(filled);
+      void verify(filled);
       return;
     }
     const next = [...digits];
     next[i] = v;
     setDigits(next);
+    if (v) setCodeError(null);
     if (v && i < 5) inputs.current[i + 1]?.focus();
-    verify(next);
+    void verify(next);
   }
 
   return (
@@ -142,7 +174,7 @@ export function LoginFlow() {
                       setPhoneError(null);
                     }}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') sendCode();
+                      if (e.key === 'Enter') void sendCode();
                     }}
                   />
                 </div>
@@ -152,7 +184,7 @@ export function LoginFlow() {
                 type="button"
                 className="sb-btn sb-btn--primary sb-btn--lg sb-btn--block"
                 aria-busy={busy}
-                onClick={sendCode}
+                onClick={() => void sendCode()}
               >
                 ابعتلي الكود
               </button>
@@ -176,7 +208,13 @@ export function LoginFlow() {
                   غيّر الرقم
                 </button>
               </p>
-              <div className="otp" dir="ltr" role="group" aria-label="كود التحقق">
+              <div
+                className={cx('otp', codeError && 'sb-field--error')}
+                dir="ltr"
+                role="group"
+                aria-label="كود التحقق"
+                aria-describedby={codeError ? 'otp-err' : undefined}
+              >
                 {digits.map((d, i) => (
                   <input
                     key={i}
@@ -188,6 +226,7 @@ export function LoginFlow() {
                     autoComplete={i === 0 ? 'one-time-code' : 'off'}
                     maxLength={i === 0 ? 6 : 1}
                     aria-label={`رقم ${i + 1}`}
+                    aria-invalid={Boolean(codeError)}
                     value={d}
                     onChange={(e) => setDigit(i, e.target.value)}
                     onKeyDown={(e) => {
@@ -196,15 +235,22 @@ export function LoginFlow() {
                   />
                 ))}
               </div>
-              <p className="sb-caption" style={{ textAlign: 'center' }}>
-                للعرض: اكتب أي 6 أرقام.
-              </p>
+              {codeError ? (
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <FieldError id="otp-err">{codeError}</FieldError>
+                </div>
+              ) : null}
+              {devCode ? (
+                <p className="sb-caption" style={{ textAlign: 'center' }}>
+                  للتجربة على جهازك: الكود <span className="sb-num">{devCode}</span>
+                </p>
+              ) : null}
               <button
                 type="button"
                 className="sb-btn sb-btn--primary sb-btn--lg sb-btn--block"
                 disabled={digits.some((x) => !x)}
                 aria-busy={busy}
-                onClick={() => verify(digits)}
+                onClick={() => void verify(digits)}
               >
                 تأكيد
               </button>
@@ -218,10 +264,7 @@ export function LoginFlow() {
                     type="button"
                     className="sb-btn sb-btn--link"
                     style={{ fontSize: 13 }}
-                    onClick={() => {
-                      setSeconds(RESEND_SECONDS);
-                      toast({ kind: 'info', title: 'بعتنالك كود جديد' });
-                    }}
+                    onClick={() => void resend()}
                   >
                     ابعت كود جديد
                   </button>

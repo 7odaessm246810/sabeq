@@ -23,7 +23,8 @@
     "docker:prod": "docker compose -f compose.yaml -f compose.prod.yaml up --build -d",
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f --tail=100",
-    "db:remote": "pnpm --filter @sabeq/api db:remote"
+    "db:remote": "pnpm --filter @sabeq/api db:remote",
+    "admin:create": "pnpm --filter @sabeq/api admin:create"
   },
   "devDependencies": {
     "@commitlint/cli": "catalog:",

@@ -18,3 +18,4 @@ Format: `NNNN-short-title.md` with **Context · Decision · Consequences**.
 | [0012](0012-design-source-light-only.md)      | Design handoff is the source of truth; light mode only                       | Accepted                        |
 | [0013](0013-css-architecture.md)              | Tokens + ported sb- design-system CSS in layers; next/font                   | Accepted                        |
 | [0014](0014-deployment-topology.md)           | Next.js apps on Vercel; API as Docker containers (Railway / Render / Fly.io) | Accepted                        |
+| [0015](0015-opaque-session-cookies.md)        | Opaque server-side sessions in httpOnly cookies                              | Accepted                        |

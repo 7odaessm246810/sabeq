@@ -33,6 +33,8 @@ export const DEFAULT_MESSAGES: Record<ApiErrorCode, string> = {
 export class AppError extends Error {
   override name = 'AppError';
   readonly status: number;
+  /** RATE_LIMITED only: sent as `Retry-After` so clients know when to try again. */
+  retryAfterSeconds?: number;
 
   constructor(
     readonly code: ApiErrorCode,
@@ -55,6 +57,11 @@ export const Errors = {
   conflict: (message?: string) => new AppError('CONFLICT', message),
   slotUnavailable: () => new AppError('SLOT_UNAVAILABLE'),
   paymentFailed: (message?: string) => new AppError('PAYMENT_FAILED', message),
-  rateLimited: () => new AppError('RATE_LIMITED'),
+  rateLimited: (message?: string, retryAfterSeconds?: number) => {
+    const err = new AppError('RATE_LIMITED', message);
+    if (retryAfterSeconds !== undefined)
+      err.retryAfterSeconds = Math.max(1, Math.ceil(retryAfterSeconds));
+    return err;
+  },
   internal: (cause?: unknown) => new AppError('INTERNAL', undefined, undefined, { cause }),
 };

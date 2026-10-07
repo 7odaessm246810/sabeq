@@ -63,7 +63,7 @@ export function Navbar() {
                   ) : null}
                 </Link>
                 <Link href="/sessions" className="nav-me" aria-label="حسابي">
-                  <Avatar name={user.name} size="sm" tone={2} />
+                  <Avatar name={user.name || 'حسابي'} size="sm" tone={2} />
                 </Link>
               </>
             ) : (

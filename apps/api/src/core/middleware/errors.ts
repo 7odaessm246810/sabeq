@@ -54,6 +54,6 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   // 413 keeps the HTTP semantics for proxies; the code stays VALIDATION_FAILED for clients.
   const status = (err as BodyParserError)?.type === 'entity.too.large' ? 413 : appErr.status;
   if (appErr.code === 'RATE_LIMITED' && !res.getHeader('Retry-After'))
-    res.setHeader('Retry-After', '60');
+    res.setHeader('Retry-After', String(appErr.retryAfterSeconds ?? 60));
   res.status(status).json(body);
 };

@@ -210,6 +210,9 @@ importers:
       '@sabeq/types':
         specifier: workspace:*
         version: link:../../packages/types
+      '@sabeq/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       cors:
         specifier: 'catalog:'
         version: 2.8.6
