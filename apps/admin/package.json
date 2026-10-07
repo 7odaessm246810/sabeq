@@ -18,7 +18,8 @@
     "@sabeq/ui": "workspace:*",
     "next": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "@sabeq/utils": "workspace:*"
   },
   "devDependencies": {
     "@sabeq/config": "workspace:*",

@@ -173,6 +173,9 @@ importers:
       '@sabeq/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@sabeq/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       next:
         specifier: 'catalog:'
         version: 16.3.8(@babel/core@7.29.7)(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)

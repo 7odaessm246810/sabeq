@@ -125,6 +125,23 @@ Applicant side of onboarding under `/api/v1/mentor/application` (module `src/mod
 - `GET /api/v1/catalog/universities` — universities with their faculties (public, cached 5 min), used by the form.
 - Known limit: an upload over 10 MB gets `413` from the API, but the Next.js proxy reports it as `500` because the API stops reading early. The web form blocks such files before sending.
 
+## Admin verification (Phase 10)
+
+Admin app only (admin session cookie), module `src/modules/verification`. Reviewers: `verifier` and `super_admin`.
+
+| Endpoint                                       | Body                 | Result                                                                            |
+| ---------------------------------------------- | -------------------- | --------------------------------------------------------------------------------- |
+| `GET /admin/applications?status=&page=`        | —                    | queue (oldest submission first), `counts` per status, `page`; drafts never listed |
+| `GET /admin/applications/:id`                  | —                    | application with university / faculty names, documents, history                   |
+| `POST /admin/applications/:id/start`           | —                    | `submitted → under_review` (`409` otherwise)                                      |
+| `POST /admin/applications/:id/decision`        | `{ decision: approve | reject                                                                            | request_changes, note? }` | note required unless approving; `409` if already decided |
+| `GET /admin/applications/:id/documents/:docId` | —                    | decrypted file, `Cache-Control: no-store`, strict CSP; **every view audited**     |
+| `GET /admin/audit?entityType=&action=&page=`   | —                    | audit trail, newest first (`super_admin` only)                                    |
+
+- **Approve** creates the mentor profile in the same transaction: kind, faculty, major, graduation year, base price, listed; three offerings (consultation 45 min video, comparison 60 min video, quick call 20 min audio); topics split from the free text. Working hours come in Phase 14.
+- Every decision writes an in-app notification for the applicant (shown in Phase 19) and an audit entry with before/after status and the note.
+- Decisions are conditional updates: of two reviewers deciding at once, one gets `409`.
+
 ## Operations
 
 - Graceful shutdown on `SIGTERM`/`SIGINT`: stop accepting, finish in-flight requests, exit within 10 s.
@@ -136,6 +153,7 @@ Applicant side of onboarding under `/api/v1/mentor/application` (module `src/mod
 - Rate limits use an in-memory store — exact per instance. **Phase 21** switches to Redis so the budget is shared across containers.
 - OTP codes are logged (console SMS) — a real SMS provider is required before production; config refuses `SMS_PROVIDER=console` there.
 - Admin second factor (TOTP) — **Phase 21**.
+- **Client IP behind the Next.js rewrite — must be fixed before deploying (Phase 21).** Next's rewrite proxy does not add `X-Forwarded-For`, and it passes a client-sent one through unchanged. With `API_TRUST_PROXY=1` the API therefore sees either the Next server's IP (every visitor looks the same to the per-IP limits) or a value the client chose (per-IP OTP limits can be dodged; per-phone limits still hold). Fix: the Next apps forward the platform-verified client IP in a dedicated header signed with a shared secret, and the API trusts only that.
 
 ## Tests
 

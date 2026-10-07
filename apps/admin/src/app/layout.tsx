@@ -3,7 +3,9 @@ import '@sabeq/ui/styles.css';
 import './admin.css';
 
 import type { Metadata, Viewport } from 'next';
+import { ToastProvider } from '@sabeq/ui';
 import type { ReactNode } from 'react';
+import { AuthProvider } from '@/lib/auth';
 import { fontVariables } from '@/lib/fonts';
 
 export const metadata: Metadata = {
@@ -19,7 +21,11 @@ export const viewport: Viewport = {
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ar" dir="rtl" className={fontVariables}>
-      <body className="sb">{children}</body>
+      <body className="sb">
+        <ToastProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ToastProvider>
+      </body>
     </html>
   );
 }

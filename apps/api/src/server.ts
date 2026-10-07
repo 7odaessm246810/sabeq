@@ -13,6 +13,7 @@ import { createAccountModule } from './modules/account/index.js';
 import { createAuthModule } from './modules/auth/index.js';
 import { catalogRouter } from './modules/catalog/catalog.routes.js';
 import { createMentorApplicationModule } from './modules/mentor-application/index.js';
+import { createVerificationModule } from './modules/verification/index.js';
 
 const SHUTDOWN_GRACE_MS = 10_000;
 
@@ -44,6 +45,7 @@ function main() {
   const auth = createAuthModule({ config, db, redis, logger });
   const account = createAccountModule({ db, auth });
   const mentorApplication = createMentorApplicationModule({ db, store, crypto, auth });
+  const verification = createVerificationModule({ db, store, crypto, auth });
 
   const app = createApp({
     config,
@@ -54,6 +56,7 @@ function main() {
       account.mount(v1);
       v1.use('/catalog', catalogRouter({ db }));
       mentorApplication.mount(v1);
+      verification.mount(v1);
     },
   });
   const server = app.listen(config.port, () => {
