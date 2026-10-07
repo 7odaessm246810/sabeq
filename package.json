@@ -22,7 +22,8 @@
     "docker:infra": "docker compose up -d postgres redis",
     "docker:prod": "docker compose -f compose.yaml -f compose.prod.yaml up --build -d",
     "docker:down": "docker compose down",
-    "docker:logs": "docker compose logs -f --tail=100"
+    "docker:logs": "docker compose logs -f --tail=100",
+    "db:remote": "pnpm --filter @sabeq/api db:remote"
   },
   "devDependencies": {
     "@commitlint/cli": "catalog:",
