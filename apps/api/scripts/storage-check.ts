@@ -26,7 +26,9 @@ const accessKeyId = await ask('Access Key ID');
 const secretAccessKey = await ask('Secret Access Key');
 rl.close();
 
-if (!endpoint.startsWith('https://') || !accessKeyId || !secretAccessKey) {
+// Plain http only for a gateway on this machine (trying the script against Docker).
+const local = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/?$/.test(endpoint);
+if ((!endpoint.startsWith('https://') && !local) || !accessKeyId || !secretAccessKey) {
   console.error('\n✗ محتاج الرابط (https://…) والمفتاحين.');
   process.exit(1);
 }
@@ -36,7 +38,8 @@ base.pathname = '/';
 
 const store = createObjectStore({
   endpoint: base.toString().replace(/\/$/, ''),
-  region: 'auto',
+  // R2 signs with "auto"; local gateways expect a real AWS region.
+  region: local ? 'us-east-1' : 'auto',
   privateBucket: bucket,
   accessKeyId,
   secretAccessKey,
@@ -52,10 +55,27 @@ const step = async (label: string, fn: () => Promise<void>) => {
     await fn();
     console.log(`✓ ${label}`);
   } catch (err) {
-    const e = err as { name?: string; message?: string; $metadata?: { httpStatusCode?: number } };
-    console.error(
-      `✗ ${label}: ${e.name ?? 'Error'} ${e.$metadata?.httpStatusCode ?? ''} ${e.message ?? ''}`,
-    );
+    const e = err as {
+      name?: string;
+      code?: string;
+      message?: string;
+      $metadata?: { httpStatusCode?: number };
+    };
+    const status = e.$metadata?.httpStatusCode;
+    // HEAD requests carry no error body, so the status is often all there is to go on.
+    const hint =
+      status === 403
+        ? 'المفاتيح غلط، أو التوكن ملوش صلاحية Object Read & Write على الـ bucket ده.'
+        : status === 404
+          ? 'الـ bucket مش موجود بالاسم ده (الاسم حساس للحروف).'
+          : status === 400
+            ? 'الرابط أو الـ region مش مظبوط. الرابط شكله https://<account-id>.r2.cloudflarestorage.com'
+            : e.code === 'ENOTFOUND' || e.code === 'ECONNREFUSED'
+              ? 'الرابط مش بيوصل لسيرفر. راجع الرابط والإنترنت.'
+              : '';
+    console.error(`✗ ${label}`);
+    console.error(`  ${[e.name, status, e.code].filter(Boolean).join(' · ')}`);
+    if (hint) console.error(`  ← ${hint}`);
     process.exit(1);
   }
 };
