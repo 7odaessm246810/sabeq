@@ -2,6 +2,7 @@ import { type Router } from 'express';
 import { pino } from 'pino';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
+import { TEST_ENV } from './testing/env.js';
 import { z } from 'zod';
 import { createApp, type AppDeps } from './app.js';
 import { loadConfig } from './config/env.js';
@@ -12,10 +13,9 @@ const silent = pino({ level: 'silent' });
 
 function makeApp(overrides: Partial<AppDeps> = {}, env: NodeJS.ProcessEnv = {}) {
   const config = loadConfig({
-    NODE_ENV: 'test',
+    ...TEST_ENV,
     DATABASE_URL: 'postgresql://u:p@localhost:5432/db',
     REDIS_URL: 'redis://localhost:6379',
-    AUTH_OTP_SECRET: 'test-secret-test-secret-test-secret-00',
     ...env,
   });
   return createApp({

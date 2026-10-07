@@ -6,9 +6,13 @@ import { createApp } from './app.js';
 import { ConfigError, loadConfig, type Config } from './config/env.js';
 import { createLogger } from './core/logger.js';
 import { createDb, dbReadiness } from './infra/db.js';
+import { createDocumentCrypto } from './infra/document-crypto.js';
 import { createRedis, redisReadiness } from './infra/redis.js';
+import { createObjectStore } from './infra/storage.js';
 import { createAccountModule } from './modules/account/index.js';
 import { createAuthModule } from './modules/auth/index.js';
+import { catalogRouter } from './modules/catalog/catalog.routes.js';
+import { createMentorApplicationModule } from './modules/mentor-application/index.js';
 
 const SHUTDOWN_GRACE_MS = 10_000;
 
@@ -30,17 +34,26 @@ function main() {
   const logger = createLogger(config);
   const db = createDb({ url: config.databaseUrl, poolMax: config.databasePoolMax, logger });
   const redis = createRedis(config.redisUrl, logger);
+  const store = createObjectStore(config.storage);
+  const crypto = createDocumentCrypto(config.documentKeys);
+  if (config.appEnv === 'local') {
+    // The local S3 gateway starts empty; hosted buckets are created with the infrastructure.
+    store.ensureBucket().catch((err: unknown) => logger.error({ err }, 'could not create bucket'));
+  }
 
   const auth = createAuthModule({ config, db, redis, logger });
   const account = createAccountModule({ db, auth });
+  const mentorApplication = createMentorApplicationModule({ db, store, crypto, auth });
 
   const app = createApp({
     config,
     logger,
-    readinessChecks: [dbReadiness(db, logger), redisReadiness(redis)],
+    readinessChecks: [dbReadiness(db, logger), redisReadiness(redis), store.readiness()],
     mountV1: (v1) => {
       auth.mount(v1);
       account.mount(v1);
+      v1.use('/catalog', catalogRouter({ db }));
+      mentorApplication.mount(v1);
     },
   });
   const server = app.listen(config.port, () => {

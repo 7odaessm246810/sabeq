@@ -26,7 +26,10 @@ export function LoginFlow() {
   const demo = useDemo();
   const auth = useAuth();
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
-  const [role, setRole] = useState<Role>('student');
+  // Coming from "become a mentor" pre-selects the mentor account type.
+  const [role, setRole] = useState<Role>(() =>
+    demo.after?.startsWith('/become-mentor') ? 'mentor' : 'student',
+  );
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -99,7 +102,8 @@ export function LoginFlow() {
         description: 'سجلت دخولك.',
       });
       // First login: name (and student details) first; /welcome then continues to `after`.
-      if (user.needsProfile) {
+      // Mentor applicants give their name in the application's first step instead.
+      if (user.needsProfile && user.role === 'student') {
         router.push('/welcome');
         return;
       }

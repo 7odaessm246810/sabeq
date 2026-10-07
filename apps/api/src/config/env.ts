@@ -38,12 +38,55 @@ const schema = z
     AUTH_OTP_SECRET: z.string().min(32, 'must be at least 32 characters'),
     /** Where OTP codes go. `console` logs them — never allowed in production. */
     SMS_PROVIDER: z.enum(['console']).default('console'),
+    /** S3-compatible object storage (AWS S3, Cloudflare R2, or the local gateway in Docker). */
+    STORAGE_ENDPOINT: z.url().optional(),
+    STORAGE_REGION: z.string().min(1).default('auto'),
+    STORAGE_BUCKET_PRIVATE: z.string().min(3).max(63),
+    STORAGE_ACCESS_KEY_ID: z.string().min(1),
+    STORAGE_SECRET_ACCESS_KEY: z.string().min(1),
+    /** Path-style URLs (`endpoint/bucket/key`) — needed by local gateways; R2 accepts both. */
+    STORAGE_FORCE_PATH_STYLE: z
+      .enum(['true', 'false'])
+      .default('false')
+      .transform((v) => v === 'true'),
+    /**
+     * Keys for encrypting mentor documents (AES-256-GCM), `id:base64key` comma-separated. Old keys stay
+     * listed so existing files can still be read after rotation; new files use the active one.
+     */
+    DOCUMENTS_ENCRYPTION_KEYS: z.string().transform((raw, ctx) => {
+      const keys = new Map<string, Buffer>();
+      for (const part of raw
+        .split(',')
+        .map((p) => p.trim())
+        .filter(Boolean)) {
+        const [id, b64] = part.split(':');
+        const key = b64 ? Buffer.from(b64, 'base64') : Buffer.alloc(0);
+        if (!id || !/^[a-z0-9-]{1,40}$/.test(id) || key.length !== 32) {
+          ctx.addIssue({ code: 'custom', message: 'each entry must be id:base64(32 bytes)' });
+          return z.NEVER;
+        }
+        keys.set(id, key);
+      }
+      if (!keys.size) {
+        ctx.addIssue({ code: 'custom', message: 'at least one key is required' });
+        return z.NEVER;
+      }
+      return keys;
+    }),
+    DOCUMENTS_ENCRYPTION_ACTIVE_KEY: z.string().min(1),
     API_BODY_LIMIT: z
       .string()
       .regex(/^\d+(kb|mb)$/, 'e.g. 100kb or 1mb')
       .default('100kb'),
   })
   .superRefine((env, ctx) => {
+    if (!env.DOCUMENTS_ENCRYPTION_KEYS.has(env.DOCUMENTS_ENCRYPTION_ACTIVE_KEY)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['DOCUMENTS_ENCRYPTION_ACTIVE_KEY'],
+        message: 'must be one of the ids in DOCUMENTS_ENCRYPTION_KEYS',
+      });
+    }
     if (env.APP_ENV === 'production') {
       for (const origin of env.CORS_ORIGINS) {
         if (!origin.startsWith('https://')) {
@@ -83,6 +126,15 @@ export interface Config {
   databaseUrl: string;
   databasePoolMax: number;
   redisUrl: string;
+  storage: {
+    endpoint: string | undefined;
+    region: string;
+    privateBucket: string;
+    accessKeyId: string;
+    secretAccessKey: string;
+    forcePathStyle: boolean;
+  };
+  documentKeys: { active: string; keys: ReadonlyMap<string, Buffer> };
   auth: {
     otpSecret: string;
     smsProvider: 'console';
@@ -117,6 +169,15 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     databaseUrl: e.DATABASE_URL,
     databasePoolMax: e.DATABASE_POOL_MAX,
     redisUrl: e.REDIS_URL,
+    storage: {
+      endpoint: e.STORAGE_ENDPOINT,
+      region: e.STORAGE_REGION,
+      privateBucket: e.STORAGE_BUCKET_PRIVATE,
+      accessKeyId: e.STORAGE_ACCESS_KEY_ID,
+      secretAccessKey: e.STORAGE_SECRET_ACCESS_KEY,
+      forcePathStyle: e.STORAGE_FORCE_PATH_STYLE,
+    },
+    documentKeys: { active: e.DOCUMENTS_ENCRYPTION_ACTIVE_KEY, keys: e.DOCUMENTS_ENCRYPTION_KEYS },
     auth: {
       otpSecret: e.AUTH_OTP_SECRET,
       smsProvider: e.SMS_PROVIDER,

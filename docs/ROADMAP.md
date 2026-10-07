@@ -56,8 +56,8 @@ sabeq/
 | 05  | Backend Foundation (Express 5, errors, logging, validation, `/api/v1`, health)    | ✅ done                      |
 | 06  | Database Architecture — PostgreSQL + Prisma (ERD أولًا)                           | ✅ done                      |
 | 07  | Authentication & Authorization — Phone + OTP، roles: student / mentor / admin     | ✅ done                      |
-| 08  | Student Account                                                                   | 🔍 review                    |
-| 09  | Mentor Onboarding (Draft → Submitted → Under Review → Approved/Rejected)          | —                            |
+| 08  | Student Account                                                                   | ✅ done                      |
+| 09  | Mentor Onboarding (Draft → Submitted → Under Review → Approved/Rejected)          | 🔍 review                    |
 | 10  | Admin Verification System + Audit trail                                           | —                            |
 | 11  | University / Faculty / Department / Specialization                                | —                            |
 | 12  | Mentor Profiles                                                                   | —                            |

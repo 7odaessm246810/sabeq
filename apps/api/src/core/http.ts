@@ -1,3 +1,4 @@
+import { isIP } from 'node:net';
 import type { ApiSuccess, PageMeta } from '@sabeq/types';
 import type { Response } from 'express';
 import { type z } from 'zod';
@@ -27,4 +28,9 @@ export function parseInput<S extends z.ZodType>(schema: S, value: unknown): z.ou
   const result = schema.safeParse(value);
   if (!result.success) throw Errors.validation(zodFields(result.error));
   return result.data;
+}
+
+/** A value safe for an `inet` column: the address when valid, otherwise null. */
+export function inetOrNull(ip: string | undefined | null): string | null {
+  return ip && isIP(ip) ? ip : null;
 }

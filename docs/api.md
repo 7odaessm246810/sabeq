@@ -107,6 +107,24 @@ Website user's own account under `/api/v1/me` (module `src/modules/account`, web
 - The vocabulary (tracks, years, governorates, labels) lives in `@sabeq/types` (`student.ts`), shared with the web app.
 - Integration tests seed the catalog (`scripts/test-db.ts` runs `prisma/seed.ts` without demo mentors).
 
+## Mentor application (Phase 09)
+
+Applicant side of onboarding under `/api/v1/mentor/application` (module `src/modules/mentor-application`, mentor accounts only). Documents: ADR-0016.
+
+| Endpoint               | Body                                                                                                        | Result                                                           |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `GET /`                | —                                                                                                           | `{ application                                                   | null }` (latest, with document metadata) |
+| `PUT /`                | `{ fullName?, kind?, universitySlug?, facultyId?, major?, graduationYear?, basePriceEgp?, days?, topics? }` | draft saved (partial; `null` clears)                             |
+| `POST documents/:slot` | raw file, slot `credential`                                                                                 | `national_id_front`                                              | `201 { document }`; replaces that slot   |
+| `DELETE documents/:id` | —                                                                                                           | removed (row + object)                                           |
+| `POST submit`          | —                                                                                                           | `submitted`, or `400` listing **every** missing field / document |
+
+- States: `draft → submitted → under_review → approved | rejected`, with `changes_requested` sending it back to the applicant (Phase 10 drives the admin transitions). Editing is allowed in `draft` and `changes_requested` only (`409` otherwise). After a rejection a new application can be started; the database allows one open application per person.
+- `kind`: `graduate` (degree certificate), `teaching_assistant` / `professor` (proof of employment). Price 100–500 EGP in steps of 10. Professors may omit the graduation year.
+- Submission is audited (`mentor_application.submit`).
+- `GET /api/v1/catalog/universities` — universities with their faculties (public, cached 5 min), used by the form.
+- Known limit: an upload over 10 MB gets `413` from the API, but the Next.js proxy reports it as `500` because the API stops reading early. The web form blocks such files before sending.
+
 ## Operations
 
 - Graceful shutdown on `SIGTERM`/`SIGINT`: stop accepting, finish in-flight requests, exit within 10 s.

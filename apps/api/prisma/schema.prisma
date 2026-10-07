@@ -209,6 +209,7 @@ model User {
   auditLogs     AuditLog[]
   reportsFiled  Report[]       @relation("ReportReporter")
 
+  mentorApplications   MentorApplication[] @relation("MentorApplications")
   reviewedApplications MentorApplication[] @relation("ApplicationReviewer")
   cancelledBookings    Booking[]           @relation("BookingCancelledBy")
   requestedRefunds     Refund[]            @relation("RefundRequestedBy")
@@ -398,7 +399,6 @@ model Mentor {
   department     Department?              @relation(fields: [departmentId], references: [id])
   specialization Specialization?          @relation(fields: [specializationId], references: [id])
   topics         MentorTopic[]
-  applications   MentorApplication[]
   offerings      SessionOffering[]
   availability   AvailabilityRule[]
   exceptions     AvailabilityException[]
@@ -428,9 +428,11 @@ model MentorTopic {
 }
 
 /// Every status change is also written to audit_logs (Phase 10).
+/// A mentor applicant's request to be listed. Belongs to the user; the Mentor profile is created
+/// from `payload` when an admin approves it (Phase 10).
 model MentorApplication {
   id           String                  @id @default(uuid(7)) @db.Uuid
-  mentorId     String                  @map("mentor_id") @db.Uuid
+  userId       String                  @map("user_id") @db.Uuid
   status       MentorApplicationStatus @default(draft)
   payload      Json                    @db.JsonB
   submittedAt  DateTime?               @map("submitted_at") @db.Timestamptz
@@ -440,11 +442,11 @@ model MentorApplication {
   createdAt    DateTime                @default(now()) @map("created_at") @db.Timestamptz
   updatedAt    DateTime                @updatedAt @map("updated_at") @db.Timestamptz
 
-  mentor    Mentor           @relation(fields: [mentorId], references: [userId], onDelete: Cascade)
+  user      User             @relation("MentorApplications", fields: [userId], references: [id], onDelete: Cascade)
   reviewer  User?            @relation("ApplicationReviewer", fields: [reviewerId], references: [id])
   documents MentorDocument[]
 
-  @@index([mentorId, createdAt(sort: Desc)])
+  @@index([userId, createdAt(sort: Desc)])
   @@index([status, submittedAt])
   @@map("mentor_applications")
 }
@@ -464,7 +466,8 @@ model MentorDocument {
 
   application MentorApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
-  @@index([applicationId])
+  /// One file per kind; uploading again replaces it.
+  @@unique([applicationId, kind])
   @@map("mentor_documents")
 }
 

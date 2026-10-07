@@ -7,6 +7,7 @@
  * Admin: only existing admin accounts, created with `pnpm admin:create` — never by signing up.
  */
 import { Errors, AppError } from '../../core/errors.js';
+import { inetOrNull } from '../../core/http.js';
 import type { ClientApp } from '../../generated/prisma/enums.js';
 import type { Db } from '../../infra/db.js';
 import type { OtpService } from './otp.service.js';
@@ -135,7 +136,7 @@ export function createAuthService(deps: {
             action: 'auth.login',
             entityType: 'user',
             entityId: user.id,
-            ip: meta.ip,
+            ip: inetOrNull(meta.ip),
             requestId: meta.requestId,
           },
         });

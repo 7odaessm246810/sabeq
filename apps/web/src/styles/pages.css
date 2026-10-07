@@ -757,6 +757,7 @@
 }
 .drop {
   display: flex;
+  width: 100%;
   align-items: center;
   gap: 14px;
   padding: 18px;

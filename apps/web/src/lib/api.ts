@@ -22,15 +22,30 @@ const NETWORK_MESSAGE = 'مفيش اتصال بالإنترنت أو السير�
 
 export async function api<T>(
   path: string,
-  init: { method?: 'GET' | 'POST' | 'PATCH' | 'DELETE'; body?: unknown; signal?: AbortSignal } = {},
+  init: {
+    method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+    body?: unknown;
+    /** Sent as the raw request body with its own type (document uploads). */
+    file?: Blob;
+    signal?: AbortSignal;
+  } = {},
 ): Promise<T> {
+  const headers: Record<string, string> = {};
+  let body: BodyInit | null = null;
+  if (init.file) {
+    headers['Content-Type'] = init.file.type || 'application/octet-stream';
+    body = init.file;
+  } else if (init.body !== undefined) {
+    headers['Content-Type'] = 'application/json';
+    body = JSON.stringify(init.body);
+  }
   let res: Response;
   try {
     res = await fetch(`/api/v1${path}`, {
       method: init.method ?? 'GET',
       credentials: 'same-origin',
-      headers: init.body === undefined ? {} : { 'Content-Type': 'application/json' },
-      body: init.body === undefined ? null : JSON.stringify(init.body),
+      headers,
+      body,
       signal: init.signal ?? null,
     });
   } catch (err) {

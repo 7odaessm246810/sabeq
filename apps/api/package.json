@@ -39,7 +39,8 @@
     "@prisma/adapter-pg": "catalog:",
     "pg": "catalog:",
     "ioredis": "catalog:",
-    "@sabeq/utils": "workspace:*"
+    "@sabeq/utils": "workspace:*",
+    "@aws-sdk/client-s3": "catalog:"
   },
   "devDependencies": {
     "@sabeq/config": "workspace:*",

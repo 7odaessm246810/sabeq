@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
+import { TEST_ENV } from '../testing/env.js';
 import { ConfigError, loadConfig } from './env.js';
 
 const BASE = {
+  ...TEST_ENV,
+  NODE_ENV: undefined, // the defaults are what is tested here
   DATABASE_URL: 'postgresql://u:p@localhost:5432/db',
   REDIS_URL: 'redis://localhost:6379',
-  AUTH_OTP_SECRET: 'test-secret-test-secret-test-secret-00',
 };
 
 describe('loadConfig', () => {

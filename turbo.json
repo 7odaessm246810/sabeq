@@ -32,6 +32,7 @@
         "OTP_*",
         "SMS_*",
         "STORAGE_*",
+        "DOCUMENTS_*",
         "PAYMOB_*",
         "EMAIL_*",
         "VIDEO_*",

@@ -47,6 +47,7 @@ catalog:
   pg: 8.23.1
   '@types/pg': 8.23.1
   ioredis: 6.0.0
+  '@aws-sdk/client-s3': 3.1146.0 # private document storage (S3 / R2 / local S3 gateway)
 
 # Exact versions only — no surprise upgrades in production.
 savePrefix: ''

@@ -5,6 +5,7 @@ import { Redis } from 'ioredis';
 import { pino } from 'pino';
 import request from 'supertest';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import { TEST_ENV } from '../../testing/env.js';
 import { createApp } from '../../app.js';
 import { loadConfig } from '../../config/env.js';
 import { createDb } from '../../infra/db.js';
@@ -30,10 +31,9 @@ const sms: SmsSender = {
 };
 
 const config = loadConfig({
-  NODE_ENV: 'test',
+  ...TEST_ENV,
   DATABASE_URL: dbUrl,
   REDIS_URL: redisUrl.toString(),
-  AUTH_OTP_SECRET: 'test-secret-test-secret-test-secret-00',
 });
 const auth = createAuthModule({ config, db, redis, logger: silent, sms });
 const account = createAccountModule({ db, auth });

@@ -47,6 +47,20 @@ services:
       timeout: 3s
       retries: 10
 
+  # S3-compatible gateway for private mentor documents (Phase 09). Hosted environments use R2 / S3.
+  storage:
+    image: versity/versitygw:v1.8.0
+    restart: unless-stopped
+    command: ['posix', '/data']
+    environment:
+      ROOT_ACCESS_KEY: ${STORAGE_ACCESS_KEY_ID:-sabeq-local}
+      ROOT_SECRET_KEY: ${STORAGE_SECRET_ACCESS_KEY:-sabeq-local-secret}
+      VGW_PORT: ':9000'
+    ports:
+      - '127.0.0.1:${STORAGE_HOST_PORT:-9000}:9000'
+    volumes:
+      - storagedata:/data
+
   # One-shot: applies pending Prisma migrations, then exits. The API starts only after it succeeds.
   migrate:
     build:
@@ -79,6 +93,7 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-sabeq}:${POSTGRES_PASSWORD:-sabeq}@postgres:5432/${POSTGRES_DB:-sabeq}
       DATABASE_DIRECT_URL: postgresql://${POSTGRES_USER:-sabeq}:${POSTGRES_PASSWORD:-sabeq}@postgres:5432/${POSTGRES_DB:-sabeq}
       REDIS_URL: redis://redis:6379
+      STORAGE_ENDPOINT: http://storage:9000
       CORS_ORIGINS: http://localhost:3000,http://localhost:3001
     ports:
       - '127.0.0.1:4000:4000'
@@ -89,6 +104,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      storage:
+        condition: service_started
     healthcheck:
       test:
         - CMD
@@ -203,3 +220,4 @@ services:
 volumes:
   pgdata:
   redisdata:
+  storagedata:

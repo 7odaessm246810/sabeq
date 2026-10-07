@@ -9,6 +9,7 @@
 import { createHash, randomBytes } from 'node:crypto';
 import type { Redis } from 'ioredis';
 import type { ClientApp, UserRole, AdminRole } from '../../generated/prisma/enums.js';
+import { inetOrNull } from '../../core/http.js';
 import type { Db } from '../../infra/db.js';
 
 /** What every authenticated request knows about its caller. */
@@ -68,7 +69,7 @@ export function createSessionService({ db, redis }: { db: Db; redis: Redis }): S
           app,
           tokenHash: hashToken(token),
           expiresAt,
-          ip: meta.ip ?? null,
+          ip: inetOrNull(meta.ip),
           userAgent: meta.userAgent?.slice(0, 400) ?? null,
         },
       });
