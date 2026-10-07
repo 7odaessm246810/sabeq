@@ -30,6 +30,10 @@ export function createObjectStore(cfg: Config['storage']): ObjectStore {
     forcePathStyle: cfg.forcePathStyle,
     credentials: { accessKeyId: cfg.accessKeyId, secretAccessKey: cfg.secretAccessKey },
     maxAttempts: 3,
+    // Checksums only where the S3 API requires them: R2 and local gateways reject or ignore some of
+    // the newer default checksum headers. Integrity is covered by AES-GCM and the stored SHA-256.
+    requestChecksumCalculation: 'WHEN_REQUIRED',
+    responseChecksumValidation: 'WHEN_REQUIRED',
   });
   const Bucket = cfg.privateBucket;
 
