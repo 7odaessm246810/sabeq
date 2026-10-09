@@ -22,5 +22,6 @@ export {
 } from './identity';
 export { Logo, LogoMark, type LogoProps } from './Logo';
 export { Modal, type ModalProps } from './Modal';
+export { OrgLogo, type OrgLogoProps } from './OrgLogo';
 export { Segmented, Stepper, Tabs, type TabItem } from './navigation';
 export { ToastProvider, useToast, type ToastInput, type ToastKind } from './Toast';

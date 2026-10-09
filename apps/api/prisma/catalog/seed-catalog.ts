@@ -10,6 +10,8 @@
  * - Departments: public faculties that have a Wikipedia article listing them (catalog/departments.ts).
  * - Cutoffs: Tansik 2026 phase 1.
  * - Prototype placeholders (generic departments, invented "graduate" quotes) are hidden.
+ * - Rows an admin created or edited (`adminEditedAt`) belong to the admin: never updated, hidden or
+ *   re-used here. The research only fills what nobody curated by hand.
  */
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
@@ -234,6 +236,11 @@ export async function seedCatalog(db: Db, logger: Logger) {
       if (prev && !taken)
         await db.university.update({ where: { id: prev.id }, data: { slug: u.slug } });
     }
+    const existing = await db.university.findUnique({
+      where: { slug: u.slug },
+      select: { adminEditedAt: true },
+    });
+    if (existing?.adminEditedAt) continue;
     await db.university.upsert({
       where: { slug: u.slug },
       update: data,
@@ -243,12 +250,17 @@ export async function seedCatalog(db: Db, logger: Logger) {
   const unis = new Map((await db.university.findMany()).map((u) => [u.slug, u]));
   const known = new Set(ALL_UNIVERSITIES.map((u) => u.slug));
   await db.university.updateMany({
-    where: { slug: { notIn: [...known] } },
+    where: { slug: { notIn: [...known] }, adminEditedAt: null },
     data: { isActive: false },
   });
 
   // ---------- faculty kinds ----------
   for (const [i, k] of KINDS.entries()) {
+    const existing = await db.facultyKind.findUnique({
+      where: { slug: k.slug },
+      select: { adminEditedAt: true },
+    });
+    if (existing?.adminEditedAt) continue;
     await db.facultyKind.upsert({
       where: { slug: k.slug },
       update: { ...k, sortOrder: i, isActive: true },
@@ -268,6 +280,7 @@ export async function seedCatalog(db: Db, logger: Logger) {
     kind: string;
     nameAr: string;
     city?: string;
+    governorate?: string;
     sourceUrl: string;
   }
   const wanted: Wanted[] = [];
@@ -287,6 +300,7 @@ export async function seedCatalog(db: Db, logger: Logger) {
       kind: f.kind,
       nameAr: f.nameAr,
       city: f.city,
+      governorate: f.governorate,
       sourceUrl: AZHAR_SOURCES[0] ?? '',
     });
   }
@@ -314,17 +328,22 @@ export async function seedCatalog(db: Db, logger: Logger) {
     let row = await db.faculty.findUnique({
       where: { universityId_nameAr: { universityId: uni.id, nameAr: w.nameAr } },
     });
+    if (row?.adminEditedAt) {
+      keep.add(row.id);
+      continue;
+    }
     // A faculty from the old seed (one per kind) keeps its id when it is the only one of its kind.
     const sameKind = wanted.filter((x) => x.university === w.university && x.kind === w.kind);
     if (!row && sameKind.length === 1) {
       row = await db.faculty.findFirst({
-        where: { universityId: uni.id, kindId, id: { notIn: [...keep] } },
+        where: { universityId: uni.id, kindId, id: { notIn: [...keep] }, adminEditedAt: null },
       });
     }
     const data = {
       kindId,
       nameAr: w.nameAr,
       city: w.city ?? null,
+      governorate: w.governorate ?? null,
       isActive: true,
       sourceUrl: w.sourceUrl,
       verifiedAt: VERIFIED_AT,
@@ -340,13 +359,15 @@ export async function seedCatalog(db: Db, logger: Logger) {
       id: { notIn: [...keep] },
       university: { slug: { in: [...researched, ...Object.values(NAQAAE_UNIVERSITY)] } },
       isActive: true,
+      adminEditedAt: null,
     },
     data: { isActive: false },
   });
 
   // ---------- accreditation ----------
+  // Accreditation, departments and cutoffs: only rows the research still owns.
   const faculties = await db.faculty.findMany({
-    where: { id: { in: [...keep] } },
+    where: { id: { in: [...keep] }, adminEditedAt: null },
     select: {
       id: true,
       nameAr: true,
@@ -448,16 +469,16 @@ export async function seedCatalog(db: Db, logger: Logger) {
     const [slug, nameAr] = key.split('|');
     const faculty = faculties.find((x) => x.university.slug === slug && x.nameAr === nameAr);
     if (!faculty) {
-      logger.warn({ key }, 'departments without faculty');
+      logger.warn({ key }, 'departments without faculty (missing, or curated by an admin)');
       continue;
     }
     const slugs = names.map(researchedSlug);
     for (const [i, name] of names.entries()) {
-      const data = { nameAr: name, isActive: true, sourceUrl: source };
+      // Existing rows keep their name and visibility: an admin may have renamed or hidden them.
       await db.department.upsert({
         where: { facultyId_slug: { facultyId: faculty.id, slug: slugs[i] ?? '' } },
-        update: data,
-        create: { facultyId: faculty.id, slug: slugs[i] ?? '', ...data },
+        update: { sourceUrl: source },
+        create: { facultyId: faculty.id, slug: slugs[i] ?? '', nameAr: name, sourceUrl: source },
       });
       departments++;
     }

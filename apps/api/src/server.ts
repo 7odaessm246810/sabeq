@@ -12,6 +12,7 @@ import { createObjectStore } from './infra/storage.js';
 import { createAccountModule } from './modules/account/index.js';
 import { createAuthModule } from './modules/auth/index.js';
 import { createCatalogModule } from './modules/catalog/index.js';
+import { createMediaModule } from './modules/media/index.js';
 import { createMentorApplicationModule } from './modules/mentor-application/index.js';
 import { createVerificationModule } from './modules/verification/index.js';
 
@@ -44,7 +45,8 @@ function main() {
 
   const auth = createAuthModule({ config, db, redis, logger });
   const account = createAccountModule({ db, auth });
-  const catalog = createCatalogModule({ db, auth });
+  const media = createMediaModule({ store });
+  const catalog = createCatalogModule({ db, auth, logos: media.logos });
   const mentorApplication = createMentorApplicationModule({ db, store, crypto, auth });
   const verification = createVerificationModule({ db, store, crypto, auth });
 
@@ -55,6 +57,7 @@ function main() {
     mountV1: (v1) => {
       auth.mount(v1);
       account.mount(v1);
+      media.mount(v1);
       catalog.mount(v1);
       mentorApplication.mount(v1);
       verification.mount(v1);

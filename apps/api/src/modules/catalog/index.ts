@@ -1,11 +1,16 @@
 import type { Router } from 'express';
 import type { Db } from '../../infra/db.js';
 import type { createAuthModule } from '../auth/index.js';
+import type { LogoStore } from '../media/index.js';
 import { catalogAdminRouter, catalogRouter } from './catalog.routes.js';
 import { createCatalogService } from './catalog.service.js';
 
 /** Catalog (Phase 11): public reads under /api/v1/catalog, curation under /api/v1/admin/catalog. */
-export function createCatalogModule(deps: { db: Db; auth: ReturnType<typeof createAuthModule> }) {
+export function createCatalogModule(deps: {
+  db: Db;
+  auth: ReturnType<typeof createAuthModule>;
+  logos: LogoStore;
+}) {
   const catalog = createCatalogService(deps);
   return {
     catalog,

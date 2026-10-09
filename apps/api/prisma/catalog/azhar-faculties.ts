@@ -115,18 +115,53 @@ const rows: Row[] = [
   ['azhar-girls', 'كلية البنات الأزهرية', 'بنات', 'الفيوم'],
 ];
 
+/** Governorate of each Al-Azhar faculty town (the university itself is listed under Cairo). */
+export const GOVERNORATE_OF: Record<string, string> = {
+  القاهرة: 'القاهرة',
+  دمياط: 'دمياط',
+  أسيوط: 'أسيوط',
+  قنا: 'قنا',
+  'مدينة السادات': 'المنوفية',
+  طنطا: 'الغربية',
+  'تفهنا الأشراف': 'الدقهلية',
+  المنصورة: 'الدقهلية',
+  الزقازيق: 'الشرقية',
+  المنوفية: 'المنوفية',
+  'إيتاي البارود': 'البحيرة',
+  جرجا: 'سوهاج',
+  أسوان: 'أسوان',
+  ديدمون: 'الشرقية',
+  دسوق: 'كفر الشيخ',
+  المنيا: 'المنيا',
+  الشرقية: 'الشرقية',
+  الإسكندرية: 'الإسكندرية',
+  'كفر الشيخ': 'كفر الشيخ',
+  بورسعيد: 'بورسعيد',
+  دمنهور: 'البحيرة',
+  'بني سويف': 'بني سويف',
+  الفيوم: 'الفيوم',
+  سوهاج: 'سوهاج',
+  الخانكة: 'القليوبية',
+  القرين: 'الشرقية',
+  'العاشر من رمضان': 'الشرقية',
+  'المنيا الجديدة': 'المنيا',
+  'طيبة (الأقصر)': 'الأقصر',
+};
+
 export interface AzharFaculty {
   kind: string;
   nameAr: string;
   city: string;
+  governorate: string;
 }
 
 export const AZHAR_FACULTIES: AzharFaculty[] = [
   ...rows.map(([kind, base, gender, city]) => ({
     kind,
     city,
+    governorate: GOVERNORATE_OF[city] ?? 'القاهرة',
     // Girls' colleges already say so in their name.
     nameAr: kind === 'azhar-girls' ? `${base} ب${city}` : `${base} (${gender}) ب${city}`,
   })),
-  { kind: 'cs', nameAr: 'كلية الذكاء الاصطناعي', city: 'القاهرة' },
+  { kind: 'cs', nameAr: 'كلية الذكاء الاصطناعي', city: 'القاهرة', governorate: 'القاهرة' },
 ];

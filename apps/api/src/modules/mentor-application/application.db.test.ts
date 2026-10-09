@@ -15,6 +15,7 @@ import { TEST_ENV } from '../../testing/env.js';
 import { createAuthModule } from '../auth/index.js';
 import type { SmsSender } from '../auth/sms.js';
 import { createCatalogModule } from '../catalog/index.js';
+import { createMediaModule } from '../media/index.js';
 import { createMentorApplicationModule } from './index.js';
 
 const dbUrl = process.env.DATABASE_URL;
@@ -43,7 +44,7 @@ const app = createApp({
   logger: silent,
   mountV1(v1) {
     auth.mount(v1);
-    createCatalogModule({ db, auth }).mount(v1);
+    createCatalogModule({ db, auth, logos: createMediaModule({ store }).logos }).mount(v1);
     mentorApplication.mount(v1);
   },
 });

@@ -281,17 +281,21 @@ model AuthSession {
 // ───────────────────────── education catalog ─────────────────────────
 
 model University {
-  id          String         @id @default(uuid(7)) @db.Uuid
-  slug        String         @unique @db.VarChar(60)
-  nameAr      String         @map("name_ar") @db.VarChar(120)
-  nameEn      String?        @map("name_en") @db.VarChar(120)
-  type        UniversityType
-  governorate String?        @db.VarChar(60)
-  website     String?        @db.VarChar(200)
+  id            String         @id @default(uuid(7)) @db.Uuid
+  slug          String         @unique @db.VarChar(60)
+  nameAr        String         @map("name_ar") @db.VarChar(120)
+  nameEn        String?        @map("name_en") @db.VarChar(120)
+  type          UniversityType
+  governorate   String?        @db.VarChar(60)
+  website       String?        @db.VarChar(200)
+  /// File name served by GET /api/v1/media/logos/:name (bundled with the API or uploaded by an admin).
+  logoKey       String?        @map("logo_key") @db.VarChar(80)
   /// Where this row's facts were checked.
-  sourceUrl   String?        @map("source_url") @db.VarChar(400)
-  isActive    Boolean        @default(true) @map("is_active")
-  sortOrder   Int            @default(0) @map("sort_order")
+  sourceUrl     String?        @map("source_url") @db.VarChar(400)
+  isActive      Boolean        @default(true) @map("is_active")
+  sortOrder     Int            @default(0) @map("sort_order")
+  /// Set when an admin creates or edits the row: the research seed leaves it alone from then on.
+  adminEditedAt DateTime?      @map("admin_edited_at")
 
   faculties Faculty[]
 
@@ -301,18 +305,20 @@ model University {
 
 /// A kind of faculty («الهندسة») — what students browse across universities.
 model FacultyKind {
-  id          String          @id @default(uuid(7)) @db.Uuid
-  slug        String          @unique @db.VarChar(40)
-  nameAr      String          @map("name_ar") @db.VarChar(80)
-  fullNameAr  String          @map("full_name_ar") @db.VarChar(120)
-  icon        String          @db.VarChar(40)
-  category    FacultyCategory
-  studyYears  Int             @map("study_years") @db.SmallInt
-  summary     String          @db.VarChar(200)
-  about       String
-  genericInfo String          @map("generic_info")
-  sortOrder   Int             @default(0) @map("sort_order")
-  isActive    Boolean         @default(true) @map("is_active")
+  id            String          @id @default(uuid(7)) @db.Uuid
+  slug          String          @unique @db.VarChar(40)
+  nameAr        String          @map("name_ar") @db.VarChar(80)
+  fullNameAr    String          @map("full_name_ar") @db.VarChar(120)
+  icon          String          @db.VarChar(40)
+  category      FacultyCategory
+  studyYears    Int             @map("study_years") @db.SmallInt
+  summary       String          @db.VarChar(200)
+  about         String
+  genericInfo   String          @map("generic_info")
+  sortOrder     Int             @default(0) @map("sort_order")
+  isActive      Boolean         @default(true) @map("is_active")
+  /// Set when an admin edits the texts: the seed stops overwriting them.
+  adminEditedAt DateTime?       @map("admin_edited_at")
 
   faculties Faculty[]
   insights  FacultyInsight[]
@@ -325,13 +331,21 @@ model FacultyKind {
 /// A faculty at a university. A university may have several faculties of one kind
 /// (e.g. engineering in two cities), so the name — not the kind — is unique per university.
 model Faculty {
-  id           String  @id @default(uuid(7)) @db.Uuid
-  universityId String  @map("university_id") @db.Uuid
-  kindId       String  @map("kind_id") @db.Uuid
-  nameAr       String  @map("name_ar") @db.VarChar(160)
+  id            String    @id @default(uuid(7)) @db.Uuid
+  universityId  String    @map("university_id") @db.Uuid
+  kindId        String    @map("kind_id") @db.Uuid
+  nameAr        String    @map("name_ar") @db.VarChar(160)
   /// Where the faculty is when it is not the university's main city.
-  city         String? @db.VarChar(80)
-  isActive     Boolean @default(true) @map("is_active")
+  city          String?   @db.VarChar(80)
+  /// Set when it differs from the university's (Al-Azhar's regional faculties, branch campuses).
+  governorate   String?   @db.VarChar(60)
+  website       String?   @db.VarChar(200)
+  /// What is specific to this faculty; the kind's texts cover the field in general.
+  about         String?
+  logoKey       String?   @map("logo_key") @db.VarChar(80)
+  isActive      Boolean   @default(true) @map("is_active")
+  /// Set when an admin creates or edits the row: the research seed leaves it alone from then on.
+  adminEditedAt DateTime? @map("admin_edited_at")
 
   accreditationStatus    AccreditationStatus @default(unknown) @map("accreditation_status")
   accreditedAt           DateTime?           @map("accredited_at") @db.Date

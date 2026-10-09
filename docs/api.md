@@ -134,8 +134,20 @@ Module `src/modules/catalog`. Public reads are cached by clients for 5 minutes (
 | `GET /catalog/universities`        | active universities with their faculties (mentor application form)                                                                                                                                                                                                                                   |
 | `GET /catalog/faculty-kinds`       | every active faculty kind: summary, study years, category, listed-mentor count, universities, departments (/explore)                                                                                                                                                                                 |
 | `GET /catalog/faculty-kinds/:slug` | one faculty page: about, generic info, published insights, merged departments, and `faculties[]` — every university offering it, with city, NAQAAE accreditation (status, expiry, accredited programmes), 2026 cutoffs and its own departments + source — plus `sources`; `404` if unknown or hidden |
+| `GET /catalog/faculties`           | search (/explore): `q`, `governorate`, `university`, `category`, `kind`, `type`, `page`, `pageSize` (≤ 48) → `{ total, page, pageSize, results, facets }`. Each facet counts what the other filters leave. Cached 1 min                                                                              |
+| `GET /catalog/faculties/:id`       | one faculty at one university (/college/:id): logo, place, website, about, kind texts, accreditation, cutoffs, departments + source, `sources`; `404` if unknown or hidden                                                                                                                           |
+| `GET /media/logos/:name`           | a university / faculty logo (bundled with the API or uploaded by an admin); `immutable`, sandboxed CSP, `nosniff`                                                                                                                                                                                    |
 
 Admin curation under `/api/v1/admin/catalog` (`super_admin`, `support`; every write audited as `catalog.*`): edit a faculty kind's texts / visibility, add / hide / delete insights, add / rename / hide departments per university faculty, rename / hide universities. Hiding a university removes it and its faculties from every public read.
+
+Universities and faculties (Phase 11c, same roles, audited as `catalog.university.*`, `catalog.faculty.*`, `catalog.cutoff.*`):
+
+- `POST /universities`, `GET|PATCH|DELETE /universities/:id`, `POST /faculties`, `GET|PATCH|DELETE /faculties/:id`.
+- `PUT|DELETE /universities/:id/logo`, `PUT|DELETE /faculties/:id/logo` — raw PNG / JPEG / WebP body ≤ 512 KB; the type is sniffed from the bytes (no SVG). Stored unencrypted under `logos/` in object storage; a faculty without its own logo shows its university's.
+- `POST /faculties/:id/cutoffs` (upsert by year + track + phase, source URL required), `DELETE /cutoffs/:id`.
+- `DELETE` answers `409` when something depends on the row (a university with faculties; a faculty with mentors or mentor applications) — hide it instead (`isActive: false`).
+- Rows an admin creates or edits get `admin_edited_at`; the research seed never updates, hides or re-uses them.
+- Search runs on an in-memory index of all active faculties (rebuilt every minute and right after an admin write on that instance), with Arabic spelling folded (`@sabeq/utils` → `normalizeArabic`).
 
 ## Admin verification (Phase 10)
 

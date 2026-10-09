@@ -85,6 +85,8 @@ The design browses **kinds of faculty** ("الهندسة") across universities, 
 | `specializations`  | `id`, `department_id`, `slug`, `name_ar`                                                                                                                                                                                               | unique (`department_id`, `slug`).                          |
 | `faculty_insights` | `id`, `kind_id`, `quote`, `mentor_id?`, `sort_order`, `is_published`                                                                                                                                                                   | The «اللي الخريجين بيقولوه» quotes on faculty pages.       |
 
+Phase 11c added `logo_key` (universities, faculties — a plain file name, checked by a CHECK constraint), `admin_edited_at` (universities, faculty kinds, faculties), and `governorate`, `website`, `about` on faculties (governorate only when it differs from the university's, e.g. Al-Azhar's regional faculties).
+
 #### Where the catalog data comes from
 
 `prisma/catalog/*` holds the researched data; `seedCatalog` loads it idempotently on every environment, and

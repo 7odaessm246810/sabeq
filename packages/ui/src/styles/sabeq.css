@@ -690,6 +690,37 @@
   }
 
   /* ---------- avatar ---------- */
+  /* university / faculty logo (Phase 11c) */
+  .sb-orglogo {
+    --s: 48px;
+    width: var(--s);
+    height: var(--s);
+    border-radius: var(--radius-sm);
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--primary-strong);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: calc(var(--s) * 0.4);
+  }
+  .sb-orglogo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 8%;
+  }
+  .sb-orglogo svg {
+    width: 50%;
+    height: 50%;
+  }
+  .sb-orglogo:not(:has(img)) {
+    background: var(--primary-soft);
+    border-color: transparent;
+  }
   .sb-avatar {
     --s: 48px;
     width: var(--s);

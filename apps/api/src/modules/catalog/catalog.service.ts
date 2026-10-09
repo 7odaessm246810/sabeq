@@ -9,13 +9,32 @@ import { AppError, Errors } from '../../core/errors.js';
 import { inetOrNull } from '../../core/http.js';
 import type { Prisma } from '../../generated/prisma/client.js';
 import type { Db } from '../../infra/db.js';
-import type { AuthContext } from '../auth/session.service.js';
+import { logoUrl, type LogoStore } from '../media/index.js';
+import { createCatalogManagement } from './catalog.manage.js';
+import { defined, type Actor, type Audit, type Patch } from './catalog.shared.js';
+import {
+  indexEntry,
+  searchIndex,
+  type IndexedFaculty,
+  type SearchParams,
+} from './catalog.search.js';
 
-export interface Actor {
-  auth: AuthContext;
-  ip: string;
-  requestId: string;
-}
+/** How long the in-memory search index may be stale (admin edits on this instance refresh it). */
+const INDEX_TTL_MS = 60_000;
+
+/** Shown with every faculty page so students know how fresh each fact is. */
+export const CATALOG_SOURCES = {
+  accreditation: {
+    name: 'الهيئة القومية لضمان جودة التعليم والاعتماد',
+    latestDecision: '2026-05-20',
+  },
+  cutoffs: {
+    name: 'إعلان وزير التعليم العالي لتنسيق 2026 — المرحلة الأولى',
+    date: '2026-08-10',
+  },
+};
+
+export type { Actor } from './catalog.shared.js';
 
 const MESSAGES = {
   kindNotFound: 'الكلية دي مش موجودة.',
@@ -26,19 +45,12 @@ const MESSAGES = {
   departmentExists: 'القسم ده موجود بالفعل في الكلية دي.',
 };
 
-/** PATCH bodies: omitted fields arrive as undefined and must not reach the update. */
-type Patch<T> = { [K in keyof T]?: T[K] | undefined };
-const defined = <T extends object>(o: T) =>
-  Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined)) as {
-    [K in keyof T]?: Exclude<T[K], undefined>;
-  };
-
 /** Arabic names have no ASCII slug; a short stable suffix keeps department slugs unique. */
 const departmentSlug = () =>
   `d-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
-export function createCatalogService({ db }: { db: Db }) {
-  const audit = (
+export function createCatalogService({ db, logos }: { db: Db; logos: LogoStore }) {
+  const audit: Audit = (
     tx: Prisma.TransactionClient | Db,
     actor: Actor,
     action: string,
@@ -80,7 +92,213 @@ export function createCatalogService({ db }: { db: Db }) {
     return counts;
   }
 
+  // ---------- search index ----------
+  let index: { at: number; rows: Promise<IndexedFaculty[]> } | null = null;
+  const invalidate = () => {
+    index = null;
+  };
+  async function buildIndex(): Promise<IndexedFaculty[]> {
+    const rows = await db.faculty.findMany({
+      where: { isActive: true, university: { isActive: true }, kind: { isActive: true } },
+      select: {
+        id: true,
+        nameAr: true,
+        city: true,
+        governorate: true,
+        logoKey: true,
+        accreditationStatus: true,
+        accreditationExpiresAt: true,
+        university: {
+          select: {
+            slug: true,
+            nameAr: true,
+            nameEn: true,
+            type: true,
+            governorate: true,
+            logoKey: true,
+            sortOrder: true,
+          },
+        },
+        kind: {
+          select: {
+            slug: true,
+            nameAr: true,
+            fullNameAr: true,
+            icon: true,
+            category: true,
+            sortOrder: true,
+          },
+        },
+        departments: { where: { isActive: true }, select: { nameAr: true } },
+        cutoffs: {
+          orderBy: [{ year: 'desc' }, { phase: 'asc' }, { minScore: 'desc' }],
+          take: 1,
+          select: { year: true, track: true, minScore: true, maxScore: true },
+        },
+        _count: { select: { mentors: { where: { isListed: true } } } },
+      },
+    });
+    return rows.map((f) => {
+      const c = f.cutoffs[0];
+      return indexEntry({
+        id: f.id,
+        name: f.nameAr,
+        logo: logoUrl(f.logoKey ?? f.university.logoKey),
+        city: f.city,
+        governorate: f.governorate ?? f.university.governorate,
+        university: {
+          slug: f.university.slug,
+          name: f.university.nameAr,
+          type: f.university.type,
+          sortOrder: f.university.sortOrder,
+        },
+        universityNameEn: f.university.nameEn,
+        kind: {
+          slug: f.kind.slug,
+          name: f.kind.nameAr,
+          icon: f.kind.icon,
+          category: f.kind.category,
+          sortOrder: f.kind.sortOrder,
+        },
+        kindFullName: f.kind.fullNameAr,
+        accreditation: {
+          status: f.accreditationStatus,
+          expiresAt: f.accreditationExpiresAt?.toISOString().slice(0, 10) ?? null,
+        },
+        cutoff: c
+          ? { year: c.year, track: c.track, minScore: Number(c.minScore), maxScore: c.maxScore }
+          : null,
+        mentorCount: f._count.mentors,
+        departments: f.departments.map((d) => d.nameAr),
+      });
+    });
+  }
+  function currentIndex() {
+    if (!index || Date.now() - index.at > INDEX_TTL_MS) {
+      const rows = buildIndex();
+      index = { at: Date.now(), rows };
+      // A failed build must not stay cached.
+      rows.catch(() => {
+        if (index?.rows === rows) index = null;
+      });
+    }
+    return index.rows;
+  }
+
+  const manage = createCatalogManagement({ db, logos, audit, invalidate });
+
   return {
+    ...manage,
+
+    async search(params: SearchParams) {
+      return searchIndex(await currentIndex(), params);
+    },
+
+    /** One faculty at one university: everything its own page shows. */
+    async faculty(id: string) {
+      const f = await db.faculty.findFirst({
+        where: { id, isActive: true, university: { isActive: true }, kind: { isActive: true } },
+        select: {
+          id: true,
+          nameAr: true,
+          city: true,
+          governorate: true,
+          website: true,
+          about: true,
+          logoKey: true,
+          sourceUrl: true,
+          verifiedAt: true,
+          accreditationStatus: true,
+          accreditedAt: true,
+          accreditationExpiresAt: true,
+          accreditedPrograms: true,
+          university: {
+            select: {
+              slug: true,
+              nameAr: true,
+              type: true,
+              governorate: true,
+              website: true,
+              logoKey: true,
+            },
+          },
+          kind: {
+            select: {
+              slug: true,
+              nameAr: true,
+              fullNameAr: true,
+              icon: true,
+              category: true,
+              studyYears: true,
+              summary: true,
+              about: true,
+            },
+          },
+          departments: {
+            where: { isActive: true },
+            orderBy: { id: 'asc' },
+            select: {
+              nameAr: true,
+              sourceUrl: true,
+              _count: { select: { mentors: { where: { isListed: true } } } },
+            },
+          },
+          cutoffs: {
+            orderBy: [{ year: 'desc' }, { phase: 'asc' }],
+            select: { year: true, phase: true, track: true, minScore: true, maxScore: true },
+          },
+          _count: { select: { mentors: { where: { isListed: true } } } },
+        },
+      });
+      if (!f) return null;
+      return {
+        id: f.id,
+        name: f.nameAr,
+        logo: logoUrl(f.logoKey ?? f.university.logoKey),
+        city: f.city,
+        governorate: f.governorate ?? f.university.governorate,
+        website: f.website ?? f.university.website,
+        about: f.about,
+        university: {
+          slug: f.university.slug,
+          name: f.university.nameAr,
+          type: f.university.type,
+          logo: logoUrl(f.university.logoKey),
+        },
+        kind: {
+          slug: f.kind.slug,
+          name: f.kind.nameAr,
+          fullName: f.kind.fullNameAr,
+          icon: f.kind.icon,
+          category: f.kind.category,
+          studyYears: f.kind.studyYears,
+          summary: f.kind.summary,
+          about: f.kind.about,
+        },
+        accreditation: {
+          status: f.accreditationStatus,
+          accreditedAt: f.accreditedAt?.toISOString().slice(0, 10) ?? null,
+          expiresAt: f.accreditationExpiresAt?.toISOString().slice(0, 10) ?? null,
+          programmes:
+            (f.accreditedPrograms as
+              { name: string; status: string; expiresAt: string }[] | null) ?? [],
+        },
+        cutoffs: f.cutoffs.map((c) => ({
+          year: c.year,
+          phase: c.phase,
+          track: c.track,
+          minScore: Number(c.minScore),
+          maxScore: c.maxScore,
+        })),
+        departments: f.departments.map((d) => ({ name: d.nameAr, mentorCount: d._count.mentors })),
+        departmentsSource: f.departments.find((d) => d.sourceUrl)?.sourceUrl ?? null,
+        mentorCount: f._count.mentors,
+        sourceUrl: f.sourceUrl,
+        verifiedAt: f.verifiedAt?.toISOString().slice(0, 10) ?? null,
+        sources: CATALOG_SOURCES,
+      };
+    },
+
     async universities() {
       const rows = await db.university.findMany({
         where: { isActive: true },
@@ -176,7 +394,11 @@ export function createCatalogService({ db }: { db: Db }) {
               accreditationStatus: true,
               accreditationExpiresAt: true,
               accreditedPrograms: true,
-              university: { select: { slug: true, nameAr: true, type: true, governorate: true } },
+              governorate: true,
+              logoKey: true,
+              university: {
+                select: { slug: true, nameAr: true, type: true, governorate: true, logoKey: true },
+              },
               departments: {
                 where: { isActive: true },
                 orderBy: { id: 'asc' },
@@ -225,11 +447,12 @@ export function createCatalogService({ db }: { db: Db }) {
           id: f.id,
           name: f.nameAr,
           city: f.city,
+          logo: logoUrl(f.logoKey ?? f.university.logoKey),
           university: {
             slug: f.university.slug,
             name: f.university.nameAr,
             type: f.university.type,
-            governorate: f.university.governorate,
+            governorate: f.governorate ?? f.university.governorate,
           },
           accreditation: {
             status: f.accreditationStatus,
@@ -253,16 +476,7 @@ export function createCatalogService({ db }: { db: Db }) {
           departmentsSource: f.departments.find((d) => d.sourceUrl)?.sourceUrl ?? null,
           mentorCount: f._count.mentors,
         })),
-        sources: {
-          accreditation: {
-            name: 'الهيئة القومية لضمان جودة التعليم والاعتماد',
-            latestDecision: '2026-05-20',
-          },
-          cutoffs: {
-            name: 'إعلان وزير التعليم العالي لتنسيق 2026 — المرحلة الأولى',
-            date: '2026-08-10',
-          },
-        },
+        sources: CATALOG_SOURCES,
       };
     },
 
@@ -336,7 +550,10 @@ export function createCatalogService({ db }: { db: Db }) {
       const before = await db.facultyKind.findUnique({ where: { id } });
       if (!before) throw Errors.notFound(MESSAGES.kindNotFound);
       await db.$transaction(async (tx) => {
-        await tx.facultyKind.update({ where: { id }, data: patch });
+        await tx.facultyKind.update({
+          where: { id },
+          data: { ...patch, adminEditedAt: new Date() },
+        });
         const changed = Object.keys(patch) as (keyof typeof patch)[];
         await audit(
           tx,
@@ -349,6 +566,7 @@ export function createCatalogService({ db }: { db: Db }) {
           },
         );
       });
+      invalidate();
     },
 
     async addInsight(kindId: string, quote: string, actor: Actor) {
@@ -436,6 +654,7 @@ export function createCatalogService({ db }: { db: Db }) {
           },
         );
       });
+      invalidate();
     },
 
     async updateDepartment(
@@ -466,44 +685,7 @@ export function createCatalogService({ db }: { db: Db }) {
           },
         );
       });
-    },
-
-    async adminUniversities() {
-      return db.university.findMany({
-        orderBy: [{ sortOrder: 'asc' }, { nameAr: 'asc' }],
-        select: {
-          id: true,
-          slug: true,
-          nameAr: true,
-          governorate: true,
-          type: true,
-          isActive: true,
-          _count: { select: { faculties: true } },
-        },
-      });
-    },
-
-    async updateUniversity(
-      id: string,
-      raw: Patch<{ nameAr: string; isActive: boolean }>,
-      actor: Actor,
-    ) {
-      const patch = defined(raw);
-      const before = await db.university.findUnique({ where: { id } });
-      if (!before) throw Errors.notFound(MESSAGES.universityNotFound);
-      await db.$transaction(async (tx) => {
-        await tx.university.update({ where: { id }, data: patch });
-        await audit(
-          tx,
-          actor,
-          'catalog.university.update',
-          { type: 'university', id },
-          {
-            before: { nameAr: before.nameAr, isActive: before.isActive },
-            after: patch,
-          },
-        );
-      });
+      invalidate();
     },
   };
 }

@@ -6,7 +6,8 @@
   "type": "module",
   "main": "dist/server.js",
   "files": [
-    "dist"
+    "dist",
+    "assets"
   ],
   "scripts": {
     "dev": "tsx watch src/server.ts",

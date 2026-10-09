@@ -4,7 +4,7 @@ import { CUTOFFS_2026 } from './cutoffs-2026.js';
 import { PUBLIC_DEPARTMENTS } from './departments.js';
 import { KINDS } from './kinds.js';
 import { PUBLIC_FACULTIES } from './public-faculties.js';
-import { AZHAR_FACULTIES } from './azhar-faculties.js';
+import { AZHAR_FACULTIES, GOVERNORATE_OF } from './azhar-faculties.js';
 import { ALL_UNIVERSITIES } from './universities.js';
 
 const kinds = new Map(KINDS.map((k) => [k.slug, k]));
@@ -35,6 +35,9 @@ for (const [u, f] of CUTOFFS_2026) {
     PUBLIC_FACULTIES[u]?.faculties.filter(([k]) => k === f).length === 1;
   if (!ok) problems.push(`cutoff ${u}/${f} has no matching faculty`);
 }
+for (const f of AZHAR_FACULTIES)
+  if (f.city !== 'القاهرة' && !GOVERNORATE_OF[f.city])
+    problems.push(`azhar: no governorate for ${f.city}`);
 let departments = 0;
 for (const [key, { source, departments: names }] of Object.entries(PUBLIC_DEPARTMENTS)) {
   const [u = '', name] = key.split('|');
