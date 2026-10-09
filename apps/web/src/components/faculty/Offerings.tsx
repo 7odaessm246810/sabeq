@@ -1,6 +1,7 @@
 'use client';
 
-import { EmptyState, Segmented, cx } from '@sabeq/ui';
+import { EmptyState, OrgLogo, Segmented, cx } from '@sabeq/ui';
+import Link from 'next/link';
 import { useState } from 'react';
 import type { CatalogSources, FacultyOffering, UniversityType } from '@/lib/catalog';
 
@@ -109,8 +110,11 @@ export function Offerings({
             const cutoff = o.cutoffs[0];
             return (
               <li key={o.id} className="sb-card off-item">
+                <OrgLogo src={o.logo} name={o.university.name} size={44} />
                 <div className="off-main">
-                  <b>{o.university.name}</b>
+                  <Link href={`/college/${o.id}`} className="off-link">
+                    <b>{o.university.name}</b>
+                  </Link>
                   <span className="sb-small">
                     {o.name}
                     {o.city

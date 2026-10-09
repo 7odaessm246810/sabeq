@@ -29,8 +29,13 @@ export function AdminShell({
       show: admin.adminRole === 'super_admin' || admin.adminRole === 'verifier',
     },
     {
+      href: '/universities',
+      label: 'الجامعات والكليات',
+      show: admin.adminRole === 'super_admin' || admin.adminRole === 'support',
+    },
+    {
       href: '/catalog',
-      label: 'الكليات',
+      label: 'أنواع الكليات',
       show: admin.adminRole === 'super_admin' || admin.adminRole === 'support',
     },
     { href: '/audit', label: 'سجل العمليات', show: admin.adminRole === 'super_admin' },
@@ -49,7 +54,9 @@ export function AdminShell({
               const active =
                 n.href === '/'
                   ? pathname === '/' || pathname.startsWith('/applications')
-                  : pathname.startsWith(n.href);
+                  : n.href === '/universities'
+                    ? pathname.startsWith('/universities') || pathname.startsWith('/faculties')
+                    : pathname.startsWith(n.href);
               return (
                 <Link key={n.href} href={n.href} aria-current={active ? 'page' : undefined}>
                   {n.label}

@@ -292,3 +292,74 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- universities & faculties (Phase 11c) ---------- */
+.adm-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.adm-toolbar-search {
+  flex: 1;
+  min-width: 220px;
+}
+.adm-toolbar .adm-filters {
+  margin: 0;
+}
+.adm-org {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.adm-org > span:last-child {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.adm-logo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+}
+.adm-logo-side {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.adm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.adm-fieldset {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px 14px;
+  margin: 0;
+}
+.adm-fieldset legend {
+  padding: 0 6px;
+}
+.adm-sec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.adm-fac-list li {
+  align-items: center;
+}
+.adm-danger-zone {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}

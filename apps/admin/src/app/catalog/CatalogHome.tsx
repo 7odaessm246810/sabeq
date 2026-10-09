@@ -1,25 +1,22 @@
 'use client';
 
-import { Banner, useToast } from '@sabeq/ui';
+import { Banner } from '@sabeq/ui';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { AdminShell } from '@/components/AdminShell';
 import { ApiError } from '@/lib/api';
 import type { AdminRole } from '@/lib/auth';
-import {
-  listKinds,
-  listUniversities,
-  updateUniversity,
-  type KindRow,
-  type UniversityRow,
-} from '@/lib/catalog';
+import { listKinds, type KindRow } from '@/lib/catalog';
 
 const CURATORS: AdminRole[] = ['super_admin', 'support'];
 
-/** Faculties and universities shown on the website (Phase 11). Changes appear there within 5 minutes. */
+/**
+ * Faculty kinds — the fields students browse («الهندسة» across universities) and their texts (Phase 11).
+ * Universities and their faculties live under /universities. Changes appear within 5 minutes.
+ */
 export function CatalogHome() {
   return (
-    <AdminShell title="الكليات والجامعات">
+    <AdminShell title="أنواع الكليات">
       {(admin) =>
         CURATORS.includes(admin.adminRole) ? (
           <Body />
@@ -34,33 +31,16 @@ export function CatalogHome() {
 }
 
 function Body() {
-  const toast = useToast();
   const [kinds, setKinds] = useState<KindRow[] | null>(null);
-  const [unis, setUnis] = useState<UniversityRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    Promise.all([listKinds(), listUniversities()])
-      .then(([k, u]) => {
-        setKinds(k);
-        setUnis(u);
-      })
+    listKinds()
+      .then(setKinds)
       .catch((err: unknown) =>
         setError(err instanceof ApiError ? err.message : 'ما قدرناش نجيب البيانات.'),
       );
   }, []);
-
-  async function toggleUniversity(u: UniversityRow) {
-    try {
-      setUnis(await updateUniversity(u.id, { isActive: !u.isActive }));
-      toast({
-        kind: 'success',
-        title: u.isActive ? 'الجامعة اتخفت من الموقع' : 'الجامعة ظهرت في الموقع',
-      });
-    } catch (err) {
-      toast({ kind: 'error', title: err instanceof ApiError ? err.message : 'جرّب تاني.' });
-    }
-  }
 
   if (error) {
     return (
@@ -72,10 +52,13 @@ function Body() {
 
   return (
     <>
-      <p className="sb-small">التعديلات بتظهر في الموقع خلال 5 دقايق.</p>
+      <p className="sb-small">
+        النصوص العامة لكل مجال (بتظهر في صفحة الكلية على الموقع). الجامعات وكلياتها ولوجوهاتها من{' '}
+        <Link href="/universities">الجامعات والكليات</Link>. التعديلات بتظهر خلال 5 دقايق.
+      </p>
       <section className="sb-card adm-table-card" aria-labelledby="h-kinds">
         <h2 className="sb-h3 adm-card-title" id="h-kinds">
-          الكليات
+          أنواع الكليات
         </h2>
         {!kinds ? (
           <div aria-busy="true" style={{ minHeight: 160 }} />
@@ -114,56 +97,6 @@ function Body() {
                     <Link className="sb-btn sb-btn--secondary sb-btn--sm" href={`/catalog/${k.id}`}>
                       عدّل
                     </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </section>
-
-      <section className="sb-card adm-table-card" aria-labelledby="h-unis">
-        <h2 className="sb-h3 adm-card-title" id="h-unis">
-          الجامعات
-        </h2>
-        {!unis ? (
-          <div aria-busy="true" style={{ minHeight: 160 }} />
-        ) : (
-          <table className="adm-table">
-            <thead>
-              <tr>
-                <th scope="col">الجامعة</th>
-                <th scope="col">المحافظة</th>
-                <th scope="col">الكليات</th>
-                <th scope="col">الحالة</th>
-                <th scope="col">
-                  <span className="adm-sr">إظهار أو إخفاء</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {unis.map((u) => (
-                <tr key={u.id}>
-                  <td>
-                    <b>{u.nameAr}</b>
-                  </td>
-                  <td>{u.governorate}</td>
-                  <td className="sb-num">{u._count.faculties}</td>
-                  <td>
-                    <span
-                      className={`sb-badge ${u.isActive ? 'sb-badge--success' : 'sb-badge--neutral'}`}
-                    >
-                      {u.isActive ? 'ظاهرة' : 'مخفية'}
-                    </span>
-                  </td>
-                  <td>
-                    <button
-                      type="button"
-                      className="sb-btn sb-btn--ghost sb-btn--sm"
-                      onClick={() => void toggleUniversity(u)}
-                    >
-                      {u.isActive ? 'اخفيها' : 'اظهرها'}
-                    </button>
                   </td>
                 </tr>
               ))}

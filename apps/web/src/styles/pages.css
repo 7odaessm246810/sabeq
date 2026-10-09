@@ -1123,3 +1123,200 @@
 .dept-pick .sb-select-wrap {
   flex: 1;
 }
+
+/* ===== explore search & one faculty's page (Phase 11c — not in the handoff; design-system pieces) ===== */
+.exp-search {
+  margin-top: 20px;
+  max-width: 720px;
+}
+.exp-search .sb-search-box {
+  height: 56px;
+}
+.exp-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+  max-width: 900px;
+}
+.exp-step {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.exp-n {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+  font-size: 12px;
+  font-weight: 600;
+  margin-inline-end: 4px;
+}
+.exp-step-label {
+  white-space: nowrap;
+}
+.exp-active {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+.exp-active .sb-chip {
+  gap: 6px;
+}
+.exp-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.exp-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+.res-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.res-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  color: inherit;
+  text-decoration: none;
+}
+.res-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.res-names {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.res-names b {
+  font-size: 16px;
+  line-height: 1.4;
+}
+.res-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.res-card .res-badges {
+  margin-top: 0;
+}
+.res-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.res-meta .sb-small {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.res-arrow {
+  margin-inline-start: auto;
+  width: 18px;
+  height: 18px;
+  color: var(--primary);
+}
+.off-link {
+  color: inherit;
+  text-decoration: none;
+}
+.off-link:hover b {
+  color: var(--primary);
+}
+.col-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 24px;
+  align-items: start;
+}
+.col-main,
+.col-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.col-sec {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  align-items: flex-start;
+}
+.col-sec > * {
+  margin: 0;
+}
+.col-text {
+  white-space: pre-line;
+  line-height: 1.9;
+}
+.col-chips {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.col-list {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.col-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.col-list li:last-child {
+  border-bottom: 0;
+}
+.col-site {
+  justify-content: center;
+}
+.fac-title .sb-orglogo {
+  margin-top: 4px;
+}
+@media (max-width: 1000px) {
+  .res-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .col-body {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .exp-steps,
+  .res-grid {
+    grid-template-columns: 1fr;
+  }
+  .ph-filters:has(.exp-step-label) {
+    flex-wrap: wrap;
+  }
+}
