@@ -7,6 +7,7 @@
  *   Faculties of researched universities that are not in the lists are hidden, never deleted —
  *   mentors and applications may reference them.
  * - Accreditation: NAQAAE institutional status + accredited programmes per faculty.
+ * - Logos: a few universities' logos are bundled (catalog/logos.ts); the admin uploads the rest.
  * - Departments: public faculties that have a Wikipedia article listing them (catalog/departments.ts).
  * - Cutoffs: Tansik 2026 phase 1.
  * - Prototype placeholders (generic departments, invented "graduate" quotes) are hidden.
@@ -23,6 +24,7 @@ import { AZHAR_FACULTIES, AZHAR_SOURCES } from './azhar-faculties.js';
 import { CUTOFFS_2026, CUTOFFS_2026_SOURCE } from './cutoffs-2026.js';
 import { PUBLIC_DEPARTMENTS } from './departments.js';
 import { KINDS } from './kinds.js';
+import { UNIVERSITY_LOGOS } from './logos.js';
 import { NAQAAE_SOURCE, PUBLIC_FACULTIES } from './public-faculties.js';
 import { ALL_UNIVERSITIES, UNIVERSITY_LIST_SOURCE } from './universities.js';
 
@@ -247,6 +249,9 @@ export async function seedCatalog(db: Db, logger: Logger) {
       create: { slug: u.slug, ...data },
     });
   }
+  // Bundled logos fill empty slots only: an uploaded logo always wins.
+  for (const [slug, logoKey] of Object.entries(UNIVERSITY_LOGOS))
+    await db.university.updateMany({ where: { slug, logoKey: null }, data: { logoKey } });
   const unis = new Map((await db.university.findMany()).map((u) => [u.slug, u]));
   const known = new Set(ALL_UNIVERSITIES.map((u) => u.slug));
   await db.university.updateMany({

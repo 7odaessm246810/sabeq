@@ -1,7 +1,10 @@
 /* eslint-disable no-console -- a CLI check: output is for the person at the terminal */
 // Consistency check for the catalog data files (run with tsx).
 import { CUTOFFS_2026 } from './cutoffs-2026.js';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
 import { PUBLIC_DEPARTMENTS } from './departments.js';
+import { UNIVERSITY_LOGOS } from './logos.js';
 import { KINDS } from './kinds.js';
 import { PUBLIC_FACULTIES } from './public-faculties.js';
 import { AZHAR_FACULTIES, GOVERNORATE_OF } from './azhar-faculties.js';
@@ -38,6 +41,12 @@ for (const [u, f] of CUTOFFS_2026) {
 for (const f of AZHAR_FACULTIES)
   if (f.city !== 'القاهرة' && !GOVERNORATE_OF[f.city])
     problems.push(`azhar: no governorate for ${f.city}`);
+for (const [slug, file] of Object.entries(UNIVERSITY_LOGOS)) {
+  if (!ALL_UNIVERSITIES.some((u) => u.slug === slug))
+    problems.push(`logo for unknown university ${slug}`);
+  if (!existsSync(path.join(import.meta.dirname, '../../assets/logos', file)))
+    problems.push(`logo file missing: ${file}`);
+}
 let departments = 0;
 for (const [key, { source, departments: names }] of Object.entries(PUBLIC_DEPARTMENTS)) {
   const [u = '', name] = key.split('|');
