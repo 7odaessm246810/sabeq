@@ -1,0 +1,8002 @@
+{
+ "source": "https://naqaae.eg/ar/accredited_organization/decisions_higher_education",
+ "fetchedAt": "2026-10-09T14:03:54.605Z",
+ "computedFor": "2026-10-09",
+ "faculties": [
+  {
+   "university": "أكاديمية الشرطة",
+   "faculty": "كلية الدراسات العليا",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-04-24",
+    "expiresAt": "2029-04-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "الأكاديمية العربية للعلوم والتكنولوجيا والنقل البحري",
+   "faculty": "كلية الادارة و التكنولوجيا",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2021-12-22"
+   },
+   "programmes": []
+  },
+  {
+   "university": "الأكاديمية العربية للعلوم والتكنولوجيا والنقل البحري",
+   "faculty": "كلية الحاسبات و المعلومات",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "احاطة",
+    "decidedAt": "2014-09-22"
+   },
+   "programmes": []
+  },
+  {
+   "university": "الأكاديمية العربية للعلوم والتكنولوجيا والنقل البحري",
+   "faculty": "كلية النقل الدولي واللوجيستيات",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2030-05-27"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس إدارة لوجستيات التجارة والنقل الدولي (البرنامج العربي) تخصص: إدارة لوجستات النقل",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    }
+   ]
+  },
+  {
+   "university": "الأكاديمية العربية للعلوم والتكنولوجيا والنقل البحري",
+   "faculty": "كلية الهندسة والتكنولوجيا",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "تجديد اعتماد",
+    "decidedAt": "2020-10-05"
+   },
+   "programmes": []
+  },
+  {
+   "university": "الجامعة الألمانية بالقاهرة",
+   "faculty": "كلية الصيدلة و التكنولوجيا الحيوية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس الصيدلة فارم دى",
+     "status": "accredited",
+     "expiresAt": "2026-11-23"
+    }
+   ]
+  },
+  {
+   "university": "الجامعة الأمريكية",
+   "faculty": "الجامعة الامريكية بالقاهرة",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "الجامعة البريطانية",
+   "faculty": "كلية الآداب والعلوم الانسانية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "علم النفس الأساسي والتطبيقي",
+     "status": "accredited",
+     "expiresAt": "2028-07-25"
+    }
+   ]
+  },
+  {
+   "university": "الجامعة البريطانية",
+   "faculty": "كلية الاقتصاد و العلوم السياسية و ادارة الاعمال",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2019-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "الجامعة البريطانية",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2031-05-19"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى التمريض",
+     "status": "conditional",
+     "expiresAt": "2027-11-19"
+    }
+   ]
+  },
+  {
+   "university": "الجامعة البريطانية",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-03-31"
+   },
+   "programmes": []
+  },
+  {
+   "university": "الجامعة البريطانية",
+   "faculty": "كلية القانون",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "الجامعة البريطانية",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2018-07-30"
+   },
+   "programmes": [
+    {
+     "name": "الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "الهندسة الميكانيكية",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "الهندسة الكهربية والاتصالات",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "هندسة وإدارة التشييد",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "الهندسة المدنية",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    }
+   ]
+  },
+  {
+   "university": "الجامعة البريطانية",
+   "faculty": "كلية طب الاسنان",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-03-31"
+   },
+   "programmes": []
+  },
+  {
+   "university": "الجامعة البريطانية",
+   "faculty": "كلية علوم الحاسب ونظم المعلومات",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-07-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "الجامعة الحديثة للتكنولوجيا والمعلومات",
+   "faculty": "كلية الادارة",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "الجامعة الحديثة للتكنولوجيا والمعلومات",
+   "faculty": "كلية الإعلام",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "الجامعة الحديثة للتكنولوجيا والمعلومات",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-07-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "الجامعة الحديثة للتكنولوجيا والمعلومات",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2031-05-19"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس الصيدلة (فارم دي - PharmD)",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    }
+   ]
+  },
+  {
+   "university": "الجامعة الحديثة للتكنولوجيا والمعلومات",
+   "faculty": "كلية العلاج الطبيعي",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-10-29",
+    "expiresAt": "2027-04-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "الجامعة الحديثة للتكنولوجيا والمعلومات",
+   "faculty": "كلية الهندسة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس فى الهندسة كهربية تخصص هندسة الالكترونيات الطبية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    }
+   ]
+  },
+  {
+   "university": "الجامعة المصرية الروسية",
+   "faculty": "كلية الادارة والاقتصاد وتكنولوجيا الاعمال",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "البكالوريوس في الاقتصاد",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "البكالوريوس فى المحاسبة",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    }
+   ]
+  },
+  {
+   "university": "الجامعة المصرية الروسية",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-09-24",
+    "expiresAt": "2030-09-23"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس الصيدلة Pharm D",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    }
+   ]
+  },
+  {
+   "university": "الجامعة المصرية الروسية",
+   "faculty": "كلية الهندسة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "هندسة التشييد",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "هندسة الاتصالات",
+     "status": "accredited",
+     "expiresAt": "2027-09-27"
+    },
+    {
+     "name": "هندسة الميكاترونيات والروبوتات",
+     "status": "accredited",
+     "expiresAt": "2027-09-27"
+    }
+   ]
+  },
+  {
+   "university": "الجامعة المصرية الروسية",
+   "faculty": "كلية طب الفم والاسنان",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-10-29",
+    "expiresAt": "2027-04-28"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس في طب و جراحة الفم و الأسنان",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    }
+   ]
+  },
+  {
+   "university": "الجامعة المصرية الصينية",
+   "faculty": "كلية الاقتصاد والتجارة الدولية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس كلية الإقتصاد والتجارة الدولية.. تخصص إدارة الأعمال الدولية",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "بكالوريوس كلية الاقتصاد والتجاره الدوليه في تخصص : المحاسبه",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "بكالوريوس كلية الاقتصاد والتجاره الدوليه تخصص : الاقتصاد الدولي",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    }
+   ]
+  },
+  {
+   "university": "الجامعة المصرية الصينية",
+   "faculty": "كلية العلاج الطبيعى",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-09-24",
+    "expiresAt": "2027-03-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "الجامعة المصرية الصينية",
+   "faculty": "كلية الهندسة والتكنولوجيا",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس هندسة الطاقة والطاقة المتجدده",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "بكالوريوس هندسة الميكاترونيات",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "بكالوريوس هندسة البرمجيات وتكنولوجيا المعلومات",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "بكالوريوس هندسة التشييد والبناء",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    }
+   ]
+  },
+  {
+   "university": "الجامعة المصرية للتعلم الإلكتروني الأهلية",
+   "faculty": "كلية إدارة الاعمال والدراسات التجارية",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "الجامعة المصرية للتعلم الإلكتروني الأهلية",
+   "faculty": "كلية الحاسبات وتكنولوجيا المعلومات",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "العلمين الدولية",
+   "faculty": "كلية الاعمال",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس الأعمال (برنامج المحاسبة ونظم المعلومات)",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    }
+   ]
+  },
+  {
+   "university": "العلمين الدولية",
+   "faculty": "كلية الفنون والتصميم",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة 6 أكتوبر",
+   "faculty": "كلية الاعلام وفنون الاتصال",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2030-05-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة 6 أكتوبر",
+   "faculty": "كلية الاقتصاد والادارة",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة 6 أكتوبر",
+   "faculty": "كلية التربية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-06-29",
+    "expiresAt": "2027-06-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة 6 أكتوبر",
+   "faculty": "كلية السياحة والفنادق",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-04-24",
+    "expiresAt": "2029-04-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة 6 أكتوبر",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة 6 أكتوبر",
+   "faculty": "كلية الطب والجراحة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة 6 أكتوبر",
+   "faculty": "كلية العلاج الطبيعى",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2024-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة 6 أكتوبر",
+   "faculty": "كلية الفنون التطبيقية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2030-05-27"
+   },
+   "programmes": [
+    {
+     "name": "الاعلان",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "التصميم الداخلى والأثاث",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "الفوتوغرافيا والسينما والتليفزيون",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    }
+   ]
+  },
+  {
+   "university": "جامعة 6 أكتوبر",
+   "faculty": "كلية اللغات والترجمة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-08-14"
+   },
+   "programmes": [
+    {
+     "name": "ليسانس اللغات والترجمة قسم اللغة الألمانية",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "ليسانس اللغات والترجمة قسم اللغة الفرنسية",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "ليسانس اللغات والترجمة قسم اللغة الإنجليزية",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "ليسانس اللغات والترجمة قسم اللغة الإسبانية",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة 6 أكتوبر",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة 6 أكتوبر",
+   "faculty": "كلية تكنولوجيا العلوم الطبية التطبيقية",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة 6 أكتوبر",
+   "faculty": "كلية طب الاسنان",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة 6 أكتوبر",
+   "faculty": "كلية نظم المعلومات و علوم الحاسب",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-04-24",
+    "expiresAt": "2029-04-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أسوان",
+   "faculty": "كلية العلوم",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة أسوان",
+   "faculty": "كلية الهندسة",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة أسيوط",
+   "faculty": "كلية الآداب",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "انتهاء صلاحية قرار الاعتماد",
+    "decidedAt": "2014-08-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أسيوط",
+   "faculty": "كلية التجارة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "البكالوريوس في التجارة - برنامج نظم معلومات الأعمال (BIS) \"بنظام الساعات المعتمدة باللغة الإنجليزية\"",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة أسيوط",
+   "faculty": "كلية التربية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "انتهاء صلاحية قرار الاعتماد",
+    "decidedAt": "2013-10-10"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أسيوط",
+   "faculty": "كلية التربية الرياضية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2021-03-31"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أسيوط",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-04-24",
+    "expiresAt": "2029-04-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أسيوط",
+   "faculty": "كلية الحاسبات والمعلومات",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-09-24",
+    "expiresAt": "2027-03-23"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس في الحاسبات و المعلومات (تخصص نظم معلومات)",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة أسيوط",
+   "faculty": "كلية الزراعة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "الانتاج النباتى",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "الأراضى والمباه",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة أسيوط",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-06-21",
+    "expiresAt": "2028-06-20"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أسيوط",
+   "faculty": "كلية الطب",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-05-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أسيوط",
+   "faculty": "كلية الطب البيطري",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أسيوط",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "تجديد اعتماد",
+    "decidedAt": "2017-08-14"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أسيوط",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "تجديد اعتماد",
+    "decidedAt": "2019-11-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أسيوط",
+   "faculty": "معهد جنوب مصر للأورام",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2016-06-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أكتوبر للعلوم الحديثة والآداب",
+   "faculty": "طب الاسنان",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-03-31"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أكتوبر للعلوم الحديثة والآداب",
+   "faculty": "كلية الإعلام",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-09-24",
+    "expiresAt": "2030-09-23"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس اعلام إذاعة وتلفزيون",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "بكالوريوس إعلام - العلاقات العامة والإعلان",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "بكالوريوس إعلام -صحافة",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة أكتوبر للعلوم الحديثة والآداب",
+   "faculty": "كلية التكنولوجيا الحيوية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-05-29",
+    "expiresAt": "2029-05-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أكتوبر للعلوم الحديثة والآداب",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-06-29",
+    "expiresAt": "2027-06-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أكتوبر للعلوم الحديثة والآداب",
+   "faculty": "كلية الفنون والتصميم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أكتوبر للعلوم الحديثة والآداب",
+   "faculty": "كلية اللغات",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-04-24",
+    "expiresAt": "2029-04-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أكتوبر للعلوم الحديثة والآداب",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-04-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أكتوبر للعلوم الحديثة والآداب",
+   "faculty": "كلية علوم الادارة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة أكتوبر للعلوم الحديثة والآداب",
+   "faculty": "كلية علوم الحاسب الالى",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2026-11-27"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس علوم الحاسب تخصص علوم الحاسب",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "بكالوريوس علوم الحاسب تخصص هندسة البرمجيات",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "الاقتصاد المنزلي",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "ادارة مؤسسات الأسرة والطفولة",
+     "status": "accredited",
+     "expiresAt": "2028-08-30"
+    },
+    {
+     "name": "الاقتصاد المنزلي التربوي",
+     "status": "accredited",
+     "expiresAt": "2028-08-30"
+    },
+    {
+     "name": "التغذية وعلوم الأطعمة",
+     "status": "accredited",
+     "expiresAt": "2027-11-29"
+    },
+    {
+     "name": "الملابس والنسيج",
+     "status": "accredited",
+     "expiresAt": "2027-11-29"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "الدراسات الاسلامية والعربية بكفر الشيخ",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-04-24",
+    "expiresAt": "2029-04-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "الدراسات الاسلامية والعربية بنات - بنى سويف",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-07-27",
+    "expiresAt": "2027-07-26"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "طب الاسنان بنين - القاهرة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية أصول الدين بأسيوط",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية اصول الدين بالقاهرة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-03-31"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية أصول الدين فرع الزقازيق",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-05-31",
+    "expiresAt": "2028-05-30"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية أصول الدين و الدعوة الاسلامية بالمنوفية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية أصول الدين والدعوة الإسلامية بنين بطنطا",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-06-04",
+    "expiresAt": "2030-06-03"
+   },
+   "programmes": [
+    {
+     "name": "أصول الدين",
+     "status": "accredited",
+     "expiresAt": "2030-06-03"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية أصول الدين والدعوة بالمنصورة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-05-31",
+    "expiresAt": "2028-05-30"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية البنات الأزهرية بالعاشر من رمضان",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "الشريعة الإسلامية",
+     "status": "accredited",
+     "expiresAt": "2027-11-29"
+    },
+    {
+     "name": "أصول الدين",
+     "status": "accredited",
+     "expiresAt": "2027-11-29"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية البنات الأزهرية بطيبة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "الشريعة الإسلامية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "أصول الدين",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية البنات الاسلامية بأسيوط",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "اللغة العربية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "أصول الدين",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "الشريعة الاسلامية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية التربية بنين بالقاهرة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "الاجازة العالية ( الليسانس ) في الآداب والتربية تحصص اللغة العربية",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "الاجازة العالية ( الليسانس) في الآداب والتربية تخصص اللغة الانجليزية",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "الإجازة العالية (بكالوريوس العلوم والتربية، تخصص المكتبات والمعلومات وتكنولوجيا التعليم",
+     "status": "accredited",
+     "expiresAt": "2027-06-28"
+    },
+    {
+     "name": "الإجازة العالية (ليسانس الآداب والتربية، تخصص علم النفس",
+     "status": "accredited",
+     "expiresAt": "2027-06-28"
+    },
+    {
+     "name": "الإجازة العالية (ليسانس الآداب والتربية، تخصص التاريخ",
+     "status": "accredited",
+     "expiresAt": "2027-06-28"
+    },
+    {
+     "name": "الإجازة العالية (ليسانس الآداب والتربية، تخصص الجغرافيا",
+     "status": "accredited",
+     "expiresAt": "2027-06-28"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية التربية بنين بتفهنا الأشراف",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "الليسانس في الآداب والتربية: شعبة علم النفس",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "المكتبات والمعلومات وتكنولوجيا التعليم",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الدراسات الإسلامية بنين باسوان",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الدراسات الاسلامية و العربية - فرع البنات بالقاهرة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2018-05-10"
+   },
+   "programmes": [
+    {
+     "name": "الصحافة والإعلام",
+     "status": "accredited",
+     "expiresAt": "2028-05-30"
+    },
+    {
+     "name": "الشريعة والقانون باللغة العربية",
+     "status": "accredited",
+     "expiresAt": "2028-03-07"
+    },
+    {
+     "name": "الشريعة والقانون باللغة الإنجليزية",
+     "status": "accredited",
+     "expiresAt": "2028-03-07"
+    },
+    {
+     "name": "اللغة العربية",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    },
+    {
+     "name": "الشريعة الإسلامية",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    },
+    {
+     "name": "أصول الدين",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الدراسات الاسلامية و العربية بنات الاسكندرية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-04-24",
+    "expiresAt": "2029-04-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الدراسات الإسلامية والعربية بدسوق",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-04-27",
+    "expiresAt": "2027-04-26"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الدراسات الإسلامية والعربية بنات بدمنهور",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2030-05-27"
+   },
+   "programmes": [
+    {
+     "name": "برنامج اللغة العربية",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الدراسات الاسلامية والعربية للبنات بالزقازيق",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-04-24",
+    "expiresAt": "2029-04-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الدراسات الإسلامية والعربية للبنات بالمنصورة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2021-12-22",
+    "expiresAt": "2026-12-21"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الدراسات الإسلامية والعربية للبنات بسوهاج",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الدراسات الاسلامية والعربية للبنات بمدينة السادات",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الدراسات الاسلامية والعربية للبنين بالشرقية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2030-05-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الدراسات الإسلامية والعربية للبنين بالقاهرة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-09-28",
+    "expiresAt": "2027-09-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الدراسات الإنسانية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "رياض الأطفال",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "برنامج الجغرافيا",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "تاريخ",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "برنامج اجتماع",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "علم النفس",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "المكتبات",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "الوثائق",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "اللغة التركية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2027-03-27"
+    },
+    {
+     "name": "ليسانس اللغة الفارسية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2027-03-27"
+    },
+    {
+     "name": "اللغة العبرية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2027-03-27"
+    },
+    {
+     "name": "اللغة الأردية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2027-03-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الدراسات الإنسانية بالدقهلية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "برنامج علم النفس",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "برنامج علم الاجتماع",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "برنامج اللغة الإنجليزية وأدابها والترجمة الفورية",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "برنامج التاريخ",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الدعوة الاسلامية بالقاهرة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-06-21",
+    "expiresAt": "2028-06-20"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الزراعة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "المحاصيل",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "الأراضي والمياه",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "الكيمياء الحيوية الزراعية",
+     "status": "accredited",
+     "expiresAt": "2027-11-29"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الشريعة و القانون _ طنطا",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الشريعة و القانون - القاهرة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-03-28",
+    "expiresAt": "2027-03-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الشريعة و القانون بتفهنا الأشراف",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-03-31"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الشريعة والقانون بدمنهور",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2031-05-19"
+   },
+   "programmes": [
+    {
+     "name": "ليسانس الشريعة والقانون",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    },
+    {
+     "name": "ليسانس الشريعة الإسلامية",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الشريعة والقانون بنين بأسيوط",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2030-05-27"
+   },
+   "programmes": [
+    {
+     "name": "برنامج الشريعة الإسلامية بكلية الشريعة والقانون بأسيوط بنين",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "برنامج الشريعة والقانون بكلية الشريعة والقانون بأسيوط بنين",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الصيدلة (بنين) بالقاهرة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2030-05-27"
+   },
+   "programmes": [
+    {
+     "name": "درجة بكالوريوس الصيدلة فارم دي",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الصيدلة بنات القاهره",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الطب بنات",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الطب بنين بأسيوط",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-09-24",
+    "expiresAt": "2030-09-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الطب بنين دمياط",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-04-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية العلوم (بنات)",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-08-14"
+   },
+   "programmes": [
+    {
+     "name": "الفيزياء الحيوية",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "الفيزياء الخاصة",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "علم الحيوان",
+     "status": "accredited",
+     "expiresAt": "2028-11-21"
+    },
+    {
+     "name": "علم الحشرات",
+     "status": "accredited",
+     "expiresAt": "2028-11-21"
+    },
+    {
+     "name": "نبات خاص",
+     "status": "accredited",
+     "expiresAt": "2028-08-30"
+    },
+    {
+     "name": "ميكروبيولوجي خاص",
+     "status": "accredited",
+     "expiresAt": "2028-08-30"
+    },
+    {
+     "name": "الرياضيات الخاصة",
+     "status": "accredited",
+     "expiresAt": "2028-08-30"
+    },
+    {
+     "name": "الرياضيات البحته وعلوم الحاسب",
+     "status": "accredited",
+     "expiresAt": "2028-08-30"
+    },
+    {
+     "name": "الكيمياء الخاصة",
+     "status": "accredited",
+     "expiresAt": "2028-07-25"
+    },
+    {
+     "name": "الكيماء التطبيقية",
+     "status": "accredited",
+     "expiresAt": "2028-07-25"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية العلوم (بنين) بالقاهرة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-05-29"
+   },
+   "programmes": [
+    {
+     "name": "الكيمياء الخاصة",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "الكيمياء التطبيقية",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "جيولوجيا",
+     "status": "accredited",
+     "expiresAt": "2028-08-30"
+    },
+    {
+     "name": "جيوفيزياء",
+     "status": "accredited",
+     "expiresAt": "2028-08-30"
+    },
+    {
+     "name": "جيوكيمياء",
+     "status": "accredited",
+     "expiresAt": "2028-07-25"
+    },
+    {
+     "name": "جيولوجيا-كيمياء",
+     "status": "accredited",
+     "expiresAt": "2028-07-25"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية العلوم بنين اسيوط",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-03-31"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية القرآن الكريم للقراءات وعلومها بطنطا",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-02-02",
+    "expiresAt": "2028-02-01"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية اللغات والترجمة بالقاهرة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "اللغة الإسبانية وادابها",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "اللغة الفرنسية وادابها",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "الترجمة الفورية باللغة الإنجليزية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "اللغة الإنجليزية وادابها",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "اللغة الأردية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "اللغات الإفريقية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "اللغة الفارسية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2028-08-30"
+    },
+    {
+     "name": "اللغة التركية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2028-08-30"
+    },
+    {
+     "name": "اللغة الألمانية وأدبها",
+     "status": "accredited",
+     "expiresAt": "2028-07-25"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية اللغة العربية بالزقازيق",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية اللغة العربية بالقاهرة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-04-24",
+    "expiresAt": "2029-04-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية اللغة العربية بالمنصورة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-05-31",
+    "expiresAt": "2028-05-30"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية اللغة العربية بالمنوفية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-11-30",
+    "expiresAt": "2027-11-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية اللغة العربية بإيتاي البارود",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية اللغة العربية بشبين الكوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-05-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية اللغة العربية فرع أسيوط",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-06-29",
+    "expiresAt": "2027-06-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الهندسة بنين بالقاهرة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "هندسة الاشغال العامة",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "هندسة الرى والهيدروليكا",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "هندسة المناجم و الفلزات",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "هندسة البترول",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "برنامج هندسة التخطيط العمراني",
+     "status": "accredited",
+     "expiresAt": "2028-08-30"
+    },
+    {
+     "name": "هندسة الإنشاءات",
+     "status": "accredited",
+     "expiresAt": "2028-08-30"
+    },
+    {
+     "name": "هندسة النظم والحاسبات",
+     "status": "accredited",
+     "expiresAt": "2028-05-30"
+    },
+    {
+     "name": "الالكترونيات والاتصالات الكهربية",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    },
+    {
+     "name": "القوى والالات الكهربية",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية الهندسة بنين بقنا",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية طب الاسنان للبنات",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-11-30",
+    "expiresAt": "2027-11-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأزهر",
+   "faculty": "كلية طب بنين",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-11-30",
+    "expiresAt": "2027-11-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "المعهد العالى للصحة العامة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-05-29",
+    "expiresAt": "2029-05-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "كلية الآداب",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "برنامج قسم اللغة الفرنسية و آدابها",
+     "status": "accredited",
+     "expiresAt": "2027-07-26"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "كلية التربية الرياضيه للبنات",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-10-23",
+    "expiresAt": "2029-10-22"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "كلية التربية النوعية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2024-10-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "كلية التربية للطفولة المبكرة",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "كلية التربيه الرياضيه للبنين ابوقير",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "تجديد اعتماد",
+    "decidedAt": "2019-07-15"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس التربية الرياضية / ادارة رياضية",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "بكالوريوس التربية الرياضية / تدريس التربية البدنية والرياضية",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-08-31",
+    "expiresAt": "2027-09-30"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "كلية الزراعة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "انتهاء صلاحية قرار الاعتماد",
+    "decidedAt": "2014-12-30"
+   },
+   "programmes": [
+    {
+     "name": "الانتاج النباتي",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "التقنية الحيوية الزراعية",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "كلية الزراعة سابا باشا",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2018-06-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "كلية السياحة و الفنادق",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2018-03-13"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس السياحة والفنادق (برنامج الدراسات السياحية)",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2021-11-24",
+    "expiresAt": "2026-11-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "كلية الطب",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-11-30",
+    "expiresAt": "2027-11-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "كلية الطب البيطرى",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2016-08-15"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "انتهاء صلاحية قرار الاعتماد",
+    "decidedAt": "2014-06-26"
+   },
+   "programmes": [
+    {
+     "name": "الكيمياء الحيويه (رئيسي) - الكيمياء (فرعي)",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "علوم الحاسب الدرجه الخاصه",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "الكيمياء الدرجه الخاصه",
+     "status": "accredited",
+     "expiresAt": "2028-03-07"
+    },
+    {
+     "name": "الرياضيات الدرجه الخاصه",
+     "status": "accredited",
+     "expiresAt": "2028-03-07"
+    },
+    {
+     "name": "النبات (رئيسي) - الكيمياء (فرعي)",
+     "status": "accredited",
+     "expiresAt": "2027-08-30"
+    },
+    {
+     "name": "الميكروبيولوجيا (رئيسي) - الكيمياء (فرعي)",
+     "status": "accredited",
+     "expiresAt": "2027-08-30"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "كلية الفنون الجميلة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "رسوم النشر والصور الإيضاحية",
+     "status": "accredited",
+     "expiresAt": "2028-05-01"
+    },
+    {
+     "name": "الطبعة الفنية",
+     "status": "accredited",
+     "expiresAt": "2028-05-01"
+    },
+    {
+     "name": "برنامج الديكور",
+     "status": "accredited",
+     "expiresAt": "2027-04-26"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "انتهاء صلاحية قرار الاعتماد",
+    "decidedAt": "2014-07-20"
+   },
+   "programmes": [
+    {
+     "name": "الهندسة الميكانيكية",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    },
+    {
+     "name": "بكالوريوس الهندسة فى الهندسة البحرية و عمارة السفن",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "هندسة العمارة و النشيد",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "هندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "برنامج هندسة الحاسب والنظم",
+     "status": "accredited",
+     "expiresAt": "2026-12-21"
+    },
+    {
+     "name": "هندسة الحاسبات والإتصالات",
+     "status": "accredited",
+     "expiresAt": "2026-12-21"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "كلية طب الاسنان",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-08-31"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "معهد البحوث الطبية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الاسكندرية",
+   "faculty": "معهد الدراسات العليا والبحوث",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-07-26",
+    "expiresAt": "2028-07-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأهرام الكندية",
+   "faculty": "كلية الإعلام",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2021-11-24",
+    "expiresAt": "2026-11-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأهرام الكندية",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2030-05-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأهرام الكندية",
+   "faculty": "كلية طب الفم والاسنان",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2026-11-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الأهرام الكندية",
+   "faculty": "كلية علوم الحاسب وتكنولوجيا المعلومات",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "احاطة",
+    "decidedAt": "2015-05-18"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الجيزة الجديدة",
+   "faculty": "كلية التجارة وادارة الاعمال",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-10-29",
+    "expiresAt": "2030-10-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الجيزة الجديدة",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-04-24",
+    "expiresAt": "2029-04-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الجيزة الجديدة",
+   "faculty": "كلية طب الاسنان",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الدلتا للعلوم والتكنولوجيا",
+   "faculty": "كلية إدارة الأعمال",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-02-09",
+    "expiresAt": "2027-02-08"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الدلتا للعلوم والتكنولوجيا",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2031-05-19"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس الصيدلة فارم دي - صيدلة اكلينيكية",
+     "status": "conditional",
+     "expiresAt": "2027-11-19"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الدلتا للعلوم والتكنولوجيا",
+   "faculty": "كلية العلاج الطبيعي",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-08-31",
+    "expiresAt": "2027-08-30"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الدلتا للعلوم والتكنولوجيا",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2027-11-19"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى هندسة الميكاترونكس",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    },
+    {
+     "name": "برنامج البكالوريوس فى الهندسة المعمارية",
+     "status": "conditional",
+     "expiresAt": "2027-11-19"
+    },
+    {
+     "name": "البكالوريوس فى الهندسة المدنية",
+     "status": "conditional",
+     "expiresAt": "2027-11-19"
+    },
+    {
+     "name": "برنامج البكالوريوس فى هندسة الإلكترونيات والإتصالات",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الدلتا للعلوم والتكنولوجيا",
+   "faculty": "كلية طب الفم والأسنان",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-04-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الزقازيق",
+   "faculty": "كلية التربية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2017-08-14"
+   },
+   "programmes": [
+    {
+     "name": "برنامج اعداد معلم اعلم النفس",
+     "status": "accredited",
+     "expiresAt": "2028-03-07"
+    },
+    {
+     "name": "برنامج اعداد معلم الرياضيات",
+     "status": "accredited",
+     "expiresAt": "2028-03-07"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الزقازيق",
+   "faculty": "كلية التربية الرياضية بنين",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-07-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الزقازيق",
+   "faculty": "كلية التربية الرياضيه بنات",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-09-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الزقازيق",
+   "faculty": "كلية التربية النوعية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "برنامج اعداد معلم الاقتصاد المنزلى",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الزقازيق",
+   "faculty": "كلية التكنولوجيا والتنمية",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة الزقازيق",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-03-08",
+    "expiresAt": "2028-03-07"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الزقازيق",
+   "faculty": "كلية الحاسبات والمعلومات",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس في الحاسبات والمعلومات شعبة نظم المعلومات",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الزقازيق",
+   "faculty": "كلية الزراعة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-06-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الزقازيق",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-07-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الزقازيق",
+   "faculty": "كلية الطب البشري",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2021-12-22",
+    "expiresAt": "2026-12-21"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الزقازيق",
+   "faculty": "كلية الطب البيطرى",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-08-30",
+    "expiresAt": "2028-08-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الزقازيق",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2018-06-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الزقازيق",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-03-06"
+   },
+   "programmes": [
+    {
+     "name": "هندسة الالكترونيات و الاتصالات الكهربية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "الهندسة الصناعية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "هندسة الانتاج والتصميم الميكانيكي",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "هندسة القوى الميكانيكية",
+     "status": "accredited",
+     "expiresAt": "2029-05-28"
+    },
+    {
+     "name": "هندسة القوى و الالات الكهربية",
+     "status": "accredited",
+     "expiresAt": "2028-07-25"
+    },
+    {
+     "name": "برنامج الهندسة المدنية",
+     "status": "accredited",
+     "expiresAt": "2027-11-29"
+    }
+   ]
+  },
+  {
+   "university": "جامعة السويس",
+   "faculty": "كلية التكنولوجيا والتعليم",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2031-05-19"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس فى التعليم الصناعى - تخصص ميكانيكا - شعبة إنتاج",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    },
+    {
+     "name": "بكالوريوس التعليم الصناعى تخصص ميكانيكا شعبة تبريد وتكييف",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "البكالوريوس فى التعليم الصناعى تخصص كهرباء شعبة القوى والالات الكهربية",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "البكالوريوس فى التعليم الصناعى تخصص الانشاءات المدنية والمعمارية",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة السويس",
+   "faculty": "كلية هندسة البترول والتعدين",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس الهندسة تخصص هندسة البترول",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    },
+    {
+     "name": "بكالوريوس الهندسة تخصص هندسة التعدين",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    }
+   ]
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية الاقتصاد المنزلي",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "انتهاء صلاحية قرار الاعتماد",
+    "decidedAt": "2014-09-22"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية التجارة وادارة الاعمال",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية التربية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-04-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية التربية الرياضية بنين",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2016-09-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية التربية الرياضية للبنات بالجزيرة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "تجديد اعتماد",
+    "decidedAt": "2019-08-26"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية التربية الفنية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-04-24",
+    "expiresAt": "2029-04-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-06-21",
+    "expiresAt": "2028-06-20"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية الحاسبات و المعلومات",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2015-10-26"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية الخدمة الاجتماعية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-07-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية السياحة و الفنادق",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2018-07-30"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية الصيدله",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-07-26",
+    "expiresAt": "2028-07-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية الطب",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2025-10-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2018-06-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية الفنون التطبيقية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2019-02-28"
+   },
+   "programmes": [
+    {
+     "name": "الغزل والنسيج والتريكو",
+     "status": "accredited",
+     "expiresAt": "2026-10-26"
+    }
+   ]
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية الفنون الجميلة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-08-14"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2015-05-18"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة العاصمة",
+   "faculty": "كلية الهندسة بالمطرية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "هندسة الطاقة",
+     "status": "accredited",
+     "expiresAt": "2028-08-29"
+    },
+    {
+     "name": "هندسة السيارات والجرارات",
+     "status": "accredited",
+     "expiresAt": "2028-08-29"
+    },
+    {
+     "name": "الهندسة الإنشائية",
+     "status": "accredited",
+     "expiresAt": "2028-08-29"
+    },
+    {
+     "name": "هندسة معمارية",
+     "status": "accredited",
+     "expiresAt": "2028-08-29"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الفيوم",
+   "faculty": "كلية الآثار",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-07-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الفيوم",
+   "faculty": "كلية الاداب",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "برنامج اللغة الانجليزية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    }
+   ]
+  },
+  {
+   "university": "جامعة الفيوم",
+   "faculty": "كلية التربية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2020-10-05"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الفيوم",
+   "faculty": "كلية التربية للطفولة المبكرة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2018-07-30"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الفيوم",
+   "faculty": "كلية الحاسبات و الذكاء الاصطناعى",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2019-02-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الفيوم",
+   "faculty": "كلية الخدمة الاجتماعية",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-09-24",
+    "expiresAt": "2027-03-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الفيوم",
+   "faculty": "كلية الزراعة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2019-08-26"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الفيوم",
+   "faculty": "كلية السياحة و الفنادق",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2026-05-20"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الفيوم",
+   "faculty": "كلية الطب البشري",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الفيوم",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-08-14"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الفيوم",
+   "faculty": "كلية الهندسة",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة الفيوم",
+   "faculty": "كلية دار العلوم",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2027-11-19"
+   },
+   "programmes": [
+    {
+     "name": "برنامج الليسانس فى اللغه العربية والعلوم الاسلامية",
+     "status": "conditional",
+     "expiresAt": "2027-11-19"
+    }
+   ]
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "المعهد القومي لعلوم الليزر",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-09-24",
+    "expiresAt": "2030-09-23"
+   },
+   "programmes": [
+    {
+     "name": "دكتوراة الفلسفة فى علوم الليزر تخصص تطبيقات الليزر الهندسية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "ماجستير علوم الليزر تخصص تطبيقات الليزر الهندسية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "المعهد القومى للأورام",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2027-11-19"
+   },
+   "programmes": [
+    {
+     "name": "دكتوراه في التخدير و علاج الألم",
+     "status": "conditional",
+     "expiresAt": "2027-11-19"
+    }
+   ]
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية الآثار",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "ترميم الآثار العضوية",
+     "status": "accredited",
+     "expiresAt": "2027-06-28"
+    },
+    {
+     "name": "ترميم الآثار غير العضوية",
+     "status": "accredited",
+     "expiresAt": "2027-07-28"
+    },
+    {
+     "name": "الاثار اليونانية الرومانية",
+     "status": "accredited",
+     "expiresAt": "2027-04-26"
+    },
+    {
+     "name": "الآثار الإسلامية",
+     "status": "accredited",
+     "expiresAt": "2027-04-26"
+    },
+    {
+     "name": "الآثار المصرية القديمة",
+     "status": "accredited",
+     "expiresAt": "2027-04-26"
+    }
+   ]
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية الاداب",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-07-19"
+   },
+   "programmes": [
+    {
+     "name": "الليسانس فى الاداب قسم اللغه الايطالية وادابها",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "اللغة الإنجليزية",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "اللغة العربية",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "اللغة الصينية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "اللغة الفرنسية",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية الاعلام",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-05-02",
+    "expiresAt": "2028-05-01"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية الاقتصاد والعلوم السياسية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-03-08",
+    "expiresAt": "2028-03-07"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية التجارة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "برنامج التسويق المشترك مع كلية روبنسون للإدارة - جامعة ولاية جورجيا بالولايات المتحدة الأمريكية",
+     "status": "accredited",
+     "expiresAt": "2028-03-07"
+    }
+   ]
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية التخطيط الأقليمي والعمراني",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-08-30",
+    "expiresAt": "2028-08-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية التربية النوعية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2016-09-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية التربية للطفولة المبكرة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2016-08-15"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية الحاسبات و المعلومات",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2016-09-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية الدراسات العليا للتربية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "الدبلوم العامة في التربية شعبة إعداد معلم اللغة العربية للناطقين بغيرها",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "الدبلوم الخاص في التربية تخصص إعداد معلم اللغة العربية للناطقين بغيرها",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية الصيدله",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2021-11-24",
+    "expiresAt": "2026-11-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية الطب",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-11-30",
+    "expiresAt": "2027-11-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية الطب البيطرى",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2030-05-27"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس العلوم الطبية البيطرية",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية العلاج الطبيعي",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-09-24",
+    "expiresAt": "2030-09-23"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس العلاج الطبيعي",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "انتهاء صلاحية قرار الاعتماد",
+    "decidedAt": "2014-08-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2016-03-21"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى هندسة القوى الميكانيكية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "البكالوريوس فى هندسة الطيران والفضاء",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "هندسة التصميم الميكانيكى والإنتاج",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    },
+    {
+     "name": "هندسة ميكانيكية: تخصص هندسة التصميم الميكانيكي",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    },
+    {
+     "name": "الهندسة الكيميائية",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    },
+    {
+     "name": "هندسة البترول و البتروكيماويات",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    },
+    {
+     "name": "هندسة الفلزات",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    },
+    {
+     "name": "هندسة البترول",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    },
+    {
+     "name": "الهندسة الجيولوجية والتعدين",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    },
+    {
+     "name": "هندسة مدنية: تخصص هندسة الإنشاءات",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    },
+    {
+     "name": "هندسة مدنية: تخصص هندسة المياه و البيئة",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    }
+   ]
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية دار العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-06-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "كلية طب الاسنان",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-09-24",
+    "expiresAt": "2027-03-23"
+   },
+   "programmes": [
+    {
+     "name": "برنامج طب جراحة الفم والاسنان",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "معهد البحوث و الدراسات الافريقية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2017-08-14"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة القاهرة",
+   "faculty": "معهد الدراسات و البحوث الإحصائية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2016-09-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المستقبل",
+   "faculty": "التجارة وادارة الاعمال",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "نظم المعلومات الادارية",
+     "status": "accredited",
+     "expiresAt": "2028-05-01"
+    },
+    {
+     "name": "التسويق",
+     "status": "accredited",
+     "expiresAt": "2028-05-01"
+    },
+    {
+     "name": "ادارة الموارد البشرية",
+     "status": "accredited",
+     "expiresAt": "2028-05-01"
+    },
+    {
+     "name": "المحاسبة",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    },
+    {
+     "name": "التمويل",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المستقبل",
+   "faculty": "جامعة المستقبل",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة المستقبل",
+   "faculty": "كلية الاقتصاد والعلوم السياسية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-08-31"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المستقبل",
+   "faculty": "كلية الحاسبات و تكنولوجيا المعلومات",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2019-08-26"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المستقبل",
+   "faculty": "كلية العلوم الصيدلية و الصناعات الدوائية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-03-28",
+    "expiresAt": "2027-03-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المستقبل",
+   "faculty": "كلية الهندسة و التكنولوجيا",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2031-05-19"
+   },
+   "programmes": [
+    {
+     "name": "برنامج البكالوريوس فى هندسة الميكاترونيات",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المستقبل",
+   "faculty": "كلية طب الفم و الاسنان",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-09-24",
+    "expiresAt": "2030-09-23"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس طب و جراحة الفم و الاسنان",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنصورة",
+   "faculty": "جامعة المنصورة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-08-14"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنصورة",
+   "faculty": "كلية التجارة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "البكالوريوس فى التمويل والاقتصاد – نظام الساعات المعتمدة",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنصورة",
+   "faculty": "كلية التربية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-08-14"
+   },
+   "programmes": [
+    {
+     "name": "برنامج إعداد معلمي العلوم والرياضيات باللغة الإنجليزية للتعليم العام(تخصص الرياضيات)",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "برنامج إعداد معلمي العلوم والرياضيات باللغة الإنجليزية للتعليم العام(تخصص العلوم البيولوجية والجيولوجية-بيولوجي أساسي جيولوجيا فرعي)",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنصورة",
+   "faculty": "كلية التربية الرياضية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-10-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنصورة",
+   "faculty": "كلية التربية النوعية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس التربية النوعية شعبة الاقتصاد المنزلي",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "بكالوريوس التربية النوعية شعبة معلم الحاسب الآلى",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "بكالوريوس التربية النوعية شعبة التربية الموسيقية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنصورة",
+   "faculty": "كلية التربية للطفولة المبكرة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "إعداد معلمات التأهيل المهنى للأطفال ذوى الإحتياجات الخاصة",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "إعداد معلمات رياض الأطفال باللغة الانجليزية",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنصورة",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "تجديد اعتماد",
+    "decidedAt": "2020-10-05"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنصورة",
+   "faculty": "كلية الحقوق",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-09-24",
+    "expiresAt": "2027-03-23"
+   },
+   "programmes": [
+    {
+     "name": "شعبة الدراسة القانونية باللغة الإنجليزية",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "شعبة الدراسة القانونية باللغة الفرنسية",
+     "status": "accredited",
+     "expiresAt": "2028-07-20"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنصورة",
+   "faculty": "كلية الزراعة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-09-24",
+    "expiresAt": "2030-09-23"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس فى العلوم الزراعية برنامج تنسيق الحدائق والمسطحات الخضراء",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "العلوم الاقتصادية والاجتماعية الزراعية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "الإنتاج الحيوانى والداجنى والسمكى",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "التقنية الحيوية الزراعية",
+     "status": "accredited",
+     "expiresAt": "2027-03-27"
+    },
+    {
+     "name": "الأراضي والمياه",
+     "status": "accredited",
+     "expiresAt": "2027-03-27"
+    },
+    {
+     "name": "برنامج وقاية النبات",
+     "status": "accredited",
+     "expiresAt": "2027-03-01"
+    },
+    {
+     "name": "الإنتاج النباتى",
+     "status": "accredited",
+     "expiresAt": "2027-03-01"
+    },
+    {
+     "name": "علوم وتكنولوجيا الأغذية",
+     "status": "accredited",
+     "expiresAt": "2027-03-01"
+    },
+    {
+     "name": "الهندسة الزراعية والنظم الحيوية",
+     "status": "accredited",
+     "expiresAt": "2027-03-01"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنصورة",
+   "faculty": "كلية السياحة والفنادق",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2026-11-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنصورة",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنصورة",
+   "faculty": "كلية الطب",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-08-30",
+    "expiresAt": "2028-08-29"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس الطب والجراحة – برنامج المنصورة مانشستر للتعليم الطبي (الساعات المعتمدة)",
+     "status": "accredited",
+     "expiresAt": "2027-06-28"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنصورة",
+   "faculty": "كلية الطب البيطرى",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2026-11-27"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس العلوم الطبية البيطرية\"تميز صحة وسلامة الغذاء\"",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "بكالوريوس العلوم الطبية البيطرية \" تميز صحة وسلامة الغذاء \"",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنصورة",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "تجديد اعتماد",
+    "decidedAt": "2017-07-19"
+   },
+   "programmes": [
+    {
+     "name": "الكيمياء والحيوان",
+     "status": "accredited",
+     "expiresAt": "2029-05-28"
+    },
+    {
+     "name": "الكيمياء والنبات",
+     "status": "accredited",
+     "expiresAt": "2029-05-28"
+    },
+    {
+     "name": "الفيزياء (بكالوريوس)",
+     "status": "accredited",
+     "expiresAt": "2029-05-28"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنصورة",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-04-24",
+    "expiresAt": "2029-04-23"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس الهندسة تخصص الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "هندسة الحاسبات والنظم",
+     "status": "accredited",
+     "expiresAt": "2027-04-26"
+    },
+    {
+     "name": "بكالوريوس الهندسة تخصص هندسة الانتاج والتصميم الميكانيكي",
+     "status": "accredited",
+     "expiresAt": "2027-04-26"
+    },
+    {
+     "name": "هندسة الغزل والنسيج",
+     "status": "accredited",
+     "expiresAt": "2027-04-26"
+    },
+    {
+     "name": "الهندسة المدنية",
+     "status": "accredited",
+     "expiresAt": "2027-03-27"
+    },
+    {
+     "name": "هندسة القوى الميكانيكية",
+     "status": "accredited",
+     "expiresAt": "2027-03-01"
+    },
+    {
+     "name": "بكالوريوس الهندسة تخصص هندسة الميكاترونيكس - نظام الساعات المعتمدة",
+     "status": "accredited",
+     "expiresAt": "2027-03-01"
+    },
+    {
+     "name": "بكالوريوس الهندسة تخصص الهندسة الطبية والحيوية - نظام الساعات المعتمدة",
+     "status": "accredited",
+     "expiresAt": "2027-02-08"
+    },
+    {
+     "name": "هندسة الالكترونيات والاتصالات",
+     "status": "accredited",
+     "expiresAt": "2027-02-08"
+    },
+    {
+     "name": "هندسة القوى والآلات الكهربية",
+     "status": "accredited",
+     "expiresAt": "2027-02-08"
+    },
+    {
+     "name": "بكالوريوس الهندسة المدنية - تخصص هندسة البناء والتشييد - نظام الساعات المعتمدة",
+     "status": "accredited",
+     "expiresAt": "2027-02-08"
+    },
+    {
+     "name": "بكالوريوس الهندسة تخصص هندسة الاتصالات والحاسبات - نظام الساعات المعتمدة",
+     "status": "accredited",
+     "expiresAt": "2027-02-08"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنصورة",
+   "faculty": "كلية طب الأسنان",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-07-04",
+    "expiresAt": "2028-07-03"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنوفية",
+   "faculty": "كلية الآداب",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "الجغرافيا ( الشعبة العامة)",
+     "status": "accredited",
+     "expiresAt": "2028-08-29"
+    },
+    {
+     "name": "الجغرافيا( شعبة الخرائط والمساحة)",
+     "status": "accredited",
+     "expiresAt": "2028-08-29"
+    },
+    {
+     "name": "اللغة الفارسية وادابها",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "اللغة العبرية وادابها",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "علم النفس",
+     "status": "accredited",
+     "expiresAt": "2028-03-07"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنوفية",
+   "faculty": "كلية الاقتصاد المنزلى",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-06-29",
+    "expiresAt": "2027-06-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنوفية",
+   "faculty": "كلية التربية",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنوفية",
+   "faculty": "كلية التربية النوعية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-07-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنوفية",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-03-28",
+    "expiresAt": "2027-03-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنوفية",
+   "faculty": "كلية الزراعة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-07-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنوفية",
+   "faculty": "كلية الزراعة بشبين الكوم",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2031-05-19"
+   },
+   "programmes": [
+    {
+     "name": "برنامج الهندسة الزراعية",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "الإنتاج النباتي \"توجه المحاصيل\"",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "الإنتاج النباتي \"توجه البساتين\"",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنوفية",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنوفية",
+   "faculty": "كلية الطب",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2030-05-27"
+   },
+   "programmes": [
+    {
+     "name": "برنامج بكالوريوس الطب والجراحة العام ( 5+2 ) بنظام الساعات المعتمدة",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "برنامج بكالوريوس الطب والجراحة العام ( 5+2 ) المتميز بنظام الساعات المعتمدة",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنوفية",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "عدم اعتماد",
+    "decidedAt": "2021-10-27"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس الخاصة في العلوم تخصص : الفيزياء",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "البكالوريوس العامة في العلوم شعبة كيمياء و حيوان",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "البكالوريوس العامة في العلوم شعبة الكيمياء والميكروبيولوجى",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنوفية",
+   "faculty": "كلية الهندسة الالكترونية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2031-05-19"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس الهندسة الالكترونية تخصص هندسة الامن السيبرانى وتحليلات البيانات",
+     "status": "conditional",
+     "expiresAt": "2027-11-19"
+    },
+    {
+     "name": "بكالوريوس الهندسة الالكترونية تخصص هندسة وعلوم الحاسبات",
+     "status": "conditional",
+     "expiresAt": "2027-11-19"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنوفية",
+   "faculty": "كلية الهندسة شبين الكوم",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2031-05-19"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى الهندسة شعبة الهندسة الكهربية والحاسبات",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    },
+    {
+     "name": "الهندسة المدنية",
+     "status": "accredited",
+     "expiresAt": "2029-05-28"
+    },
+    {
+     "name": "هندسة القوى والألات الكهربية",
+     "status": "accredited",
+     "expiresAt": "2029-05-28"
+    },
+    {
+     "name": "هندسة القوى الميكانيكية",
+     "status": "accredited",
+     "expiresAt": "2029-05-28"
+    },
+    {
+     "name": "هندسة الانتاج والتصميم الميكانيكى",
+     "status": "accredited",
+     "expiresAt": "2029-05-28"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنوفية",
+   "faculty": "معهد الكبد القومي",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنيا",
+   "faculty": "كلية الاداب",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنيا",
+   "faculty": "كلية الألسن",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "اللغة الفرنسية",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "اللغة الألمانية",
+     "status": "accredited",
+     "expiresAt": "2027-03-27"
+    },
+    {
+     "name": "اللغة الإسبانية",
+     "status": "accredited",
+     "expiresAt": "2027-03-27"
+    },
+    {
+     "name": "اللغة الانجليزية",
+     "status": "accredited",
+     "expiresAt": "2027-03-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنيا",
+   "faculty": "كلية التربية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2018-03-13"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنيا",
+   "faculty": "كلية التربية الرياضية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2019-10-21"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنيا",
+   "faculty": "كلية التربية النوعية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2019-11-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنيا",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2030-05-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنيا",
+   "faculty": "كلية الزراعة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2016-08-15"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنيا",
+   "faculty": "كلية السياحة والفنادق",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2018-05-10"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنيا",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2027-11-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنيا",
+   "faculty": "كلية الطب",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنيا",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2027-11-19"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى العلوم تخصص الرياضيات",
+     "status": "conditional",
+     "expiresAt": "2027-11-19"
+    },
+    {
+     "name": "بكالوريوس العلوم تخصص الكيمياء",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "الميكروبيولوجى",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنيا",
+   "faculty": "كلية الفنون الجميلة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "عدم اعتماد",
+    "decidedAt": "2018-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنيا",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "انتهاء صلاحية قرار الاعتماد",
+    "decidedAt": "2014-09-22"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس هندسة الميكاترونيات والربوتات الصناعية",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    }
+   ]
+  },
+  {
+   "university": "جامعة المنيا",
+   "faculty": "كلية تربية للطفولة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنيا",
+   "faculty": "كلية رياض الأطفال",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2016-08-15"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة المنيا",
+   "faculty": "كلية طب الأسنان",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2025-11-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة النهضة",
+   "faculty": "كلية إدارة الاعمال",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-07-26",
+    "expiresAt": "2028-07-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة النهضة",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة النهضة",
+   "faculty": "كلية الهندسة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "البكالوريوس في الهندسة المعمارية",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "البكالوريوس فى الهندسة المدنية",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "البكالوريوس في هندسة الاتصالات والحاسبات",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    }
+   ]
+  },
+  {
+   "university": "جامعة النهضة",
+   "faculty": "كلية طب الفم و الاسنان",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2021-12-22",
+    "expiresAt": "2026-12-21"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة النهضة",
+   "faculty": "كلية علوم الحاسب",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة النيل الاهلية",
+   "faculty": "كلية الهندسة و العلوم التطبيقية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "البكالوريوس في الهندسة المعمارية والتصميم العمراني",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    },
+    {
+     "name": "البكالوريوس في الالكترونيات وهندسة الحاسب تخصص هندسه الحاسب",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    },
+    {
+     "name": "البكالوريوس في الالكترونيات وهندسة الحاسب تخصص الالكترونيات وهندسة الاتصالات",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    },
+    {
+     "name": "هندسة وإدارة البنية التحتية المدنية",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    }
+   ]
+  },
+  {
+   "university": "جامعة النيل الاهلية",
+   "faculty": "كلية تكنولوجيا المعلومات وعلوم الحاسب",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة الوادي الجديد",
+   "faculty": "كلية التربية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2019-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بدر بالقاهرة",
+   "faculty": "كلية الادارة والعلوم المالية والاقتصادية",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة بدر بالقاهرة",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-06-21",
+    "expiresAt": "2028-06-20"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بدر بالقاهرة",
+   "faculty": "كلية الصيدلة والصناعات الدوائية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-06-21",
+    "expiresAt": "2028-06-20"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بدر بالقاهرة",
+   "faculty": "كلية العلاج الطبيعي",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-08-31",
+    "expiresAt": "2027-08-30"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بدر بالقاهرة",
+   "faculty": "كلية الفنون التطبيقية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "المنسوجات",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "تصميم المنتجات",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    }
+   ]
+  },
+  {
+   "university": "جامعة بدر بالقاهرة",
+   "faculty": "كلية اللغات و الترجمة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "برنامج اللغة الصينية - مرحلة الليسانس",
+     "status": "accredited",
+     "expiresAt": "2028-09-26"
+    },
+    {
+     "name": "اللغة الألمانية - مرحلة الليسانس",
+     "status": "accredited",
+     "expiresAt": "2028-09-26"
+    },
+    {
+     "name": "الليسانس فى اللغات والترجمة تخصص اللغة الإيطالية",
+     "status": "accredited",
+     "expiresAt": "2027-06-28"
+    },
+    {
+     "name": "الليسانس فى اللغات والترجمة تخصص اللغة الإنجليزية",
+     "status": "accredited",
+     "expiresAt": "2027-06-28"
+    }
+   ]
+  },
+  {
+   "university": "جامعة بدر بالقاهرة",
+   "faculty": "كلية الهندسة والتكنولوجيا",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة بدر بالقاهرة",
+   "faculty": "كلية طب الفم و الاسنان",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بنها",
+   "faculty": "الفنون التطبيقية",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة بنها",
+   "faculty": "كلية الاداب",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2019-05-14"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بنها",
+   "faculty": "كلية التجارة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس التجارة في إدارة الأعمال الشعبة باللغة الإنجليزية",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "بكالوريوس التجارة في الاقتصاد شعبة الدراسة باللغة الانجليزية",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "بكالوريوس التجارة في الاحصاء شعبة الدراسة باللغة الإنجليزية",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة بنها",
+   "faculty": "كلية التربية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس العلوم والتربية (تخصص الرياضيات ) عام",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "إعداد معلم الكيمياء للتعليم العام ( الإعدادي والثانوي)",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "إعداد معلم العلوم البيولوجية للتعليم العام ( الإعدادي والثانوي) بيولوجي اساسي وجيولوجيا فرعي",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "إعداد معلم اللغة الانجليزية",
+     "status": "accredited",
+     "expiresAt": "2028-03-07"
+    },
+    {
+     "name": "إعداد معلم اللغة العربية والدراسات الاسلامية",
+     "status": "accredited",
+     "expiresAt": "2026-12-21"
+    },
+    {
+     "name": "إعداد معلم التاريخ",
+     "status": "accredited",
+     "expiresAt": "2026-12-21"
+    },
+    {
+     "name": "إعداد معلم الفلسفة والاجتماع",
+     "status": "accredited",
+     "expiresAt": "2026-12-21"
+    }
+   ]
+  },
+  {
+   "university": "جامعة بنها",
+   "faculty": "كلية التربية النوعية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "عدم اعتماد",
+    "decidedAt": "2018-07-30"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بنها",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2031-05-19"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى علوم التمريض",
+     "status": "conditional",
+     "expiresAt": "2027-11-19"
+    }
+   ]
+  },
+  {
+   "university": "جامعة بنها",
+   "faculty": "كلية الحاسبات و الذكاء الاصطناعى",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2017-07-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بنها",
+   "faculty": "كلية الزراعة بمشتهر",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2016-05-23"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس فى العلوم الزراعية برنامج علوم الاراضى و المياة",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "بكالوريوس فى العلوم الزراعية برنامج الأنتاج الحيوانى و الداجنى",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "بكالوريوس فى العلوم الزراعية برنامج العلوم الأقتصادية و الأجتماعية الزراعية",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "بكالوريوس فى الهندسة الزراعيه",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "البكالوريوس فى التقنية الحيوية الزراعية",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "لبكالوريوس فى العلوم الزراعية برنامج الانتاج النباتى",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "البكالوريوس فى سلامة الغذاء باللغه الانجليزية",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة بنها",
+   "faculty": "كلية الطب",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-11-30",
+    "expiresAt": "2027-11-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بنها",
+   "faculty": "كلية الطب البيطري",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2027-11-19"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس الطب البيطري",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    }
+   ]
+  },
+  {
+   "university": "جامعة بنها",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2018-06-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بنها",
+   "faculty": "كلية الهندسة ببنها",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "عدم اعتماد",
+    "decidedAt": "2020-12-07"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس الهندسة فى الهندسة المدنية",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    },
+    {
+     "name": "بكالوريوس الهندسة فى الهندسة الكهروميكانيكية",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    }
+   ]
+  },
+  {
+   "university": "جامعة بنها",
+   "faculty": "كلية الهندسة بشبرا",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2016-07-03"
+   },
+   "programmes": [
+    {
+     "name": "هندسه الاتصالات والالكترونيات",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "هندسه الحاسبات",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "هندسة الاتصالات والحاسبات",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "الهندسه الصناعية",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "هندسة المساحه",
+     "status": "accredited",
+     "expiresAt": "2028-07-03"
+    },
+    {
+     "name": "الهندسة المدنية - عام",
+     "status": "accredited",
+     "expiresAt": "2028-07-03"
+    },
+    {
+     "name": "هندسة القوى والالات الكهربائية",
+     "status": "accredited",
+     "expiresAt": "2028-07-03"
+    },
+    {
+     "name": "هندسة الطاقه والطاقه المستدامه",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "هندسة القوى الميكانيكية",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "هندسه التصميم الميكانيكى والانتاج",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "هندسة وادارة مواقع التشييد",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2028-05-01"
+    },
+    {
+     "name": "الهندسة المدنية انشاءات",
+     "status": "accredited",
+     "expiresAt": "2028-05-01"
+    },
+    {
+     "name": "الهندسه الكهربائية والتحكم",
+     "status": "accredited",
+     "expiresAt": "2028-05-01"
+    }
+   ]
+  },
+  {
+   "university": "جامعة بني سويف",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2018-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بني سويف",
+   "faculty": "كلية الدراسات العليا للعلوم المتقدمة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "عدم اعتماد",
+    "decidedAt": "2023-07-04"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بني سويف",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-03-28",
+    "expiresAt": "2027-03-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بني سويف",
+   "faculty": "كلية الطب",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-01-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بني سويف",
+   "faculty": "كلية الطب البيطرى",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2019-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بني سويف",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "انتهاء صلاحية قرار الاعتماد",
+    "decidedAt": "2015-01-19"
+   },
+   "programmes": [
+    {
+     "name": "الحيوان والكيمياء",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "الكيمياء والكيمياء الحيوية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "الكيمياء منفرد",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    }
+   ]
+  },
+  {
+   "university": "جامعة بني سويف",
+   "faculty": "كلية طب الاسنان",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-10-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بورسعيد",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-04-24",
+    "expiresAt": "2029-04-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بورسعيد",
+   "faculty": "كلية الطب",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2024-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة بورسعيد",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2021-10-27",
+    "expiresAt": "2026-10-26"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة جنوب الوادي",
+   "faculty": "كلية الاداب - بقنا",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة جنوب الوادي",
+   "faculty": "كلية التربية النوعية بقنا",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-03-08",
+    "expiresAt": "2028-03-07"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة جنوب الوادي",
+   "faculty": "كلية الزراعة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2018-06-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة جنوب الوادي",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2017-08-14"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة جنوب الوادي",
+   "faculty": "كلية طب قنا",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-04-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة حورس",
+   "faculty": "كلية إدارة الأعمال",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2024-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة حورس",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-05-29",
+    "expiresAt": "2029-05-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة حورس",
+   "faculty": "كلية العلاج الطبيعى",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-10-29",
+    "expiresAt": "2027-04-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة حورس",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة حورس",
+   "faculty": "كلية طب الاسنان",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-04-24",
+    "expiresAt": "2029-04-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة دراية",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-10-29",
+    "expiresAt": "2030-10-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة دراية",
+   "faculty": "كلية العلاج الطبيعى",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2024-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة دمنهور",
+   "faculty": "كلية التربية للطفولة المبكرة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس في التربية رياض الأطفال (البرنامج العام)",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة دمنهور",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2020-10-05"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة دمنهور",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2030-05-27"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس الصيدلة (فارم دى-PharmD)",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "بكالوريوس الصيدلة (فارم دى-PharmD) (صيدلة اكلينيكية)",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة دمنهور",
+   "faculty": "كلية الطب البيطرى",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-09-24",
+    "expiresAt": "2030-09-23"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى العلوم الطبيه البيطرية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة دمياط",
+   "faculty": "كلية الآداب",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة دمياط",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "انتهاء صلاحية قرار الاعتماد",
+    "decidedAt": "2015-01-19"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى العلوم تخصص الرياضيات (نظام الساعات المعتمدة)",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "البكالوريوس فى العلوم تخصص الفيزياء (نظام الساعات المعتمدة)",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "البكالوريوس فى العلوم تخصص الكيمياء (نظام الساعات المعتمدة)",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة دمياط",
+   "faculty": "كلية الفنون التطبيقية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2018-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة سوهاج",
+   "faculty": "كلية الاداب",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-07-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة سوهاج",
+   "faculty": "كلية التربية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "ليسانس الاداب والتربية - شعبة اللغة العربية والدراسات الاسلامية",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "ليسانس الاداب والتربية شعبة اللغة الفرنسية",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "ليسانس الاداب والتربية شعبة اللغة الانجليزية",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    }
+   ]
+  },
+  {
+   "university": "جامعة سوهاج",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "عدم اعتماد",
+    "decidedAt": "2018-07-30"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة سوهاج",
+   "faculty": "كلية الزراعة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-06-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة سوهاج",
+   "faculty": "كلية الطب",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2031-05-19"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس الطب والجراحة نظام الخمس سنوات",
+     "status": "conditional",
+     "expiresAt": "2027-11-19"
+    }
+   ]
+  },
+  {
+   "university": "جامعة سوهاج",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "تجديد اعتماد",
+    "decidedAt": "2019-01-06"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة سيناء",
+   "faculty": "كلية الصيدلة - فرع القنطرة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة سيناء",
+   "faculty": "كلية الصيدلة فرع العريش",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2025-05-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة سيناء",
+   "faculty": "كلية الهندسة فرع العريش",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس الهندسة المدنية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة سيناء",
+   "faculty": "كلية الهندسة فرع القنطرة شرق",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة سيناء",
+   "faculty": "كلية تكنولوجيا المعلومات وعلوم الحاسب فرع القنطرة",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة سيناء",
+   "faculty": "كلية طب الاسنان فرع العريش",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2030-05-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة سيناء",
+   "faculty": "كلية طب الاسنان فرع القنطرة شرق",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-10-23",
+    "expiresAt": "2029-10-22"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة طنطا",
+   "faculty": "كلية الآداب",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "الليسانس في الاداب تخصص الاثار شعبة الاثار اليونانية و الرومانية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "الليسانس في الآداب تخصص الآثار شعبة الآثار الإسلامية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "الليسانس في الآداب تخصص الآثار شعبة الآثار المصرية القديمة",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "برنامج المكتبات والوثائق والمعلومات",
+     "status": "accredited",
+     "expiresAt": "2028-07-25"
+    },
+    {
+     "name": "برنامج الجغرافيا العامة ونظم المعلومات الجغرافية",
+     "status": "accredited",
+     "expiresAt": "2028-07-25"
+    },
+    {
+     "name": "برنامج الخرائط والمساحةونظم المعلومات الجغرافية",
+     "status": "accredited",
+     "expiresAt": "2028-07-25"
+    },
+    {
+     "name": "برنامج علم النفس",
+     "status": "accredited",
+     "expiresAt": "2028-07-25"
+    }
+   ]
+  },
+  {
+   "university": "جامعة طنطا",
+   "faculty": "كلية التربية الرياضية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-10-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة طنطا",
+   "faculty": "كلية التربية النوعية",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة طنطا",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2030-05-27"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس فى علوم التمريض",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة طنطا",
+   "faculty": "كلية الحاسبات والمعلومات",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-10-29",
+    "expiresAt": "2027-04-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة طنطا",
+   "faculty": "كلية الزراعة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-10-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة طنطا",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-03-28",
+    "expiresAt": "2027-03-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة طنطا",
+   "faculty": "كلية الطب",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "تجديد اعتماد",
+    "decidedAt": "2020-10-05"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة طنطا",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2016-03-21"
+   },
+   "programmes": [
+    {
+     "name": "علم الحيوان الخاص",
+     "status": "accredited",
+     "expiresAt": "2029-05-28"
+    },
+    {
+     "name": "برنامج الكيمياء الخاص",
+     "status": "accredited",
+     "expiresAt": "2028-07-25"
+    },
+    {
+     "name": "برنامج الكيمياء الحيوي الخاص",
+     "status": "accredited",
+     "expiresAt": "2028-07-25"
+    }
+   ]
+  },
+  {
+   "university": "جامعة طنطا",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "انتهاء صلاحية قرار الاعتماد",
+    "decidedAt": "2015-08-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة طنطا",
+   "faculty": "كلية طب الاسنان",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2031-05-19"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس طب وجراحه الفم والاسنان",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    }
+   ]
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "جامعة عين شمس",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "كلية الاداب",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2016-07-03"
+   },
+   "programmes": [
+    {
+     "name": "الليسانس في الآداب قسم الحضارة واللغات الأوربية القديمة نظام الساعات المعتمدة",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    },
+    {
+     "name": "برنامج اللغة الفرنسية وآدابها بنظام الساعات المعتمدة",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "برنامج اللغة الإنجليزية وآدابها بنظام الساعات المعتمدة",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "برنامج الارشاد السياحي",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "برنامج الارشاد السياحي شعبة اللغة الفرنسية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    }
+   ]
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "كلية الالسن",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "انتهاء صلاحية قرار الاعتماد",
+    "decidedAt": "2015-02-23"
+   },
+   "programmes": [
+    {
+     "name": "ليسانس الألسن تخصص اللغات السامية وآدابها شعبة اللغة العبرية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "ليسانس الألسن تخصص اللغات الشرقية الإسلامية وآدابها شعبة اللغة التركية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "ليسانس الألسن تخصص اللغات الشرقية الإسلامية وآدابها شعبة اللغة الفارسية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "ليسانس الألسن في اللغة الألمانية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "ليسانس الألسن في اللغة الروسية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "ليسانس الألسن في اللغة الصينية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "ليسانس الترجمة المتخصصة في اللغة الصينية بنظام الساعات المعتمدة",
+     "status": "accredited",
+     "expiresAt": "2028-07-20"
+    },
+    {
+     "name": "برنامج ليسانس الألسن في اللغة الفرنسية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "برنامج ليسانس الألسن في اللغة التشيكية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "برنامج ليسانس الألسن في اللغة العربية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "ليسانس الألسن في اللغة الإيطالية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2028-05-01"
+    },
+    {
+     "name": "ليسانس الألسن في اللغة الإسبانية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2028-05-01"
+    },
+    {
+     "name": "ليسانس الألسن في اللغة الإنجليزية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2028-05-01"
+    },
+    {
+     "name": "ليسانس الترجمة التحريرية والفورية (شعبة الترجمة التحريرية أو شعبة الترجمة الفورية) قسم اللغة الإنجليزية بنظام الساعات المعتمدة",
+     "status": "accredited",
+     "expiresAt": "2028-05-01"
+    }
+   ]
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "كلية البنات للاداب والعلوم والتربية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2017-08-14"
+   },
+   "programmes": [
+    {
+     "name": "الليسانس فى الآداب تخصص اللغة العربية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    },
+    {
+     "name": "البكالوريوس فى العلوم تخصص الكيمياء والحيوان",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "برنامج الليسانس في الآداب تخصص اللغة الانجليزية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    },
+    {
+     "name": "برنامج الليسانس في الاداب تخصص اللغة الفرنسية وادابها",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    },
+    {
+     "name": "البكالوريوس فى العلوم فى تخصص الكيمياء",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    }
+   ]
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "كلية التجارة",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "كلية التربية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-08-14"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى العلوم والتربية (الإعدادى والثانوى) تخصص الفيزياء",
+     "status": "accredited",
+     "expiresAt": "2028-08-30"
+    },
+    {
+     "name": "البكالوريوس فى العلوم والتربية (الإعدادى والثانوى) تخصص الكيمياء",
+     "status": "accredited",
+     "expiresAt": "2028-08-29"
+    }
+   ]
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "كلية التربية النوعية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس التربية النوعية تخصص التربية الفنية (تربية خاصة)",
+     "status": "accredited",
+     "expiresAt": "2028-07-03"
+    },
+    {
+     "name": "بكالوريوس التربية النوعية تخصص الإعلام التربوي مسرح مدرسي",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "بكالوريوس التربية النوعية تخصص الإعلام التربوي صحافة وإذاعة وتليفزيون",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "بكالوريوس التربية النوعية تخصص تكنولوجيا التعليم شعبة أخصائي تكنولوجيا التعليم",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "بكالوريوس التربية النوعية تخصص الاقتصاد المنزلي",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "البكالوريوس فى التربية النوعية تخصص التربية الفنية",
+     "status": "accredited",
+     "expiresAt": "2027-02-08"
+    },
+    {
+     "name": "بكالوريوس التربية النوعية تخصص التربية الموسيقية",
+     "status": "accredited",
+     "expiresAt": "2027-02-08"
+    }
+   ]
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-06-21",
+    "expiresAt": "2028-06-20"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "كلية الحاسبات و المعلومات",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2019-11-25"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس الحاسبات و المعلومات تخصص نظم المعلومات",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "بكالوريوس الحاسبات والمعلومات تخصص الحسابات العلمية",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "بكالوريوس الحاسبات و المعلومات برنامج الوسائط المتعددة الرقمية",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "بكالوريوس الحاسبات و المعلومات برنامج تقنية المعلومات الحيوية",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "بكالوريوس الحاسبات والمعلومات تخصص نظم الحاسبات",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "بكالوريوس الحاسبات و المعلومات تخصص علوم الحاسب",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "بكالوريوس الحاسبات والمعلومات برنامج هندسة البرمجيات",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "كلية الحقوق",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "ليسانس في الحقوق باللغه الإنجليزية",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "ليسانس في الحقوق باللغة الفرنسية",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "كلية الدراسات العليا للطفولة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-04-27",
+    "expiresAt": "2027-04-26"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "كلية الزراعة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "انتهاء صلاحية قرار الاعتماد",
+    "decidedAt": "2014-08-25"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى العلوم الزراعية برنامج الانتاج الحيوانى",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "البكالوريوس فى العلوم الزراعية برنامج علوم وتكنولوجيا الأغذية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "البكالوريوس في العلوم الزراعية- برنامج التكنولوجيا الحيوية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "البكالوريوس فى العلوم الزراعية برنامج العلوم الاقتصادية والاجتماعية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "الهندسة الزراعية",
+     "status": "accredited",
+     "expiresAt": "2028-09-26"
+    },
+    {
+     "name": "الأراضي والمياه",
+     "status": "accredited",
+     "expiresAt": "2028-09-26"
+    },
+    {
+     "name": "الإنتاج النباتي",
+     "status": "accredited",
+     "expiresAt": "2028-08-29"
+    },
+    {
+     "name": "وقاية النبات",
+     "status": "accredited",
+     "expiresAt": "2028-08-29"
+    }
+   ]
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-03-08",
+    "expiresAt": "2028-03-07"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "كلية الطب",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2016-08-15"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس في العلوم الأساسية تخصص الفيزياء",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "النبات والكيمياء",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "التكنولوجيا الحيوية التطبيقية",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-09-24",
+    "expiresAt": "2030-09-23"
+   },
+   "programmes": [
+    {
+     "name": "بكالريوس العلوم في الهندسة المعمارية برنامج الاسكان والتنمية الحضرية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "هندسة الاتصالات والإلكترونيات",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "هندسة الحاسبات والنظم",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "التصميم وهندسة الإنتاج",
+     "status": "accredited",
+     "expiresAt": "2028-05-01"
+    },
+    {
+     "name": "هندسة السيارات",
+     "status": "accredited",
+     "expiresAt": "2028-05-01"
+    },
+    {
+     "name": "هندسة القوى الميكانيكية",
+     "status": "accredited",
+     "expiresAt": "2028-05-01"
+    },
+    {
+     "name": "هندسة الميكاترونيات",
+     "status": "accredited",
+     "expiresAt": "2028-05-01"
+    },
+    {
+     "name": "هندسة الاشغال العامة",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    },
+    {
+     "name": "هندسة الري والهيدروليكا",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    },
+    {
+     "name": "الهندسة الانشائية",
+     "status": "accredited",
+     "expiresAt": "2027-08-30"
+    },
+    {
+     "name": "هندسة القوى والالات الكهربية",
+     "status": "accredited",
+     "expiresAt": "2027-08-30"
+    },
+    {
+     "name": "بكالوريوس العلوم فى الهندسة المعمارية برنامج الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2027-03-27"
+    },
+    {
+     "name": "هندسة العمارة والعمران البيئي",
+     "status": "accredited",
+     "expiresAt": "2027-04-27"
+    },
+    {
+     "name": "عمارة تنسيق المواقع",
+     "status": "accredited",
+     "expiresAt": "2027-03-27"
+    },
+    {
+     "name": "بكالوريوس العلوم فى الهندسة الكهربية برنامج هندسة نظم الاتصالات",
+     "status": "accredited",
+     "expiresAt": "2027-02-08"
+    },
+    {
+     "name": "هندسة الحاسبات ونظم البرمجيات",
+     "status": "accredited",
+     "expiresAt": "2027-02-08"
+    },
+    {
+     "name": "هندسة البناء",
+     "status": "accredited",
+     "expiresAt": "2027-02-08"
+    },
+    {
+     "name": "بكالوريوس العلوم فى الهندسة الكهربية برنامج هندسة الطاقة والطاقة المتجددة",
+     "status": "accredited",
+     "expiresAt": "2027-02-08"
+    },
+    {
+     "name": "بكالوريوس العلوم في الهندسة الميكانيكية برنامج هندسة الالكترونيات والاتمتة",
+     "status": "accredited",
+     "expiresAt": "2027-02-08"
+    }
+   ]
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "كلية طب الأسنان",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-03-31"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة عين شمس",
+   "faculty": "معهد الدراسات والبحوث البيئية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2019-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة فاروس",
+   "faculty": "الاعلام وفنون الاتصال",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "البكالوريوس فى الاعلام وفنون الاتصال قسم الراديو و التليفزيون",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    }
+   ]
+  },
+  {
+   "university": "جامعة فاروس",
+   "faculty": "الفنون والتصميم",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "البكالوريوس فى الفنون و التصميم قسم الديكور (عمارة داخلية )",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة فاروس",
+   "faculty": "كلية الدراسات القانونية و المعاملات الدولية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "عدم اعتماد",
+    "decidedAt": "2018-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة فاروس",
+   "faculty": "كلية السياحة وإدارة الفنادق",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة فاروس",
+   "faculty": "كلية الصيدلة والتصنيع الدوائي",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2021-11-24",
+    "expiresAt": "2026-11-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة فاروس",
+   "faculty": "كلية العلوم المالية و الإدارية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-02-09",
+    "expiresAt": "2027-03-08"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة فاروس",
+   "faculty": "كلية اللغات والترجمة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "اللغة الإنجليزية",
+     "status": "accredited",
+     "expiresAt": "2029-05-28"
+    }
+   ]
+  },
+  {
+   "university": "جامعة فاروس",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2018-03-13"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى هندسة البتروكيماويات",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    },
+    {
+     "name": "البكالوريوس فى هندسة الحاسب",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "البكالوريوس فى الهندسة الميكانيكية شعبه هندسة القوى الميكانيكية",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "هندسة القوى والتحكم",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "هندسة الاتصالات الكهربية",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "هندسة وادارة التشييد",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    }
+   ]
+  },
+  {
+   "university": "جامعة فاروس",
+   "faculty": "كلية طب الاسنان",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-10-29",
+    "expiresAt": "2030-10-28"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس طب وجراحه الفم والاسنان",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    }
+   ]
+  },
+  {
+   "university": "جامعة قناة السويس",
+   "faculty": "كلية التربية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "التربية الخاصة",
+     "status": "accredited",
+     "expiresAt": "2028-03-07"
+    },
+    {
+     "name": "علم النفس",
+     "status": "accredited",
+     "expiresAt": "2028-03-07"
+    }
+   ]
+  },
+  {
+   "university": "جامعة قناة السويس",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-07-04",
+    "expiresAt": "2028-07-03"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة قناة السويس",
+   "faculty": "كلية الحاسبات والمعلومات",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "عدم اعتماد",
+    "decidedAt": "2023-05-02"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة قناة السويس",
+   "faculty": "كلية الزراعة بالاسماعيلية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2016-05-23"
+   },
+   "programmes": [
+    {
+     "name": "الهندسة الزراعية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    }
+   ]
+  },
+  {
+   "university": "جامعة قناة السويس",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة قناة السويس",
+   "faculty": "كلية الطب",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-03-31"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة قناة السويس",
+   "faculty": "كلية الطب البيطري",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "تجديد اعتماد",
+    "decidedAt": "2020-10-05"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة قناة السويس",
+   "faculty": "كلية العلوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2016-03-21"
+   },
+   "programmes": [
+    {
+     "name": "البيوتكنولوجى والبيئة البحرية",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "علم الحيوان",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة قناة السويس",
+   "faculty": "كلية الهندسة",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس الهندسة الكهربية شعبة هندسة القوى والآلات الكهربية",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "بكالوريوس هندسة العمارة",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    }
+   ]
+  },
+  {
+   "university": "جامعة قناة السويس",
+   "faculty": "كلية طب الاسنان",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة كفر الشيخ",
+   "faculty": "كلية الاداب",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "برنامج ليسانس علم النفس الاكلينكى",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "اللغة الانجليزية وآدابها",
+     "status": "accredited",
+     "expiresAt": "2028-08-29"
+    },
+    {
+     "name": "علم الاجتماع",
+     "status": "accredited",
+     "expiresAt": "2028-08-29"
+    },
+    {
+     "name": "برنامج علم النفس",
+     "status": "accredited",
+     "expiresAt": "2027-03-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة كفر الشيخ",
+   "faculty": "كلية التربية الرياضية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة كفر الشيخ",
+   "faculty": "كلية التربية النوعية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "أخضائي الاعلام التربوي (صحافة واذاعة وتليفزيون)",
+     "status": "accredited",
+     "expiresAt": "2027-11-29"
+    },
+    {
+     "name": "أخضائي الاعلام التربوي (المسرح المدرسي)",
+     "status": "accredited",
+     "expiresAt": "2027-11-29"
+    },
+    {
+     "name": "معلم التربية الفنية",
+     "status": "accredited",
+     "expiresAt": "2027-09-29"
+    },
+    {
+     "name": "معلم الاقتصاد المنزلي",
+     "status": "accredited",
+     "expiresAt": "2027-09-27"
+    }
+   ]
+  },
+  {
+   "university": "جامعة كفر الشيخ",
+   "faculty": "كلية التمريض",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-10-29",
+    "expiresAt": "2027-04-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة كفر الشيخ",
+   "faculty": "كلية الزراعة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-07-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة كفر الشيخ",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-03-31"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة كفر الشيخ",
+   "faculty": "كلية الطب البشري",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2024-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة كفر الشيخ",
+   "faculty": "كلية الطب البيطرى",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-08-30",
+    "expiresAt": "2028-08-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة كفر الشيخ",
+   "faculty": "كلية العلاج الطبيعى",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2027-11-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة كفر الشيخ",
+   "faculty": "كلية العلوم",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة كفر الشيخ",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2021-10-27",
+    "expiresAt": "2026-10-26"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة كفر الشيخ",
+   "faculty": "كلية طب وجراحة الفم والاسنان",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2027-11-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة كفر الشيخ",
+   "faculty": "كلية علوم الثروة السمكية والمصايد",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2026-05-20"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مدينة السادات",
+   "faculty": "كلية التجارة",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة مدينة السادات",
+   "faculty": "كلية التربية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "برنامج إعداد معلم الجغرافيا",
+     "status": "accredited",
+     "expiresAt": "2028-07-03"
+    }
+   ]
+  },
+  {
+   "university": "جامعة مدينة السادات",
+   "faculty": "كلية التربية الرياضية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-09-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مدينة السادات",
+   "faculty": "كلية الطب البيطري",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-02-02",
+    "expiresAt": "2028-02-01"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مدينة السادات",
+   "faculty": "معهد الدراسات والبحوث البيئية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2021-06-30"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مدينة السادات",
+   "faculty": "معهد بحوث الهندسة الوراثية و التكنولوجيا الحيوية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-08-30",
+    "expiresAt": "2028-08-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مصر الدولية",
+   "faculty": "إدارة الاعمال والتجارة الدولية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "احاطة",
+    "decidedAt": "2026-01-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مصر الدولية",
+   "faculty": "كلية الاعلام",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "احاطة",
+    "decidedAt": "2017-07-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مصر الدولية",
+   "faculty": "كلية الالسن",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "احاطة",
+    "decidedAt": "2017-07-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مصر الدولية",
+   "faculty": "كلية الالسن و الاعلام",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مصر الدولية",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-11-30",
+    "expiresAt": "2027-11-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مصر الدولية",
+   "faculty": "كلية العلوم و الفنون الهندسية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مصر الدولية",
+   "faculty": "كلية المعلومات والحاسبات",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-03-02",
+    "expiresAt": "2027-03-01"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مصر الدولية",
+   "faculty": "كلية طب الفم والأسنان",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-06-29",
+    "expiresAt": "2027-06-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مصر للعلوم والتكنولوجيا",
+   "faculty": "تكنولوجيا العلوم الصحية التطبيقية",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "جامعة مصر للعلوم والتكنولوجيا",
+   "faculty": "كلية التكنولوجيا الحيوية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-08-31"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مصر للعلوم والتكنولوجيا",
+   "faculty": "كلية الطب البشرى",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-10-29",
+    "expiresAt": "2030-10-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مصر للعلوم والتكنولوجيا",
+   "faculty": "كلية العلاج الطبيعى",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2024-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مصر للعلوم والتكنولوجيا",
+   "faculty": "كلية العلوم الصيدلية والتصنيع الدوائى",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة مصر للعلوم والتكنولوجيا",
+   "faculty": "كلية اللغات و الترجمة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2016-09-29"
+   },
+   "programmes": [
+    {
+     "name": "اللغة الألمانية والترجمة",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    }
+   ]
+  },
+  {
+   "university": "جامعة مصر للعلوم والتكنولوجيا",
+   "faculty": "كلية طب وجراحة الفم و الاسنان",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-06-21",
+    "expiresAt": "2028-06-20"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة هليوبوليس",
+   "faculty": "كلية إدارة الأعمال والاقتصاد",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-07-26",
+    "expiresAt": "2028-07-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة هليوبوليس",
+   "faculty": "كلية الزراعة الحيوية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة هليوبوليس",
+   "faculty": "كلية الصيدلة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2021-12-22",
+    "expiresAt": "2026-12-21"
+   },
+   "programmes": []
+  },
+  {
+   "university": "جامعة هليوبوليس",
+   "faculty": "كلية الهندسة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-03-28",
+    "expiresAt": "2027-03-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "اكاديمية اخبار اليوم 6 اكتوبر",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "الاكاديمية الحديثة لعلوم الكمبيوتر وتكنولوجيا الإدارة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "استمرار منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2016-09-29"
+   },
+   "programmes": [
+    {
+     "name": "برنامج اقتصاد باللغة العربية",
+     "status": "accredited",
+     "expiresAt": "2028-03-07"
+    },
+    {
+     "name": "برنامج اقتصاد باللغة الانجليزية",
+     "status": "accredited",
+     "expiresAt": "2028-03-07"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "الاكاديمية الحديثة لعلوم الكمبيوتر وتكنولوجيا الادارة بالمعادي",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس الادارة شعبة اللغه الانجليزية",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "بكالوريوس المحاسبة شعبة اللغة الانجليزية",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "بكالوريوس المحاسبة",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "الاكاديمية الحديثة للهندسة والتكنولوجيا بالمعادي",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "استمرار منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2016-05-23"
+   },
+   "programmes": [
+    {
+     "name": "برنامج هندسة العمارة وتكنولوجيا البناء",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "الاكاديمية الدولية للهندسة وعلوم الاعلام 6 اكتوبر",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "البكالوريوس فى ادارة الاعمال تخصص التمويل والمحاسبة (قسم اللغه العربية )",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "البكالوريوس فى الاعلام تخصص الإنتاج الإعلاني",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "البكالوريوس فى الاعلام تخصص الإنتاج الإذاعي والتليفزيوني",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "هندسة القوى والالات الكهربية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "الأكاديمية المصرية للهندسة والتكنولوجيا المتقدمة - الانتاج الحربي",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-07-26",
+    "expiresAt": "2028-07-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد التكنولوجى العالى - العاشر من رمضان",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس الهندسة الكيميائية",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    },
+    {
+     "name": "البكالوريوس فى علوم الحاسب",
+     "status": "conditional",
+     "expiresAt": "2027-11-19"
+    },
+    {
+     "name": "الهندسة الطبية",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    },
+    {
+     "name": "الهندسة الكهربائية ( شعبة هندسة الالكترونيات والاتصالات)",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد التكنولوجي العالي بالسادس من أكتوبر",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2027-11-19"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    },
+    {
+     "name": "البكالوريوس فى الهندسة الميكانيكية شعبة سيارات",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    },
+    {
+     "name": "البكالوريوس فى الهندسة المدنية",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    },
+    {
+     "name": "البكالوريوس فى الهندسة الميكانيكية",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد التكنولوجى العالى بالعاشر من رمضان -فرع السادس من اكتوبر-وزارة التعليم العالي",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "الهندسه الكهربيه (شعبه هندسه الالكترونيات والاتصالات)",
+     "status": "accredited",
+     "expiresAt": "2029-09-24"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد التكنولوجي العالى للعلوم الصحية التطبيقية بمدينة بدر",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2027-11-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد الدولى العالى للإعلام - اكاديمية الشروق",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-07-26",
+    "expiresAt": "2028-07-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى لتكنولوجيا الادارة والمعلومات بالمنيا",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2027-11-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالي للباليه - اكاديمية الفنون",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-10-29",
+    "expiresAt": "2027-04-28"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى فن الباليه تخصص تصميم واخراج الباليه",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "البكالوريوس فى فن الباليه تخصص طرق تدريس الباليه",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالي للتسويق و التجارة و نظم المعلومات",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2026-11-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للتسويق والتجارة ونظم المعلومات",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "البكالوريوس فى التجارة شعبة التسويق",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالي للحاسب الالي وادارة الاعمال بالزرقا - دمياط",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-07-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للحاسبات و تكنولوجيا المعلومات بالشروق - اكاديمية الشروق",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-04-24",
+    "expiresAt": "2029-04-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالي للحاسبات ونظم المعلومات الإدارية بالتجمع الأول",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للخدمة الاجتماعية بالاسكندرية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2026-05-20"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للخدمة الاجتماعية ببورسعيد",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2026-11-27"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس الخدمة الاجتماعية",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للخدمة الاجتماعية- وزارة التعليم العالى",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "احاطة",
+    "decidedAt": "2016-05-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للدراسات الادبية بكينج مريوط الاسكندرية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "الليسانس فى الاداب قسم الجغرافيا شعبة الخرائط والمساحة",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للدراسات التعاونية والادارية بالمنيرة",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للدراسات المتطورة بالقطامية",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للدراسات النوعية بالجيزة",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للسياحة و الفنادق- وزارة التعليم العالى",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "احاطة",
+    "decidedAt": "2015-08-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للسياحة والفنادق بكينج مريوط",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للسياحة والفنادق وترميم الاثار بأبي قير",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-10-29",
+    "expiresAt": "2030-10-28"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس في السياحة والفنادق وترميم الاثار- قسم الارشاد السياحي",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    },
+    {
+     "name": "برنامج ادارة الضيافة",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "برنامج الدراسات السياحية",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالي للسينما - اكاديمية الفنون",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "البكالوريوس فى فنون السينما تخصص الانتاج",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "البكالوريوس فى فنون السينما تخصص هندسة الصوت",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "البكالوريوس فى هندسة المناظر",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    },
+    {
+     "name": "البكالوريوس فى فنون السينما تخصص المونتاج",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للعلوم الادارية المتقدمة والحاسبات بابى المطامير البحيرة",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2027-11-19"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس التجارة تخصص نظم معلومات الاعمال",
+     "status": "conditional",
+     "expiresAt": "2027-11-19"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للعلوم الادارية بالقطامية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "برنامج البكالوريوس فى ادارة الاعمال",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالي للعلوم الادارية ببلقاس",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2027-11-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للعلوم الإدارية ببنى سويف",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "ادارة الاعمال - التمويل والاستثمار",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للعلوم الادارية بجناكليس",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2025-05-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للعلوم الادارية بنى سويف",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس ادارة الاعمال (شعبة التسويق والتجارة الالكترونية)",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للعلوم الادارية والتجارة الخارجية التجمع الخامس",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس ادارة الاعمال شعبة عربي",
+     "status": "conditional",
+     "expiresAt": "2027-11-19"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالي للعلوم التجارية بأبي قير بالإسكندرية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-10-23",
+    "expiresAt": "2029-10-22"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للعلوم والادارة ببلبيس شرقية",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للفنون التطبيقية - مدينة 6 أكتوبر",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "عدم اعتماد",
+    "decidedAt": "2020-12-21"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للفنون التطبيقية بالتجمع الخامس- وزارة التعليم العالى",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "عدم اعتماد",
+    "decidedAt": "2019-06-17"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالي للفنون الشعبية - اكاديمية الفنون",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "البكالوريوس فى الفنون الشعبية تخصص الادب الشعبى",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "البكالوريوس فى الفنون الشعبية تخصص مناهج الفولكلور وتقنيات الحفظ",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالي للفنون المسرحية - اكاديمية الفنون",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-10-29",
+    "expiresAt": "2030-10-28"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى فنون المسرح تخصص الدراما والنقد المسرحى",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "البكالوريوس فى فنون المسرح تخصص الديكور المسرحى",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة - 6 أكتوبر",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2017-06-19"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى الهندسة قسم هندسة التشييد والبناء",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالي للهندسة - بمدينة 15 مايو",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-10-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة الالكترونية ببلبيس",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "البكالوريوس فى هندسة الاتصالات والالكترونيات",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "البكالوريوس فى هندسة الحاسبات والنظم",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالي للهندسة بالشروق",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": [
+    {
+     "name": "هندسة الحاسبات والتحكم",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "هندسة الإلكترونيات والإتصالات",
+     "status": "accredited",
+     "expiresAt": "2029-04-23"
+    },
+    {
+     "name": "برنامج الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2028-03-07"
+    },
+    {
+     "name": "هندسة كيميائية",
+     "status": "accredited",
+     "expiresAt": "2028-03-07"
+    },
+    {
+     "name": "برنامج هندسة القوى والالات الكهربية",
+     "status": "accredited",
+     "expiresAt": "2028-02-01"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة بالشروق- وزارة التعليم العالى",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2017-05-29"
+   },
+   "programmes": [
+    {
+     "name": "الهندسه الطبيه الحيويه و المنظومات",
+     "status": "accredited",
+     "expiresAt": "2028-06-20"
+    },
+    {
+     "name": "برنامج الهندسة المدنية",
+     "status": "accredited",
+     "expiresAt": "2028-03-07"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالي للهندسة ببلبيس",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-09-24",
+    "expiresAt": "2027-03-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة بمدينة 15 مايو",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-10-23",
+    "expiresAt": "2029-10-22"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة و التكنولوجيا بدمياط الجديدة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-10-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة و التكنولوجيا بكفر الشيخ",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-09-25",
+    "expiresAt": "2029-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة و التكنولوجيا بكينج مريوط الاسكندرية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2025-05-28"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى تخصص الهندسة المعمارية",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة والتكنولوجيا الحديثة بالمرج",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2025-09-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة والتكنولوجيا بالبحيرة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-10-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة والتكنولوجيا بالزقازيق",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "البكالوريوس فى الهندسة المدنية شعبة هندسة التشييد والبناء",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "البكالوريوس فى الهندسة الكهربية شعبة الالكترونيات والاتصالات",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة والتكنولوجيا بالعبور",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-07-26",
+    "expiresAt": "2028-07-26"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالي للهندسة والتكنولوجيا بالعريش",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "الهندسة المدنية",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "الهندسة المعمارية",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "برنامج هندسة القوي الميكانيكية",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "هندسة الالكترونيات و الاتصالات",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة والتكنولوجيا بالقاهرة الجديدة التجمع الخامس",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "هندسة القوى الكهربيه",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "هندسة الإلكترونيات و الإتصالات",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "الهندسه المعماريه",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "الهندسه المدنيه",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "الهندسة المدنية",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة والتكنولوجيا بالمحلة الكبرى",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة والتكنولوجيا بالمنزلة",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-05-28",
+    "expiresAt": "2026-11-27"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس الهندسة في تخصص الهندسة المدنية",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة والتكنولوجيا بالمنوفية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-10-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالي للهندسة والتكنولوجيا بالمنيا الجديدة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-11-22",
+    "expiresAt": "2028-11-21"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة والتكنولوجيا بسوهاج",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2024-10-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسة والتكنولوجيا بطنطا",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2024-10-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسةوالتكنولوجيا بالعريش",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "هندسة الالكترونيات و الاتصالات",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "هندسة القوي الميكانيكية",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "برنامج الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى للهندسه والتكنولوجيا - الاقصر",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2027-11-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد العالى لنظم التجارة الالكترونية بسوهاج",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-02-02",
+    "expiresAt": "2028-02-01"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد الفني للصناعات المتطورة- وزارة التعليم العالى",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "تجديد اعتماد",
+    "decidedAt": "2017-01-23"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد الكندى العالى لتكنولوجيا الادارة- وزارة التعليم العالى",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2015-10-26"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد الكندى العالى لتكنولوجيا الإعلام الحديث",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2016-09-29"
+   },
+   "programmes": [
+    {
+     "name": "بكالوريوس الاعلام تخصص الصحافة والنشر الالكتروني",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    },
+    {
+     "name": "علاقات عامة والاعلان",
+     "status": "accredited",
+     "expiresAt": "2027-11-29"
+    },
+    {
+     "name": "الاعلام المسموع والمرئي",
+     "status": "accredited",
+     "expiresAt": "2027-11-29"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد الكندى العالى لتكنولوجيا الهندسة و الادارة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "استمرار منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2018-09-25"
+   },
+   "programmes": [
+    {
+     "name": "الهندسة المدنية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "هندسة الاتصالات والإلكترونيات",
+     "status": "accredited",
+     "expiresAt": "2028-07-25"
+    },
+    {
+     "name": "الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2027-11-29"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد الكندي العالي للادارة بالسادس من أكتوبر",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس ادارة الاعمال تخصص التمويل",
+     "status": "accredited",
+     "expiresAt": "2027-02-08"
+    },
+    {
+     "name": "التسويق",
+     "status": "accredited",
+     "expiresAt": "2027-02-08"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد الكندي العالي للهندسة بالسادس من أكتوبر",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس هندسة تخصص الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "الهندسة المدنية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "الهندسة الكهربية (هندسة الاتصالات والالكترونيات)",
+     "status": "accredited",
+     "expiresAt": "2028-07-25"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "المعهد المصرى لاكاديمية الاسكندرية للادارة و المحاسبة",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2027-11-19"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد أكتوبر العالي للهندسة والتكنولوجيا",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2027-11-19"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى الهندسة والتكنولوجيا تخصص هندسة الاتصالات والالكترونيات",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    },
+    {
+     "name": "البكالوريوس فى الهندسة والتكنولوجيا بنظام الساعات المعتمدة تخصص هندسة التشييد والبناء",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "البكالوريوس فى الهندسة والتكنولوجيا بنظام الساعات المعتمدة تخصص الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد الاسكندرية العالى للهندسة و التكنولوجيا",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "عدم اعتماد",
+    "decidedAt": "2018-07-30"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى هندسة الميكاترونيات",
+     "status": "conditional",
+     "expiresAt": "2027-03-23"
+    },
+    {
+     "name": "هندسة الالكترونيات و الاتصالات",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "الهندسة الصناعية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد الاهرامات العالي للهندسة و التكنولوجيا 6 اكتوبر",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "البكالوريوس فى الهندسة شعبة الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    },
+    {
+     "name": "البكالوريوس فى الهندسة شعبة الهندسة المدنية",
+     "status": "accredited",
+     "expiresAt": "2030-09-23"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد الجزيرة العالي للإعلام وعلوم الاتصال",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2024-04-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد الجزيرة العالى للهندسة و التكنولوجيا",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2024-04-24"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد الجيزة العالى للعلوم الادارية بطموه",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد الجيزة العالى للهندسة و التكنولوجيا بطموه",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2026-05-20",
+    "expiresAt": "2031-05-19"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى الهندسة قسم الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2031-05-19"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد الدلتا العالي للخدمة الاجتماعية بالمنصورة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2025-10-29",
+    "expiresAt": "2030-10-28"
+   },
+   "programmes": [
+    {
+     "name": "البكالوريوس فى الخدمة الاجتماعية",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد الدلتا العالى للهندسة و التكنولوجيا بالمنصورة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "عدم اعتماد",
+    "decidedAt": "2019-08-26"
+   },
+   "programmes": [
+    {
+     "name": "الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2030-05-27"
+    },
+    {
+     "name": "هندسة الاتصالات والالكترونيات",
+     "status": "accredited",
+     "expiresAt": "2028-08-29"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد الدلتا العالي لنظم المعلومات الإدارية والمحاسبية",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد مشروط",
+    "decidedAt": "2024-05-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد الصفوة العالى للهندسة",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد العبور العالي للأدارة والحاسبات ونظم المعلومات",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2019-09-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد العبور العالى للهندسة والتكنولوجيا",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2025-11-29"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد العجمي العالي للعلوم الادارية",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد القاهرة العالي للهندسة وعلوم الحاسب والإدارة",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد القناة العالي للهندسة والتكنولوجيا بالسويس",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-10-29",
+    "expiresAt": "2027-04-28"
+   },
+   "programmes": [
+    {
+     "name": "برنامج البكالوريوس فى الهندسة الكيمائية",
+     "status": "accredited",
+     "expiresAt": "2030-10-28"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد المدينة العالى للإدارة والتكنولوجيا- وزارة التعليم العالى",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2017-08-14"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد المدينة العالى للغات الدولية- وزارة التعليم العالى",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "عدم اعتماد",
+    "decidedAt": "2019-11-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد المدينة العالى للهندسة والتكنولوجيا",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-07-26",
+    "expiresAt": "2028-07-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد المستقبل العالى للدراسات التكنولوجية المتخصصة - مصر الاسماعيلية",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "البكالوريوس فى علوم الحاسب",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    },
+    {
+     "name": "البكالوريوس فى ادارة الاعمال انجليزى",
+     "status": "conditional",
+     "expiresAt": "2027-04-28"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد المستقبل العالى للهندسة والتكنولوجيا بالفيوم",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2025-05-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد المستقبل العالى للهندسة والتكنولوجيا بالمنصورة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2025-05-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد المنصورة العالى للهندسة و التكنولوجيا",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "بكالوريوس الهندسة فى تخصص الهندسة المعمارية بنظام الساعات المعتمده",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "بكالوريوس الهندسة فى تخصص الهندسة المدنية بنظام الساعات المعتمده",
+     "status": "conditional",
+     "expiresAt": "2026-11-27"
+    },
+    {
+     "name": "برنامج هندسة الإتصالات والإلكترونيات",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد النيل العالي للعلوم التجارية وتكنولوجيا الحاسب بالمنصورة",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "منح مهلة لاستيفاء جوانب القصور",
+    "decidedAt": "2026-05-20"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد النيل العالى للهندسة والتكنولوجيا بالمنصورة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-07-26",
+    "expiresAt": "2028-07-25"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد الوادى العالى للهندسة بالقليوبية",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد راية العالى للادارة والتجارة الخارجية بدمياط الجديدة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2024-10-23",
+    "expiresAt": "2029-10-22"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد طيبة العالى لتكنولوجيا الادارة و المعلومات - وزارة التعليم العالى",
+   "accreditation": null,
+   "programmes": [
+    {
+     "name": "برنامج إدارة الأعمال",
+     "status": "accredited",
+     "expiresAt": "2027-08-30"
+    },
+    {
+     "name": "برنامج المحاسبة شعبة اللغة الانجليزية",
+     "status": "accredited",
+     "expiresAt": "2027-08-30"
+    }
+   ]
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد طيبة العالى للهندسة بالمعادى",
+   "accreditation": {
+    "status": "conditional",
+    "decidedAt": "2025-10-29",
+    "expiresAt": "2027-04-28"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد مصر العالى للهندسة والتكنولوجيا بالمنصورة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-04-27",
+    "expiresAt": "2027-04-26"
+   },
+   "programmes": []
+  },
+  {
+   "university": "معاهد التعليم العالى / الأكاديميات",
+   "faculty": "معهد هندسة وتكنولوجيا الطيران- وزارة التعليم العالى",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "عدم اعتماد",
+    "decidedAt": "2020-12-21"
+   },
+   "programmes": [
+    {
+     "name": "هندسة القوى والالات الكهربية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "هندسة الالكترونيات والاتصالات",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "هندسة الطيران",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "هندسة القوى الميكانيكية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "الهندسة المدنية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    },
+    {
+     "name": "الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2029-10-22"
+    }
+   ]
+  },
+  {
+   "university": "وزارة التخطيط",
+   "faculty": "معهد التخطيط القومي",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-04-27",
+    "expiresAt": "2027-04-26"
+   },
+   "programmes": []
+  },
+  {
+   "university": "وزارة الدفاع",
+   "faculty": "الأكاديمية العسكرية للدراسات العليا والإستراتيجية",
+   "accreditation": null,
+   "programmes": []
+  },
+  {
+   "university": "وزارة الدفاع",
+   "faculty": "الكلية البحرية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-07-26",
+    "expiresAt": "2028-07-26"
+   },
+   "programmes": []
+  },
+  {
+   "university": "وزارة الدفاع",
+   "faculty": "الكلية الجوية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-07-26",
+    "expiresAt": "2028-07-26"
+   },
+   "programmes": []
+  },
+  {
+   "university": "وزارة الدفاع",
+   "faculty": "الكلية الحربية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-11-30",
+    "expiresAt": "2028-11-30"
+   },
+   "programmes": []
+  },
+  {
+   "university": "وزارة الدفاع",
+   "faculty": "الكلية الفنية العسكرية",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-07-26",
+    "expiresAt": "2028-07-26"
+   },
+   "programmes": [
+    {
+     "name": "الهندسة البحرية",
+     "status": "accredited",
+     "expiresAt": "2028-11-30"
+    },
+    {
+     "name": "الهندسة الكهربية",
+     "status": "accredited",
+     "expiresAt": "2028-11-30"
+    },
+    {
+     "name": "الهندسة الميكانيكية",
+     "status": "accredited",
+     "expiresAt": "2028-11-30"
+    },
+    {
+     "name": "الهندسة المعمارية",
+     "status": "accredited",
+     "expiresAt": "2028-11-30"
+    },
+    {
+     "name": "الهندسة الكميائية",
+     "status": "accredited",
+     "expiresAt": "2028-11-30"
+    },
+    {
+     "name": "الهندسة النووية",
+     "status": "accredited",
+     "expiresAt": "2028-11-30"
+    },
+    {
+     "name": "الهندسة المدنية",
+     "status": "accredited",
+     "expiresAt": "2028-11-30"
+    }
+   ]
+  },
+  {
+   "university": "وزارة الدفاع",
+   "faculty": "المعهد الفنى للقوات المسلحة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2022-07-27",
+    "expiresAt": "2027-07-26"
+   },
+   "programmes": []
+  },
+  {
+   "university": "وزارة الدفاع",
+   "faculty": "كلية الحرب العليا",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-01-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "وزارة الدفاع",
+   "faculty": "كلية الدفاع الوطني",
+   "accreditation": {
+    "status": "none",
+    "lastDecision": "اعتماد",
+    "decidedAt": "2021-01-27"
+   },
+   "programmes": []
+  },
+  {
+   "university": "وزارة الدفاع",
+   "faculty": "كلية الطب بالقوات المسلحة",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-08-30",
+    "expiresAt": "2028-08-29"
+   },
+   "programmes": [
+    {
+     "name": "بكالريوس الطب والجراحة",
+     "status": "accredited",
+     "expiresAt": "2026-12-21"
+    }
+   ]
+  },
+  {
+   "university": "وزارة الدفاع",
+   "faculty": "كلية القادة والاركان",
+   "accreditation": {
+    "status": "accredited",
+    "decidedAt": "2023-11-30",
+    "expiresAt": "2028-11-30"
+   },
+   "programmes": []
+  },
+  {
+   "university": "وزارة الصحة والسكان",
+   "faculty": "الزمالة المصرية - الامانة العامة للجنة العليا للتخصصات الطبية-وزارة الصحة والسكان",
+   "accreditation": null,
+   "programmes": []
+  }
+ ]
+}

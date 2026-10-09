@@ -1,4 +1,4 @@
-# SABEQ — Database design (Phase 06)
+| `departments` | `id`, `faculty_id`, `slug`, `name_ar`, `source_url?`, `is_active` | unique (`faculty_id`, `slug`). Researched rows use `w-<hash of name>`, admin-added ones `d-…`. || `faculties` | `id`, `university_id`, `kind_id`, `name_ar`, `city?`, `accreditation_status` (`accredited` | `conditional` | `not_accredited` | `unknown`), `accredited_at?`, `accreditation_expires_at?`, `accredited_programs` (jsonb), `source_url?`, `verified_at?`, `is_active` | **unique (`university_id`, `name_ar`)** — Al-Azhar has several faculties of one kind (city, boys / girls). Check: expiry ≥ accreditation date. || `universities` | `id`, `slug` (unique), `name_ar`, `name_en?`, `type` (`public` | `private` | `national` | `azhar` | `technological` | `international`), `governorate?`, `website?`, `source_url?`, `is_active`, `sort_order` | Renamed universities keep their id (Helwan → `capital`). |# SABEQ — Database design (Phase 06)
 
 > Status: **implemented** (Phase 06) — schema `apps/api/prisma/schema.prisma`, migrations `apps/api/prisma/migrations`.
 > PostgreSQL (ADR-0007) via Prisma. Local: Docker. Staging/production: Neon (Frankfurt).
@@ -81,8 +81,27 @@ The design browses **kinds of faculty** ("الهندسة") across universities, 
 | `faculty_kinds`    | `id`, `slug` (`eng`, `med` …, unique), `name_ar` ("الهندسة"), `full_name_ar` ("كلية الهندسة"), `icon`, `category` (`medical` \| `engineering` \| `science` \| `literary` \| `arts`), `study_years`, `summary`, `about`, `generic_info` | Powers explore, faculty pages, filters. Curated by admins. |
 | `faculties`        | `id`, `university_id`, `kind_id`, `name_ar?` (override), `is_active`                                                                                                                                                                   | **unique (`university_id`, `kind_id`)**.                   |
 | `departments`      | `id`, `faculty_id`, `slug`, `name_ar`, `is_active`                                                                                                                                                                                     | unique (`faculty_id`, `slug`).                             |
+| `faculty_cutoffs`  | `id`, `faculty_id`, `year`, `track` (`science_bio`                                                                                                                                                                                     | `science_math`                                             | `literary`), `phase`, `min_score`, `max_score`, `source_url` | unique (`faculty_id`, `year`, `track`, `phase`); checks `min_score ≤ max_score`, year 2000–2100. |
 | `specializations`  | `id`, `department_id`, `slug`, `name_ar`                                                                                                                                                                                               | unique (`department_id`, `slug`).                          |
 | `faculty_insights` | `id`, `kind_id`, `quote`, `mentor_id?`, `sort_order`, `is_published`                                                                                                                                                                   | The «اللي الخريجين بيقولوه» quotes on faculty pages.       |
+
+#### Where the catalog data comes from
+
+`prisma/catalog/*` holds the researched data; `seedCatalog` loads it idempotently on every environment, and
+`pnpm exec tsx prisma/catalog/check.ts` checks it for consistency. Every row keeps its source URL. Checked 2026-10-09.
+
+| Data                                    | Source                                                                                                    |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| 121 universities (all recognised types) | Ministry of Higher Education list, as republished 2026-07-19 / 2026-08-14                                 |
+| Public universities' faculties (458)    | Each university's Wikipedia article, cross-checked with NAQAAE and the Tansik 2026 announcement           |
+| Al-Azhar faculties (90)                 | Coordination Office directory of Al-Azhar faculties                                                       |
+| Private / ahliya / international        | NAQAAE decisions only (official evidence the faculty exists) — incomplete by design                       |
+| Accreditation                           | NAQAAE decisions table, snapshot `naqaae-2026-10-09.json` (latest decision in it: 2026-05-20)             |
+| Cutoffs (173)                           | Minister's Tansik 2026 phase-1 announcement (2026-08-10)                                                  |
+| Departments (1,142 in 112 faculties)    | Each faculty's Arabic Wikipedia article; faculties without one show "still collecting" instead of a guess |
+
+Nothing in the catalog is invented: the prototype's generic departments and "graduate" quotes are hidden by the seed.
+Faculties not confirmed by research are hidden, never deleted (mentors may reference them).
 
 ### Mentors (Phases 09, 12, 14)
 

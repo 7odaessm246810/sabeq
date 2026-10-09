@@ -2,13 +2,14 @@
  * `pnpm --filter @sabeq/api db:seed`
  *
  * Idempotent: every row is upserted by a natural key, so it can run again after any change.
- * - Catalog (universities, faculty kinds, faculties, departments, insights): every environment.
+ * - Catalog (researched real data — prisma/catalog/): every environment.
  * - Demo mentors: only when APP_ENV=local (refused anywhere else).
  */
 import { createDb } from '../src/infra/db.js';
 import { createLogger } from '../src/core/logger.js';
 import type { SessionKind } from '../src/generated/prisma/enums.js';
-import { DEMO_MENTORS, FACULTY_KINDS, UNIVERSITIES } from './seed-data.js';
+import { hidePlaceholders, seedCatalog } from './catalog/seed-catalog.js';
+import { DEMO_MENTORS, FACULTY_KINDS } from './seed-data.js';
 
 const appEnv = process.env.APP_ENV ?? 'local';
 const url = process.env.DATABASE_URL;
@@ -23,63 +24,6 @@ const OFFERINGS: { kind: SessionKind; durationMin: number; medium: 'video' | 'au
   { kind: 'comparison', durationMin: 60, medium: 'video' },
   { kind: 'quick_call', durationMin: 20, medium: 'audio' },
 ];
-
-function slugify(text: string, i: number): string {
-  // Arabic department names have no ASCII slug; a stable index keeps them unique per faculty.
-  return `d${i + 1}-${text.replace(/\s+/g, '-').slice(0, 40)}`;
-}
-
-async function seedCatalog() {
-  for (const [i, u] of UNIVERSITIES.entries()) {
-    await db.university.upsert({
-      where: { slug: u.slug },
-      update: {
-        nameAr: u.nameAr,
-        nameEn: u.nameEn,
-        type: u.type,
-        governorate: u.governorate,
-        sortOrder: i,
-      },
-      create: { ...u, sortOrder: i },
-    });
-  }
-  const universities = await db.university.findMany();
-
-  for (const [i, k] of FACULTY_KINDS.entries()) {
-    const { departments, insights, ...fields } = k;
-    const kind = await db.facultyKind.upsert({
-      where: { slug: k.slug },
-      update: { ...fields, sortOrder: i },
-      create: { ...fields, sortOrder: i },
-    });
-
-    // Replace curated quotes so edits in seed-data are reflected exactly.
-    await db.facultyInsight.deleteMany({ where: { kindId: kind.id, mentorId: null } });
-    await db.facultyInsight.createMany({
-      data: insights.map((quote, sortOrder) => ({ kindId: kind.id, quote, sortOrder })),
-    });
-
-    for (const uni of universities) {
-      const faculty = await db.faculty.upsert({
-        where: { universityId_kindId: { universityId: uni.id, kindId: kind.id } },
-        update: {},
-        create: { universityId: uni.id, kindId: kind.id },
-      });
-      for (const [d, name] of departments.entries()) {
-        const slug = slugify(name, d);
-        await db.department.upsert({
-          where: { facultyId_slug: { facultyId: faculty.id, slug } },
-          update: { nameAr: name },
-          create: { facultyId: faculty.id, slug, nameAr: name },
-        });
-      }
-    }
-  }
-  logger.info(
-    { universities: UNIVERSITIES.length, facultyKinds: FACULTY_KINDS.length },
-    'catalog seeded',
-  );
-}
 
 async function seedDemoMentors() {
   for (const m of DEMO_MENTORS) {
@@ -148,7 +92,13 @@ async function seedDemoMentors() {
 }
 
 async function main() {
-  await seedCatalog();
+  await seedCatalog(db, logger);
+  // The prototype's quotes were presented as graduates' words; they are not real people.
+  const hidden = await hidePlaceholders(
+    db,
+    FACULTY_KINDS.flatMap((k) => k.insights),
+  );
+  logger.info(hidden, 'prototype placeholders hidden');
   if (appEnv === 'local') await seedDemoMentors();
   else logger.info({ appEnv }, 'skipping demo mentors outside local');
 }

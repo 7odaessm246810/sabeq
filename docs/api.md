@@ -129,11 +129,11 @@ Applicant side of onboarding under `/api/v1/mentor/application` (module `src/mod
 
 Module `src/modules/catalog`. Public reads are cached by clients for 5 minutes (`Cache-Control: public, max-age=300`); the web app's server components cache them for 5 minutes too, so an admin edit is live within that time.
 
-| Endpoint                           | Result                                                                                                                                           |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `GET /catalog/universities`        | active universities with their faculties (mentor application form)                                                                               |
-| `GET /catalog/faculty-kinds`       | every active faculty kind: summary, study years, category, listed-mentor count, universities, departments (/explore)                             |
-| `GET /catalog/faculty-kinds/:slug` | one faculty page: about, generic info, published insights, departments merged across universities with mentor counts; `404` if unknown or hidden |
+| Endpoint                           | Result                                                                                                                                                                                                                                                                                               |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /catalog/universities`        | active universities with their faculties (mentor application form)                                                                                                                                                                                                                                   |
+| `GET /catalog/faculty-kinds`       | every active faculty kind: summary, study years, category, listed-mentor count, universities, departments (/explore)                                                                                                                                                                                 |
+| `GET /catalog/faculty-kinds/:slug` | one faculty page: about, generic info, published insights, merged departments, and `faculties[]` — every university offering it, with city, NAQAAE accreditation (status, expiry, accredited programmes), 2026 cutoffs and its own departments + source — plus `sources`; `404` if unknown or hidden |
 
 Admin curation under `/api/v1/admin/catalog` (`super_admin`, `support`; every write audited as `catalog.*`): edit a faculty kind's texts / visibility, add / hide / delete insights, add / rename / hide departments per university faculty, rename / hide universities. Hiding a university removes it and its faculties from every public read.
 

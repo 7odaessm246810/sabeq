@@ -64,7 +64,9 @@ beforeAll(async () => {
       genericInfo: '-',
     },
   });
-  const faculty = await db.faculty.create({ data: { universityId: uni.id, kindId: kind.id } });
+  const faculty = await db.faculty.create({
+    data: { universityId: uni.id, kindId: kind.id, nameAr: 'كلية اختبار القيود' },
+  });
 
   const mentorUser = await db.user.create({
     data: { phone: '+201099900001', role: 'mentor', fullName: 'مرشد اختبار' },

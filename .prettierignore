@@ -13,3 +13,6 @@ next-env.d.ts
 .agents/
 .claude/skills/
 skills-lock.json
+
+# Research snapshots, kept byte-for-byte as generated
+apps/api/prisma/catalog/*.json

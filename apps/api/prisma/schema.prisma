@@ -52,6 +52,17 @@ enum UniversityType {
   private
   national
   azhar
+  technological
+  /// Universities by international or framework agreement (AUC, E-JUST, AAST…).
+  international
+}
+
+/// NAQAAE institutional accreditation of a faculty, as of the last data refresh.
+enum AccreditationStatus {
+  accredited
+  conditional
+  not_accredited
+  unknown
 }
 
 enum FacultyCategory {
@@ -249,17 +260,17 @@ model Admin {
 
 /// Refresh tokens are stored hashed only. OTP codes live in Redis, never here.
 model AuthSession {
-  id               String    @id @default(uuid(7)) @db.Uuid
-  userId           String    @map("user_id") @db.Uuid
-  app              ClientApp
+  id         String    @id @default(uuid(7)) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  app        ClientApp
   /// SHA-256 of the opaque session token in the cookie; the token itself is never stored.
-  tokenHash        String    @unique @map("token_hash") @db.VarChar(64)
-  userAgent        String?   @map("user_agent") @db.VarChar(400)
-  ip               String?   @db.Inet
-  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  lastUsedAt       DateTime  @default(now()) @map("last_used_at") @db.Timestamptz
-  expiresAt        DateTime  @map("expires_at") @db.Timestamptz
-  revokedAt        DateTime? @map("revoked_at") @db.Timestamptz
+  tokenHash  String    @unique @map("token_hash") @db.VarChar(64)
+  userAgent  String?   @map("user_agent") @db.VarChar(400)
+  ip         String?   @db.Inet
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  lastUsedAt DateTime  @default(now()) @map("last_used_at") @db.Timestamptz
+  expiresAt  DateTime  @map("expires_at") @db.Timestamptz
+  revokedAt  DateTime? @map("revoked_at") @db.Timestamptz
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -275,12 +286,16 @@ model University {
   nameAr      String         @map("name_ar") @db.VarChar(120)
   nameEn      String?        @map("name_en") @db.VarChar(120)
   type        UniversityType
-  governorate String         @db.VarChar(60)
+  governorate String?        @db.VarChar(60)
+  website     String?        @db.VarChar(200)
+  /// Where this row's facts were checked.
+  sourceUrl   String?        @map("source_url") @db.VarChar(400)
   isActive    Boolean        @default(true) @map("is_active")
   sortOrder   Int            @default(0) @map("sort_order")
 
   faculties Faculty[]
 
+  @@index([type, isActive])
   @@map("universities")
 }
 
@@ -307,21 +322,52 @@ model FacultyKind {
 }
 
 /// A specific faculty of a specific university («هندسة القاهرة»).
+/// A faculty at a university. A university may have several faculties of one kind
+/// (e.g. engineering in two cities), so the name — not the kind — is unique per university.
 model Faculty {
   id           String  @id @default(uuid(7)) @db.Uuid
   universityId String  @map("university_id") @db.Uuid
   kindId       String  @map("kind_id") @db.Uuid
-  nameAr       String? @map("name_ar") @db.VarChar(160)
+  nameAr       String  @map("name_ar") @db.VarChar(160)
+  /// Where the faculty is when it is not the university's main city.
+  city         String? @db.VarChar(80)
   isActive     Boolean @default(true) @map("is_active")
 
-  university  University   @relation(fields: [universityId], references: [id])
-  kind        FacultyKind  @relation(fields: [kindId], references: [id])
+  accreditationStatus    AccreditationStatus @default(unknown) @map("accreditation_status")
+  accreditedAt           DateTime?           @map("accredited_at") @db.Date
+  accreditationExpiresAt DateTime?           @map("accreditation_expires_at") @db.Date
+  /// Programmes with a valid NAQAAE accreditation: [{ name, status, expiresAt }].
+  accreditedPrograms     Json?               @map("accredited_programs") @db.JsonB
+  sourceUrl              String?             @map("source_url") @db.VarChar(400)
+  verifiedAt             DateTime?           @map("verified_at") @db.Date
+
+  university  University      @relation(fields: [universityId], references: [id])
+  kind        FacultyKind     @relation(fields: [kindId], references: [id])
   departments Department[]
   mentors     Mentor[]
+  cutoffs     FacultyCutoff[]
 
-  @@unique([universityId, kindId])
-  @@index([kindId])
+  @@unique([universityId, nameAr])
+  @@index([kindId, isActive])
+  @@index([universityId, isActive])
   @@map("faculties")
+}
+
+/// Minimum admission score announced by the coordination office (tansik) for a year and track.
+model FacultyCutoff {
+  id        String       @id @default(uuid(7)) @db.Uuid
+  facultyId String       @map("faculty_id") @db.Uuid
+  year      Int          @db.SmallInt
+  track     StudentTrack
+  phase     Int          @default(1) @db.SmallInt
+  minScore  Decimal      @map("min_score") @db.Decimal(5, 2)
+  maxScore  Int          @map("max_score") @db.SmallInt
+  sourceUrl String       @map("source_url") @db.VarChar(400)
+
+  faculty Faculty @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+
+  @@unique([facultyId, year, track, phase])
+  @@map("faculty_cutoffs")
 }
 
 model Department {
@@ -330,6 +376,7 @@ model Department {
   slug      String  @db.VarChar(60)
   nameAr    String  @map("name_ar") @db.VarChar(120)
   isActive  Boolean @default(true) @map("is_active")
+  sourceUrl String? @map("source_url") @db.VarChar(400)
 
   faculty         Faculty          @relation(fields: [facultyId], references: [id], onDelete: Cascade)
   specializations Specialization[]
@@ -394,10 +441,10 @@ model Mentor {
   createdAt         DateTime   @default(now()) @map("created_at") @db.Timestamptz
   updatedAt         DateTime   @updatedAt @map("updated_at") @db.Timestamptz
 
-  user           User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  faculty        Faculty                  @relation(fields: [facultyId], references: [id])
-  department     Department?              @relation(fields: [departmentId], references: [id])
-  specialization Specialization?          @relation(fields: [specializationId], references: [id])
+  user           User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  faculty        Faculty                 @relation(fields: [facultyId], references: [id])
+  department     Department?             @relation(fields: [departmentId], references: [id])
+  specialization Specialization?         @relation(fields: [specializationId], references: [id])
   topics         MentorTopic[]
   offerings      SessionOffering[]
   availability   AvailabilityRule[]

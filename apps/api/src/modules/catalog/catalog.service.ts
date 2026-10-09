@@ -170,13 +170,25 @@ export function createCatalogService({ db }: { db: Db }) {
             where: { isActive: true, university: { isActive: true } },
             orderBy: { university: { sortOrder: 'asc' } },
             select: {
-              university: { select: { slug: true, nameAr: true } },
+              id: true,
+              nameAr: true,
+              city: true,
+              accreditationStatus: true,
+              accreditationExpiresAt: true,
+              accreditedPrograms: true,
+              university: { select: { slug: true, nameAr: true, type: true, governorate: true } },
               departments: {
                 where: { isActive: true },
+                orderBy: { id: 'asc' },
                 select: {
                   nameAr: true,
+                  sourceUrl: true,
                   _count: { select: { mentors: { where: { isListed: true } } } },
                 },
+              },
+              cutoffs: {
+                orderBy: [{ year: 'desc' }, { phase: 'asc' }],
+                select: { year: true, phase: true, track: true, minScore: true, maxScore: true },
               },
               _count: { select: { mentors: { where: { isListed: true } } } },
             },
@@ -208,6 +220,49 @@ export function createCatalogService({ db }: { db: Db }) {
           name: f.university.nameAr,
         })),
         departments: [...departments].map(([name, mentorCount]) => ({ name, mentorCount })),
+        /** Every faculty of this kind, with its NAQAAE accreditation and tansik cutoffs. */
+        faculties: k.faculties.map((f) => ({
+          id: f.id,
+          name: f.nameAr,
+          city: f.city,
+          university: {
+            slug: f.university.slug,
+            name: f.university.nameAr,
+            type: f.university.type,
+            governorate: f.university.governorate,
+          },
+          accreditation: {
+            status: f.accreditationStatus,
+            expiresAt: f.accreditationExpiresAt?.toISOString().slice(0, 10) ?? null,
+            programmes:
+              (f.accreditedPrograms as
+                { name: string; status: string; expiresAt: string }[] | null) ?? [],
+          },
+          cutoffs: f.cutoffs.map((c) => ({
+            year: c.year,
+            phase: c.phase,
+            track: c.track,
+            minScore: Number(c.minScore),
+            maxScore: c.maxScore,
+          })),
+          /** This faculty's own departments, with where the list came from. */
+          departments: f.departments.map((d) => ({
+            name: d.nameAr,
+            mentorCount: d._count.mentors,
+          })),
+          departmentsSource: f.departments.find((d) => d.sourceUrl)?.sourceUrl ?? null,
+          mentorCount: f._count.mentors,
+        })),
+        sources: {
+          accreditation: {
+            name: 'الهيئة القومية لضمان جودة التعليم والاعتماد',
+            latestDecision: '2026-05-20',
+          },
+          cutoffs: {
+            name: 'إعلان وزير التعليم العالي لتنسيق 2026 — المرحلة الأولى',
+            date: '2026-08-10',
+          },
+        },
       };
     },
 

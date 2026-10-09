@@ -29,17 +29,53 @@ describe('public catalog', () => {
     expect(res.headers['cache-control']).toContain('max-age=300');
     const eng = (res.body.data.kinds as KindSummary[]).find((k) => k.slug === 'eng');
     expect(eng).toMatchObject({ name: 'الهندسة', mentorCount: expect.any(Number) });
-    expect(eng?.universities.length).toBeGreaterThan(1);
-    expect(eng?.departments).toContain('هندسة الحاسبات');
+    // Every public university but a handful has an engineering faculty (MoHE list, Phase 11).
+    expect(eng?.universities.length).toBeGreaterThan(20);
+    expect(eng?.universities).toContain('cairo');
   });
 
-  it('returns a faculty page with merged departments and published insights', async () => {
+  it('lists every university offering a faculty, with accreditation and cutoffs', async () => {
+    const med = await kind('med');
+    interface Offering {
+      name: string;
+      university: { slug: string; type: string };
+      accreditation: { status: string; expiresAt: string | null; programmes: unknown[] };
+      cutoffs: { year: number; track: string; minScore: number; maxScore: number }[];
+    }
+    const offerings = med.faculties as Offering[];
+    expect(offerings.length).toBeGreaterThan(30);
+    const cairo = offerings.find((o) => o.university.slug === 'cairo');
+    expect(cairo).toMatchObject({
+      name: expect.stringContaining('الطب'),
+      university: { type: 'public' },
+    });
+    expect(['accredited', 'conditional', 'not_accredited', 'unknown']).toContain(
+      cairo?.accreditation.status,
+    );
+    expect(cairo?.cutoffs[0]).toMatchObject({ year: 2026, track: 'science_bio', maxScore: 320 });
+    // Al-Azhar faculties are listed per campus and gender.
+    expect(offerings.some((o) => o.name === 'كلية الطب (بنات) بالقاهرة')).toBe(true);
+    expect(med.sources.accreditation.latestDecision).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  it('returns a faculty page with merged departments and no placeholder insights', async () => {
     const eng = await kind('eng');
     expect(eng).toMatchObject({ fullName: 'كلية الهندسة', studyYears: 5 });
-    expect(eng.insights.length).toBeGreaterThan(0);
-    // The same department at six universities appears once.
+    // Placeholder quotes are hidden by the seed; only quotes added by admins are published.
+    expect(eng.insights).toEqual([]);
+    // The same department at several universities appears once.
     const names = (eng.departments as { name: string }[]).map((d) => d.name);
     expect(new Set(names).size).toBe(names.length);
+    // Each university's departments come with the page they were taken from.
+    const cairo = (
+      eng.faculties as {
+        university: { slug: string };
+        departments: { name: string }[];
+        departmentsSource: string | null;
+      }[]
+    ).find((o) => o.university.slug === 'cairo');
+    expect(cairo?.departments.map((d) => d.name)).toContain('هندسة الحاسبات');
+    expect(cairo?.departmentsSource).toMatch(/^https:\/\/ar\.wikipedia\.org\//);
     await request(h.app).get('/api/v1/catalog/faculty-kinds/nope').expect(404);
     await request(h.app).get('/api/v1/catalog/faculty-kinds/../x').expect(404);
   });
@@ -113,25 +149,25 @@ describe('admin curation', () => {
     const faculty = original.faculties[0];
     await admin.agent
       .post(`/api/v1/admin/catalog/faculties/${faculty.id}/departments`)
-      .send({ nameAr: 'إعلام رقمي' })
+      .send({ nameAr: 'قسم اختبار الإدارة' })
       .expect(201);
     await admin.agent
       .post(`/api/v1/admin/catalog/faculties/${faculty.id}/departments`)
-      .send({ nameAr: 'إعلام رقمي' })
+      .send({ nameAr: 'قسم اختبار الإدارة' })
       .expect(409);
     expect((await kind('media')).departments.map((d: { name: string }) => d.name)).toContain(
-      'إعلام رقمي',
+      'قسم اختبار الإدارة',
     );
     const fresh = (await admin.agent.get(`/api/v1/admin/catalog/kinds/${media.id}`)).body.data.kind;
     const dept = fresh.faculties[0].departments.find(
-      (d: { nameAr: string }) => d.nameAr === 'إعلام رقمي',
+      (d: { nameAr: string }) => d.nameAr === 'قسم اختبار الإدارة',
     );
     await admin.agent
       .patch(`/api/v1/admin/catalog/departments/${dept.id}`)
       .send({ isActive: false })
       .expect(200);
     expect((await kind('media')).departments.map((d: { name: string }) => d.name)).not.toContain(
-      'إعلام رقمي',
+      'قسم اختبار الإدارة',
     );
 
     // Undo the text change; the department stays inactive (it never existed for the public).
@@ -160,18 +196,18 @@ describe('admin curation', () => {
     const admin = await h.loginAdmin('super_admin');
     const unis = (await admin.agent.get('/api/v1/admin/catalog/universities').expect(200)).body.data
       .universities as { id: string; slug: string }[];
-    const helwan = unis.find((u) => u.slug === 'helwan');
+    const capital = unis.find((u) => u.slug === 'capital');
     await admin.agent
-      .patch(`/api/v1/admin/catalog/universities/${helwan?.id}`)
+      .patch(`/api/v1/admin/catalog/universities/${capital?.id}`)
       .send({ isActive: false })
       .expect(200);
     try {
       const pub = (await request(h.app).get('/api/v1/catalog/universities')).body.data.universities;
-      expect(pub.map((u: { slug: string }) => u.slug)).not.toContain('helwan');
-      expect((await kinds()).every((k) => !k.universities.includes('helwan'))).toBe(true);
+      expect(pub.map((u: { slug: string }) => u.slug)).not.toContain('capital');
+      expect((await kinds()).every((k) => !k.universities.includes('capital'))).toBe(true);
     } finally {
       await admin.agent
-        .patch(`/api/v1/admin/catalog/universities/${helwan?.id}`)
+        .patch(`/api/v1/admin/catalog/universities/${capital?.id}`)
         .send({ isActive: true })
         .expect(200);
     }
