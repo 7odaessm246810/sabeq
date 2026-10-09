@@ -14,7 +14,7 @@ import { createObjectStore } from '../../infra/storage.js';
 import { TEST_ENV } from '../../testing/env.js';
 import { createAuthModule } from '../auth/index.js';
 import type { SmsSender } from '../auth/sms.js';
-import { catalogRouter } from '../catalog/catalog.routes.js';
+import { createCatalogModule } from '../catalog/index.js';
 import { createMentorApplicationModule } from './index.js';
 
 const dbUrl = process.env.DATABASE_URL;
@@ -43,7 +43,7 @@ const app = createApp({
   logger: silent,
   mountV1(v1) {
     auth.mount(v1);
-    v1.use('/catalog', catalogRouter({ db }));
+    createCatalogModule({ db, auth }).mount(v1);
     mentorApplication.mount(v1);
   },
 });

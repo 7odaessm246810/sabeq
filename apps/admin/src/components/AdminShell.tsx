@@ -23,7 +23,16 @@ export function AdminShell({
   if (!admin) return <main className="adm-loading" aria-busy="true" />;
 
   const nav = [
-    { href: '/', label: 'طلبات المرشدين', show: true },
+    {
+      href: '/',
+      label: 'طلبات المرشدين',
+      show: admin.adminRole === 'super_admin' || admin.adminRole === 'verifier',
+    },
+    {
+      href: '/catalog',
+      label: 'الكليات',
+      show: admin.adminRole === 'super_admin' || admin.adminRole === 'support',
+    },
     { href: '/audit', label: 'سجل العمليات', show: admin.adminRole === 'super_admin' },
   ].filter((n) => n.show);
 

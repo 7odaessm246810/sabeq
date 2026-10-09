@@ -232,3 +232,63 @@
   flex-direction: column;
   gap: 14px;
 }
+
+/* ---------- catalog ---------- */
+.adm-card-title {
+  padding: 20px 16px 4px;
+  margin: 0;
+}
+.two-adm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.adm-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.adm-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+.adm-list li:first-child {
+  border-top: 0;
+}
+.adm-row-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.adm-muted {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+.adm-inline-form {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.adm-inline-form .sb-input {
+  flex: 1;
+}
+.adm-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.adm-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+@media (max-width: 900px) {
+  .two-adm {
+    grid-template-columns: 1fr;
+  }
+}

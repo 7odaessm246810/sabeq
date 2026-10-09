@@ -125,6 +125,18 @@ Applicant side of onboarding under `/api/v1/mentor/application` (module `src/mod
 - `GET /api/v1/catalog/universities` — universities with their faculties (public, cached 5 min), used by the form.
 - Known limit: an upload over 10 MB gets `413` from the API, but the Next.js proxy reports it as `500` because the API stops reading early. The web form blocks such files before sending.
 
+## Catalog (Phase 11)
+
+Module `src/modules/catalog`. Public reads are cached by clients for 5 minutes (`Cache-Control: public, max-age=300`); the web app's server components cache them for 5 minutes too, so an admin edit is live within that time.
+
+| Endpoint                           | Result                                                                                                                                           |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `GET /catalog/universities`        | active universities with their faculties (mentor application form)                                                                               |
+| `GET /catalog/faculty-kinds`       | every active faculty kind: summary, study years, category, listed-mentor count, universities, departments (/explore)                             |
+| `GET /catalog/faculty-kinds/:slug` | one faculty page: about, generic info, published insights, departments merged across universities with mentor counts; `404` if unknown or hidden |
+
+Admin curation under `/api/v1/admin/catalog` (`super_admin`, `support`; every write audited as `catalog.*`): edit a faculty kind's texts / visibility, add / hide / delete insights, add / rename / hide departments per university faculty, rename / hide universities. Hiding a university removes it and its faculties from every public read.
+
 ## Admin verification (Phase 10)
 
 Admin app only (admin session cookie), module `src/modules/verification`. Reviewers: `verifier` and `super_admin`.

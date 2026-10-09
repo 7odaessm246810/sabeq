@@ -58,8 +58,8 @@ sabeq/
 | 07  | Authentication & Authorization — Phone + OTP، roles: student / mentor / admin     | ✅ done                      |
 | 08  | Student Account                                                                   | ✅ done                      |
 | 09  | Mentor Onboarding (Draft → Submitted → Under Review → Approved/Rejected)          | ✅ done                      |
-| 10  | Admin Verification System + Audit trail                                           | 🔍 review                    |
-| 11  | University / Faculty / Department / Specialization                                | —                            |
+| 10  | Admin Verification System + Audit trail                                           | ✅ done                      |
+| 11  | University / Faculty / Department / Specialization                                | 🔍 review                    |
 | 12  | Mentor Profiles                                                                   | —                            |
 | 13  | Search & Discovery                                                                | —                            |
 | 14  | Availability & Scheduling (no double booking / overlap)                           | —                            |

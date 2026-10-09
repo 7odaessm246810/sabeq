@@ -4,22 +4,35 @@ import { EmptyState, Icon, Segmented } from '@sabeq/ui';
 import { useState } from 'react';
 import { FacultyCard } from '@/components/cards';
 import { PageHead } from '@/components/PageHead';
-import { FACULTIES, UNIVERSITIES, type FacultyCategory } from '@/lib/mock/data';
+import type { ExploreFaculty, UniversityOption } from '@/lib/catalog';
+import type { FacultyCategory } from '@/lib/mock/data';
 
 const CATS = ['الكل', 'طبي', 'هندسي', 'علمي', 'أدبي', 'فني'] as const;
 type Cat = (typeof CATS)[number];
 
-const UNI_CHIPS = ['كل الجامعات', ...UNIVERSITIES].map((u) => u.replace('جامعة ', ''));
+const ALL_UNIS = '';
 
-export function ExploreClient() {
+/** Faculties from the catalog API (Phase 11); filters run in the browser — the list is small. */
+export function ExploreClient({
+  faculties,
+  universities,
+}: {
+  faculties: readonly ExploreFaculty[];
+  universities: readonly UniversityOption[];
+}) {
   const [q, setQ] = useState('');
   const [cat, setCat] = useState<Cat>('الكل');
-  const [uni, setUni] = useState(UNI_CHIPS[0]);
+  const [uni, setUni] = useState(ALL_UNIS);
+  const uniChips = [
+    [ALL_UNIS, 'كل الجامعات'] as const,
+    ...universities.map((u) => [u.slug, u.name.replace('جامعة ', '')] as const),
+  ];
 
   const s = q.trim();
-  const list = FACULTIES.filter(
+  const list = faculties.filter(
     (f) =>
       (cat === 'الكل' || f.cat === (cat as FacultyCategory)) &&
+      (uni === ALL_UNIS || f.universities.includes(uni)) &&
       (!s || (f.full + f.desc + f.depts.map(([d]) => d).join(' ')).includes(s)),
   );
 
@@ -55,15 +68,15 @@ export function ExploreClient() {
           />
           <div className="hscroll-row" role="group" aria-label="الجامعة">
             <span className="sb-small">الجامعة:</span>
-            {UNI_CHIPS.map((u) => (
+            {uniChips.map(([slug, label]) => (
               <button
-                key={u}
+                key={slug || 'all'}
                 type="button"
                 className="sb-chip sb-chip--sm"
-                aria-pressed={u === uni}
-                onClick={() => setUni(u)}
+                aria-pressed={slug === uni}
+                onClick={() => setUni(slug)}
               >
-                {u}
+                {label}
               </button>
             ))}
           </div>
@@ -88,6 +101,7 @@ export function ExploreClient() {
                     onClick={() => {
                       setQ('');
                       setCat('الكل');
+                      setUni(ALL_UNIS);
                     }}
                   >
                     مسح البحث

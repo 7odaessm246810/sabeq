@@ -1,15 +1,12 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { FACULTIES, getFaculty } from '@/lib/mock/data';
+import { connection } from 'next/server';
+import { getFacultyPage } from '@/lib/catalog';
 import { FacultyClient } from './FacultyClient';
 
-/** Faculty pages are public and SEO-critical: pre-render every known faculty. */
-export function generateStaticParams() {
-  return FACULTIES.map((f) => ({ id: f.id }));
-}
-
 export async function generateMetadata({ params }: PageProps<'/faculty/[id]'>): Promise<Metadata> {
-  const f = getFaculty((await params).id);
+  await connection();
+  const f = await getFacultyPage((await params).id);
   if (!f) return {};
   return {
     title: f.full,
@@ -18,8 +15,10 @@ export async function generateMetadata({ params }: PageProps<'/faculty/[id]'>): 
   };
 }
 
+/** Public and SEO-critical: rendered on request from the catalog API (5-minute data cache). */
 export default async function FacultyPage({ params }: PageProps<'/faculty/[id]'>) {
-  const f = getFaculty((await params).id);
+  await connection();
+  const f = await getFacultyPage((await params).id);
   if (!f) notFound();
   return <FacultyClient faculty={f} />;
 }

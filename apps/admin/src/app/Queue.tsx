@@ -27,7 +27,25 @@ const TABS: ReviewStatus[] = [
 
 /** Mentor applications waiting for review — oldest first, one tab per status. */
 export function Queue() {
-  return <AdminShell title="طلبات المرشدين">{() => <QueueBody />}</AdminShell>;
+  return (
+    <AdminShell title="طلبات المرشدين">
+      {(admin) =>
+        admin.adminRole === 'super_admin' || admin.adminRole === 'verifier' ? (
+          <QueueBody />
+        ) : (
+          <Banner kind="info" title="مراجعة الطلبات للمراجعين بس">
+            {admin.adminRole === 'support' ? (
+              <>
+                تقدر تدير <Link href="/catalog">الكليات والجامعات</Link>.
+              </>
+            ) : (
+              'الأقسام الخاصة بدورك هتظهر هنا في المراحل الجاية.'
+            )}
+          </Banner>
+        )
+      }
+    </AdminShell>
+  );
 }
 
 function QueueBody() {
