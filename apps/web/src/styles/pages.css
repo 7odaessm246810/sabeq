@@ -1037,3 +1037,89 @@
     flex: 1;
   }
 }
+
+/* ===== faculty → universities (Phase 11 — not in the handoff; design-system pieces) ===== */
+.offerings {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.off-filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.off-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.off-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.off-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px;
+}
+.off-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.off-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.off-progs summary {
+  cursor: pointer;
+  margin-top: 4px;
+}
+.off-progs ul {
+  margin: 6px 0 0;
+  padding-inline-start: 18px;
+}
+.off-cutoff {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: end;
+  flex-shrink: 0;
+}
+.off-cutoff b {
+  font-size: 22px;
+  line-height: 1.2;
+}
+.off-cutoff.none {
+  justify-content: center;
+  max-width: 120px;
+}
+.off-sources {
+  color: var(--muted);
+}
+@media (max-width: 900px) {
+  .off-list {
+    grid-template-columns: 1fr;
+  }
+}
+.dept-pick {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: min(100%, 360px);
+}
+.dept-pick .sb-select-wrap {
+  flex: 1;
+}

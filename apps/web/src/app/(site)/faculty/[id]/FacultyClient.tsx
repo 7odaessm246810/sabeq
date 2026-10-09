@@ -4,12 +4,23 @@ import { EmptyState, Icon, Tabs, useToast } from '@sabeq/ui';
 import Link from 'next/link';
 import { useState } from 'react';
 import { MentorCard, ReviewCard } from '@/components/cards';
+import { Departments } from '@/components/faculty/Departments';
+import { Offerings } from '@/components/faculty/Offerings';
 import { PageHead } from '@/components/PageHead';
+import type { CatalogSources, FacultyOffering } from '@/lib/catalog';
 import { MENTORS, REVIEWS, type Faculty } from '@/lib/mock/data';
 
-type Tab = 'about' | 'depts' | 'mentors' | 'reviews';
+type Tab = 'about' | 'unis' | 'depts' | 'mentors' | 'reviews';
 
-export function FacultyClient({ faculty: f }: { faculty: Faculty }) {
+export function FacultyClient({
+  faculty: f,
+  offerings,
+  sources,
+}: {
+  faculty: Faculty;
+  offerings: readonly FacultyOffering[];
+  sources: CatalogSources;
+}) {
   const [tab, setTab] = useState<Tab>('about');
   const toast = useToast();
   const mentors = MENTORS.filter((m) => m.facId === f.id);
@@ -49,16 +60,18 @@ export function FacultyClient({ faculty: f }: { faculty: Faculty }) {
             <span>سنين دراسة</span>
           </div>
           <div>
-            <b className="sb-num">{f.depts.length}</b>
-            <span>أقسام/مسارات</span>
+            <b className="sb-num">
+              {offerings.filter((o) => o.accreditation.status === 'accredited').length}
+            </b>
+            <span>معتمدة من هيئة الجودة</span>
           </div>
           <div>
             <b className="sb-num">{f.mentors}</b>
             <span>مرشد موثق</span>
           </div>
           <div>
-            <b className="sb-num">4.8</b>
-            <span>متوسط تقييم الجلسات</span>
+            <b className="sb-num">{offerings.length}</b>
+            <span>جامعة فيها الكلية</span>
           </div>
         </div>
         <div style={{ marginTop: 28 }}>
@@ -68,6 +81,14 @@ export function FacultyClient({ faculty: f }: { faculty: Faculty }) {
             onChange={setTab}
             items={[
               { key: 'about', label: 'عن الكلية' },
+              {
+                key: 'unis',
+                label: (
+                  <>
+                    الجامعات <span className="sb-caption sb-num">{offerings.length}</span>
+                  </>
+                ),
+              },
               { key: 'depts', label: 'الأقسام' },
               {
                 key: 'mentors',
@@ -107,9 +128,14 @@ export function FacultyClient({ faculty: f }: { faculty: Faculty }) {
                       <Icon name="sparkReal" />
                       اللي الخريجين بيقولوه
                     </span>
-                    {f.real.map((r) => (
-                      <blockquote key={r}>{r}</blockquote>
-                    ))}
+                    {f.real.length ? (
+                      f.real.map((r) => <blockquote key={r}>{r}</blockquote>)
+                    ) : (
+                      <p className="sb-small">
+                        لسه مفيش تجارب منشورة. أول ما المرشدين الموثّقين من {f.name} يشاركوا تجاربهم
+                        هتظهر هنا.
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -124,25 +150,9 @@ export function FacultyClient({ faculty: f }: { faculty: Faculty }) {
             </div>
           ) : null}
 
-          {tab === 'depts' ? (
-            <div className="dept-grid">
-              {f.depts.map(([name, count]) => (
-                <Link
-                  key={name}
-                  className="sb-card sb-card--interactive dept"
-                  href={`/mentors/${f.id}`}
-                >
-                  <b>{name}</b>
-                  <span className="sb-small">
-                    <span className="sb-num">{count}</span> مرشد موثق
-                  </span>
-                  <span className="i18" style={{ color: 'var(--primary)' }}>
-                    <Icon name="arrow" />
-                  </span>
-                </Link>
-              ))}
-            </div>
-          ) : null}
+          {tab === 'unis' ? <Offerings offerings={offerings} sources={sources} /> : null}
+
+          {tab === 'depts' ? <Departments offerings={offerings} facultyId={f.id} /> : null}
 
           {tab === 'mentors' ? (
             mentors.length ? (

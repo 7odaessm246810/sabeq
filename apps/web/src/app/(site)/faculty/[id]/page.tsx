@@ -6,8 +6,9 @@ import { FacultyClient } from './FacultyClient';
 
 export async function generateMetadata({ params }: PageProps<'/faculty/[id]'>): Promise<Metadata> {
   await connection();
-  const f = await getFacultyPage((await params).id);
-  if (!f) return {};
+  const page = await getFacultyPage((await params).id);
+  if (!page) return {};
+  const f = page.faculty;
   return {
     title: f.full,
     description: `${f.full}: ${f.desc}. اسأل طلاب وخريجين موثقين درسوا فيها فعلًا.`,
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: PageProps<'/faculty/[id]'>): 
 /** Public and SEO-critical: rendered on request from the catalog API (5-minute data cache). */
 export default async function FacultyPage({ params }: PageProps<'/faculty/[id]'>) {
   await connection();
-  const f = await getFacultyPage((await params).id);
-  if (!f) notFound();
-  return <FacultyClient faculty={f} />;
+  const page = await getFacultyPage((await params).id);
+  if (!page) notFound();
+  return <FacultyClient faculty={page.faculty} offerings={page.offerings} sources={page.sources} />;
 }

@@ -34,12 +34,39 @@ interface ApiKindSummary {
   departments: string[];
 }
 
+export type UniversityType =
+  'public' | 'azhar' | 'private' | 'national' | 'technological' | 'international';
+
+/** One faculty of this kind at one university (Phase 11 research data). */
+export interface FacultyOffering {
+  id: string;
+  name: string;
+  city: string | null;
+  university: { slug: string; name: string; type: UniversityType; governorate: string | null };
+  accreditation: {
+    status: 'accredited' | 'conditional' | 'not_accredited' | 'unknown';
+    expiresAt: string | null;
+    programmes: { name: string; status: string; expiresAt: string }[];
+  };
+  cutoffs: { year: number; phase: number; track: string; minScore: number; maxScore: number }[];
+  departments: { name: string; mentorCount: number }[];
+  departmentsSource: string | null;
+  mentorCount: number;
+}
+
+export interface CatalogSources {
+  accreditation: { name: string; latestDecision: string };
+  cutoffs: { name: string; date: string };
+}
+
 interface ApiKind extends Omit<ApiKindSummary, 'universities' | 'departments'> {
   about: string;
   genericInfo: string;
   insights: string[];
   universities: { slug: string; name: string }[];
   departments: { name: string; mentorCount: number }[];
+  faculties: FacultyOffering[];
+  sources: CatalogSources;
 }
 
 export interface UniversityOption {
@@ -87,12 +114,14 @@ export async function getExploreData(): Promise<{
   };
 }
 
-export async function getFacultyPage(slug: string): Promise<Faculty | null> {
+export async function getFacultyPage(
+  slug: string,
+): Promise<{ faculty: Faculty; offerings: FacultyOffering[]; sources: CatalogSources } | null> {
   if (!/^[a-z0-9-]{1,40}$/.test(slug)) return null;
   const data = await get<{ kind: ApiKind }>(`/catalog/faculty-kinds/${slug}`);
   if (!data) return null;
   const k = data.kind;
-  return {
+  const faculty: Faculty = {
     id: k.slug,
     name: k.name,
     full: k.fullName,
@@ -106,4 +135,5 @@ export async function getFacultyPage(slug: string): Promise<Faculty | null> {
     generic: k.genericInfo,
     real: k.insights,
   };
+  return { faculty, offerings: k.faculties, sources: k.sources };
 }

@@ -1105,6 +1105,23 @@
     color: var(--ink);
     box-shadow: var(--shadow-1);
   }
+  /* Phones: tabs and segments stay on one line and scroll sideways instead of wrapping. */
+  @media (max-width: 640px) {
+    .sb-tabs,
+    .sb-seg {
+      max-width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .sb-tab,
+    .sb-seg button {
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .sb-tab-ink {
+      bottom: 0;
+    }
+  }
 
   /* ---------- dropdown / menu ---------- */
   .sb-menu {
