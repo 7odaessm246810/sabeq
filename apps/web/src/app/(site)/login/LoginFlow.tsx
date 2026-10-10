@@ -1,6 +1,7 @@
 'use client';
 
 import { FieldError, Logo, Segmented, cx, useToast } from '@sabeq/ui';
+import { normalizeEgyptianMobile } from '@sabeq/utils';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -51,11 +52,12 @@ export function LoginFlow() {
     if (step === 'otp') inputs.current[0]?.focus();
   }, [step]);
 
-  const fullPhone = () => `+20${phone.replace(/\D/g, '')}`;
+  // People type «01012345678», «1012345678» or «+20 101…» — all are the same number.
+  const fullPhone = () => normalizeEgyptianMobile(phone) ?? `+20${phone.replace(/\D/g, '')}`;
 
   async function sendCode() {
     if (busy) return;
-    if (phone.replace(/\D/g, '').length < 10) {
+    if (phone.replace(/\D/g, '').replace(/^(20|0)/, '').length < 10) {
       setPhoneError('الرقم ناقص. اكتب 10 أرقام بعد +20.');
       return;
     }
