@@ -52,3 +52,8 @@ export function splitCommission(
   const platformFee = piasters(Math.floor((total * commissionBps + 5_000) / 10_000));
   return { total, platformFee, mentorEarning: piasters(total - platformFee) };
 }
+
+/** Price of a session type from the mentor's base price, rounded to 10 EGP (docs/database.md). */
+export function sessionPricePiasters(basePiasters: number, multiplier: number): Piasters {
+  return piasters(Math.round((basePiasters * multiplier) / 1000) * 1000);
+}

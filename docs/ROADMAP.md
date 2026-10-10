@@ -59,8 +59,8 @@ sabeq/
 | 08  | Student Account                                                                   | ✅ done                      |
 | 09  | Mentor Onboarding (Draft → Submitted → Under Review → Approved/Rejected)          | ✅ done                      |
 | 10  | Admin Verification System + Audit trail                                           | ✅ done                      |
-| 11  | University / Faculty / Department / Specialization                                | 🔍 review                    |
-| 12  | Mentor Profiles                                                                   | —                            |
+| 11  | University / Faculty / Department / Specialization                                | ✅ done                      |
+| 12  | Mentor Profiles                                                                   | 🔍 review                    |
 | 13  | Search & Discovery                                                                | —                            |
 | 14  | Availability & Scheduling (no double booking / overlap)                           | —                            |
 | 15  | Booking System (Pending / Confirmed / Cancelled / Completed / No-show / Refunded) | —                            |
