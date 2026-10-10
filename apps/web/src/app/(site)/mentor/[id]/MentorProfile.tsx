@@ -9,7 +9,14 @@ import type { Availability } from '@/lib/availability';
 import { ApiError } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import { useDemo } from '@/lib/demo-store';
-import { listSaved, saveMentor, unsaveMentor, type MentorProfileData } from '@/lib/mentors';
+import {
+  getMentorReviews,
+  listSaved,
+  saveMentor,
+  unsaveMentor,
+  type MentorProfileData,
+  type MentorReview,
+} from '@/lib/mentors';
 
 const monthYear = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { month: 'long', year: 'numeric' });
 
@@ -69,6 +76,26 @@ export function MentorProfile({
 }) {
   const [why, setWhy] = useState(false);
   const save = useSaved(m.slug);
+  const [more, setMore] = useState<{ reviews: MentorReview[]; page: number; hasMore: boolean }>({
+    reviews: [],
+    page: 1,
+    hasMore: m.ratingCount > m.reviews.length,
+  });
+  const [loadingMore, setLoadingMore] = useState(false);
+  const reviews = [...m.reviews, ...more.reviews];
+  function loadMore() {
+    setLoadingMore(true);
+    getMentorReviews(m.slug, more.page + 1)
+      .then((r) =>
+        setMore((x) => ({
+          reviews: [...x.reviews, ...r.reviews],
+          page: x.page + 1,
+          hasMore: r.hasMore,
+        })),
+      )
+      .catch(() => undefined)
+      .finally(() => setLoadingMore(false));
+  }
   const first = m.name.split(' ')[0] ?? m.name;
 
   return (
@@ -199,9 +226,9 @@ export function MentorProfile({
                 </span>
               ) : null}
             </div>
-            {m.reviews.length ? (
+            {reviews.length ? (
               <div className="rv-list">
-                {m.reviews.map((r, i) => (
+                {reviews.map((r, i) => (
                   <div key={r.id} className="rv-item">
                     <Avatar name={r.name} size="sm" tone={((i % 3) + 1) as 1 | 2 | 3} />
                     <div>
@@ -217,6 +244,18 @@ export function MentorProfile({
                     </div>
                   </div>
                 ))}
+                {more.hasMore ? (
+                  <button
+                    type="button"
+                    className="sb-btn sb-btn--ghost sb-btn--sm"
+                    style={{ alignSelf: 'center' }}
+                    disabled={loadingMore}
+                    aria-busy={loadingMore}
+                    onClick={loadMore}
+                  >
+                    اعرض تقييمات أكتر
+                  </button>
+                ) : null}
               </div>
             ) : (
               <p className="sb-small" style={{ marginTop: 12 }}>

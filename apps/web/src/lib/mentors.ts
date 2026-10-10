@@ -51,15 +51,21 @@ export interface MentorProfileData extends MentorCardData {
     medium: 'video' | 'audio';
     priceEgp: number;
   }[];
-  reviews: {
-    id: string;
-    rating: number;
-    text: string | null;
-    topic: string | null;
-    date: string;
-    name: string;
-  }[];
+  reviews: MentorReview[];
 }
+
+export interface MentorReview {
+  id: string;
+  rating: number;
+  text: string | null;
+  topic: string | null;
+  date: string;
+  name: string;
+}
+
+/** More of a mentor's reviews (the profile shows the latest 10). */
+export const getMentorReviews = (slug: string, page: number) =>
+  api<{ reviews: MentorReview[]; hasMore: boolean }>(`/mentors/${slug}/reviews?page=${page}`);
 
 export interface MentorList {
   total: number;

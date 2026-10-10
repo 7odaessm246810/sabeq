@@ -3,6 +3,8 @@
 import {
   BOOKING_STATUS_LABELS,
   FREE_CANCEL_HOURS,
+  REVIEW_TEXT_MAX,
+  REVIEW_WINDOW_DAYS,
   cancellationRefund,
   type BookingStatus,
 } from '@sabeq/types';
@@ -18,6 +20,7 @@ import {
   completeBooking,
   listBookings,
   markNoShow,
+  rateSession,
   type Booking,
 } from '@/lib/bookings';
 import { useSignedIn } from '@/lib/use-signed-in';
@@ -67,6 +70,7 @@ export function SessionsClient() {
   const [failed, setFailed] = useState(false);
   const [cancelling, setCancelling] = useState<Booking | null>(null);
   const [reason, setReason] = useState('');
+  const [rating, setRating] = useState<{ b: Booking; stars: number; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
   /** «Now» as of the last load: rendering must stay pure. */
   const [now, setNow] = useState(0);
@@ -116,6 +120,41 @@ export function SessionsClient() {
       setBusy(false);
     }
   }
+
+  async function sendRating() {
+    if (!rating?.stars) return;
+    setBusy(true);
+    try {
+      const { review } = await rateSession(
+        rating.b.id,
+        rating.stars,
+        rating.text.trim() || undefined,
+      );
+      setList(
+        (l) =>
+          l?.map((x) =>
+            x.id === rating.b.id
+              ? { ...x, review: { rating: review.rating, text: review.text } }
+              : x,
+          ) ?? null,
+      );
+      setRating(null);
+      toast({
+        kind: 'success',
+        title: 'شكرًا على تقييمك',
+        description: 'بيساعد طلبة تانيين يختاروا.',
+      });
+    } catch (err) {
+      toast({ kind: 'error', title: errorText(err) });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const canRate = (b: Booking) =>
+    b.status === 'completed' &&
+    !b.review &&
+    now - Date.parse(b.endsAt) < REVIEW_WINDOW_DAYS * 86_400_000;
 
   const refundFor = (b: Booking) =>
     cancellationRefund({
@@ -308,6 +347,27 @@ export function SessionsClient() {
                         )}
                       </>
                     ) : null}
+                    {role === 'student' && b.review ? (
+                      <span className="sb-caption">شكرًا على تقييمك</span>
+                    ) : role === 'student' && canRate(b) ? (
+                      <button
+                        type="button"
+                        className="sb-btn sb-btn--secondary sb-btn--sm"
+                        onClick={() => setRating({ b, stars: 0, text: '' })}
+                      >
+                        <Icon name="star" />
+                        قيّم الجلسة
+                      </button>
+                    ) : null}
+                    {role === 'mentor' && b.review ? (
+                      <span
+                        className="sb-rating"
+                        aria-label={`تقييم الطالب ${b.review.rating} من 5`}
+                      >
+                        <Icon name="star" />
+                        <span className="sb-num">{b.review.rating}</span>
+                      </span>
+                    ) : null}
                     {role === 'student' && b.status === 'completed' ? (
                       <Link
                         className="sb-btn sb-btn--ghost sb-btn--sm"
@@ -352,6 +412,58 @@ export function SessionsClient() {
           </div>
         )}
       </section>
+
+      {rating ? (
+        <Modal
+          title="الجلسة كانت مفيدة؟"
+          onClose={() => setRating(null)}
+          footer={
+            <>
+              <button
+                type="button"
+                className="sb-btn sb-btn--primary"
+                disabled={!rating.stars || busy}
+                aria-busy={busy}
+                onClick={() => void sendRating()}
+              >
+                ابعت التقييم
+              </button>
+              <button
+                type="button"
+                className="sb-btn sb-btn--ghost"
+                onClick={() => setRating(null)}
+              >
+                بعدين
+              </button>
+            </>
+          }
+        >
+          <div className="rate" role="radiogroup" aria-label="التقييم">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button
+                key={n}
+                type="button"
+                role="radio"
+                aria-checked={rating.stars === n}
+                aria-label={`${n} من 5`}
+                className={n <= rating.stars ? 'on' : undefined}
+                onClick={() => setRating((r) => r && { ...r, stars: n })}
+              >
+                <Icon name="star" />
+              </button>
+            ))}
+          </div>
+          <textarea
+            className="sb-input"
+            style={{ height: 96, padding: '12px 14px', marginTop: 14 }}
+            maxLength={REVIEW_TEXT_MAX}
+            placeholder="إيه أكتر حاجة فادتك؟ (اختياري)"
+            aria-label="إيه أكتر حاجة فادتك؟"
+            value={rating.text}
+            onChange={(e) => setRating((r) => r && { ...r, text: e.target.value })}
+          />
+        </Modal>
+      ) : null}
 
       {cancelling ? (
         <Modal

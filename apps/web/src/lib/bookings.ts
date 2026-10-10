@@ -38,6 +38,8 @@ export interface Booking {
   } | null;
   /** The session room (Phase 17): open from `opensAt` to `closesAt`, and who has come in. */
   session: { opensAt: string; closesAt: string; mentorJoined: boolean; studentJoined: boolean };
+  /** The student's rating of this session (Phase 18), once given. */
+  review: { rating: number; text: string | null } | null;
   /** Only when the viewer is the mentor. */
   student?: { name: string };
   /** Only when the viewer is the mentor: session price minus the commission. */
@@ -78,6 +80,13 @@ export const joinSession = (id: string) =>
       method: 'POST',
     },
   );
+
+/** Rates a completed session (once). */
+export const rateSession = (id: string, rating: number, text?: string) =>
+  api<{ review: { id: string; rating: number; text: string | null } }>(`/bookings/${id}/review`, {
+    method: 'POST',
+    body: text ? { rating, text } : { rating },
+  });
 
 export const cancelBooking = (id: string, reason?: string) =>
   api<One>(`/bookings/${id}/cancel`, { method: 'POST', body: reason ? { reason } : {} }).then(
