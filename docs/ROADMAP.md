@@ -63,8 +63,8 @@ sabeq/
 | 12  | Mentor Profiles                                                                   | ✅ done                      |
 | 13  | Search & Discovery                                                                | ✅ done                      |
 | 14  | Availability & Scheduling (no double booking / overlap)                           | ✅ done                      |
-| 15  | Booking System (Pending / Confirmed / Cancelled / Completed / No-show / Refunded) | 🔍 review                    |
-| 16  | Payment System — Paymob، التأكيد من الـ Backend فقط (webhooks + HMAC)             | —                            |
+| 15  | Booking System (Pending / Confirmed / Cancelled / Completed / No-show / Refunded) | ✅ done                      |
+| 16  | Payment System — Paymob، التأكيد من الـ Backend فقط (webhooks + HMAC)             | 🔍 review                    |
 | 17  | Session Management                                                                | —                            |
 | 18  | Reviews & Ratings (بعد الجلسة فقط، بدون تكرار)                                    | —                            |
 | 19  | Notifications (in-app + email، SMS لاحقًا)                                        | —                            |
@@ -84,21 +84,22 @@ sabeq/
 
 ## Decisions log
 
-| التاريخ    | القرار                                                                                                                             |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-10-06 | Light mode فقط. Monorepo. Next.js + Express 5 + TS. Node 24 LTS.                                                                   |
-| 2026-10-06 | Auth = Phone + OTP (email اختياري).                                                                                                |
-| 2026-10-06 | Database = PostgreSQL + Prisma.                                                                                                    |
-| 2026-10-06 | Payments = Paymob (بطاقة + محافظ + فوري/كشك) خلف payment abstraction.                                                              |
-| 2026-10-06 | كل صفحات التصميم تتبني في Phase 03–04 بـ mock data، وكل Phase بعدها تربط صفحتها بالـ API.                                          |
-| 2026-10-06 | حساب واحد = دور واحد (طالب أو مرشد أو أدمن) — ADR-0008.                                                                            |
-| 2026-10-06 | الفيديو جوه الموقع (provider يتحدد في Phase 17).                                                                                   |
-| 2026-10-06 | عمولة المنصة 10%؛ تحويل المرشد: بنكي / InstaPay / Vodafone Cash — ADR-0009.                                                        |
-| 2026-10-06 | SMS: local Egyptian provider + Twilio Verify fallback (مقترح) — ADR-0011.                                                          |
-| 2026-10-07 | Neon (PostgreSQL, Frankfurt) + Upstash (Redis) لـ staging/production؛ Docker محليًا.                                               |
-| 2026-10-07 | المرشدين: خريج / معيد / دكتور فقط. سعر أساسي واحد. إلغاء متأخر = استرداد 50%. صور البطاقات محفوظة مشفّرة.                          |
-| 2026-10-10 | رسوم خدمة ثابتة 15 ج.م على الطالب فوق سعر الجلسة (بترجع كاملة لو الإلغاء قبل 24 ساعة). لحد Paymob: دفع تجريبي على جهاز التطوير بس. |
-| 2026-10-06 | TypeScript 6.0.3 مثبت (typescript-eslint لسه ما يدعمش 7) — ADR-0002.                                                               |
+| التاريخ    | القرار                                                                                                                                                                                    |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-06 | Light mode فقط. Monorepo. Next.js + Express 5 + TS. Node 24 LTS.                                                                                                                          |
+| 2026-10-06 | Auth = Phone + OTP (email اختياري).                                                                                                                                                       |
+| 2026-10-06 | Database = PostgreSQL + Prisma.                                                                                                                                                           |
+| 2026-10-06 | Payments = Paymob (بطاقة + محافظ + فوري/كشك) خلف payment abstraction.                                                                                                                     |
+| 2026-10-06 | كل صفحات التصميم تتبني في Phase 03–04 بـ mock data، وكل Phase بعدها تربط صفحتها بالـ API.                                                                                                 |
+| 2026-10-06 | حساب واحد = دور واحد (طالب أو مرشد أو أدمن) — ADR-0008.                                                                                                                                   |
+| 2026-10-06 | الفيديو جوه الموقع (provider يتحدد في Phase 17).                                                                                                                                          |
+| 2026-10-06 | عمولة المنصة 10%؛ تحويل المرشد: بنكي / InstaPay / Vodafone Cash — ADR-0009.                                                                                                               |
+| 2026-10-06 | SMS: local Egyptian provider + Twilio Verify fallback (مقترح) — ADR-0011.                                                                                                                 |
+| 2026-10-07 | Neon (PostgreSQL, Frankfurt) + Upstash (Redis) لـ staging/production؛ Docker محليًا.                                                                                                      |
+| 2026-10-07 | المرشدين: خريج / معيد / دكتور فقط. سعر أساسي واحد. إلغاء متأخر = استرداد 50%. صور البطاقات محفوظة مشفّرة.                                                                                 |
+| 2026-10-10 | رسوم خدمة ثابتة 15 ج.م على الطالب فوق سعر الجلسة (بترجع كاملة لو الإلغاء قبل 24 ساعة). لحد Paymob: دفع تجريبي على جهاز التطوير بس.                                                        |
+| 2026-10-10 | Phase 16: Paymob Unified Checkout (بطاقة / محفظة / منافذ أمان ومصاري). لحد ما الحساب يتفعّل: `PAYMOB_MODE=fake` (صفحة دفع تجريبية بتعدّي على نفس التحقق بالـ HMAC) — ممنوع في production. |
+| 2026-10-06 | TypeScript 6.0.3 مثبت (typescript-eslint لسه ما يدعمش 7) — ADR-0002.                                                                                                                      |
 
 كل القرارات بالتفصيل: [docs/adr/](adr/README.md).
 

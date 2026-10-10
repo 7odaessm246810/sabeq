@@ -8,8 +8,9 @@
  *   AUTO_COMPLETE_HOURS after they end. `sweep()` does both and runs every minute.
  * - Cancellation refunds follow `cancellationRefund` (@sabeq/types): early or by the mentor → all,
  *   late by the student → half the session price. Money moves in Phase 16; here the share is recorded.
- * - Until Paymob (Phase 16), local development confirms with a test payment that is refused on any
- *   other environment.
+ * - Payments (Phase 16) confirm a booking through `confirmPaid` — only after the gateway's signed
+ *   callback. Refunds start from `cancel` through the `onRefundDue` hook.
+ * - Completing a session writes the mentor's earning to the append-only ledger.
  * Prices are snapshotted on the booking so later price changes never touch it.
  */
 import {
@@ -74,6 +75,11 @@ const BOOKING_SELECT = {
   completedAt: true,
   createdAt: true,
   cancelledBy: { select: { id: true } },
+  payments: {
+    orderBy: { createdAt: 'desc' },
+    take: 1,
+    select: { status: true, method: true, failureReason: true, kioskReference: true },
+  },
   student: { select: { user: { select: { fullName: true } } } },
   mentor: {
     select: {
@@ -121,6 +127,8 @@ function view(b: Row, viewer: 'student' | 'mentor') {
             ? 'mentor'
             : 'admin',
     refundEgp: refund === null ? null : refund / 100,
+    /** The latest payment attempt (Phase 16). */
+    payment: b.payments[0] ?? null,
     mentor: {
       slug: b.mentor.slug,
       name: b.mentor.user.fullName ?? 'مرشد سابق',
@@ -149,10 +157,11 @@ const isOverlap = (err: unknown) =>
 export function createBookingsService(deps: {
   db: Db;
   scheduling: SchedulingService;
-  appEnv: 'local' | 'staging' | 'production';
+  /** A paid booking was cancelled with money to return (payments module). */
+  onRefundDue?: (bookingId: string) => Promise<void>;
   now?: () => Date;
 }) {
-  const { db, scheduling, appEnv, now = () => new Date() } = deps;
+  const { db, scheduling, now = () => new Date() } = deps;
 
   async function expireHolds(where: Prisma.BookingWhereInput = {}) {
     const at = now();
@@ -167,11 +176,25 @@ export function createBookingsService(deps: {
       where: { id, status: 'confirmed' },
       data: { status: 'completed', completedAt: now() },
     });
-    if (done.count)
+    if (done.count) {
       await tx.mentor.update({
         where: { userId: mentorId },
         data: { sessionsCompleted: { increment: 1 } },
       });
+      // The mentor's earning: session price minus the commission (ADR-0009). Payable later.
+      const b = await tx.booking.findUniqueOrThrow({
+        where: { id },
+        select: { pricePiasters: true, commissionBps: true },
+      });
+      await tx.ledgerEntry.create({
+        data: {
+          mentorId,
+          bookingId: id,
+          type: 'mentor_earning',
+          amountPiasters: splitCommission(piasters(b.pricePiasters), b.commissionBps).mentorEarning,
+        },
+      });
+    }
     return done.count === 1;
   }
 
@@ -304,20 +327,27 @@ export function createBookingsService(deps: {
       }
     },
 
-    /** Local development only, until Paymob (Phase 16): confirms a held booking without money. */
-    async devPay(studentId: string, id: string) {
-      if (appEnv !== 'local') throw Errors.forbidden();
+    /**
+     * Payment received (signed gateway callback). Confirms the booking, or — when the hold had
+     * already expired — confirms it if the slot is still free. Returns what happened, so the
+     * payments module can refund a payment whose slot was taken meanwhile.
+     */
+    async confirmPaid(id: string): Promise<'confirmed' | 'already' | 'slot_taken' | 'cancelled'> {
       const b = await load(id);
-      if (b.studentId !== studentId) throw Errors.notFound(MESSAGES.notFound);
-      if (b.status !== 'pending') throw new AppError('CONFLICT', MESSAGES.notPending);
-      if (!b.holdExpiresAt || b.holdExpiresAt < now()) {
-        await expireHolds({ id });
-        throw new AppError('CONFLICT', MESSAGES.holdExpired);
+      if (b.status === 'confirmed' || b.status === 'completed') return 'already';
+      const expiredHold =
+        b.status === 'cancelled' && b.refundShareBps === null && b.cancelledBy === null;
+      if (b.status !== 'pending' && !expiredHold) return 'cancelled';
+      try {
+        const moved = await db.booking.updateMany({
+          where: { id, status: b.status },
+          data: { status: 'confirmed', holdExpiresAt: null, cancelledAt: null, cancelReason: null },
+        });
+        if (!moved.count) return 'already';
+      } catch (err) {
+        if (isOverlap(err)) return 'slot_taken';
+        throw err;
       }
-      await db.booking.update({
-        where: { id },
-        data: { status: 'confirmed', holdExpiresAt: null },
-      });
       await notify(
         b.mentorId,
         'booking.confirmed',
@@ -325,7 +355,19 @@ export function createBookingsService(deps: {
         `${b.student.user.fullName ?? 'طالب'} حجز ${SESSION_TYPES[b.kind as SessionKind].label} يوم ${when(b.startsAt)}.`,
         id,
       );
-      return view(await load(id), 'student');
+      return 'confirmed';
+    },
+
+    /** The hold, for the payments module (kiosk payments need longer). */
+    async holdFor(studentId: string, id: string) {
+      const b = await load(id);
+      if (b.studentId !== studentId) throw Errors.notFound(MESSAGES.notFound);
+      if (b.status !== 'pending') throw new AppError('CONFLICT', MESSAGES.notPending);
+      if (!b.holdExpiresAt || b.holdExpiresAt < now()) {
+        await expireHolds({ id });
+        throw new AppError('CONFLICT', MESSAGES.holdExpired);
+      }
+      return b;
     },
 
     async cancel(userId: string, id: string, reason: string | undefined) {
@@ -355,6 +397,9 @@ export function createBookingsService(deps: {
         },
       });
       if (!moved.count) throw new AppError('CONFLICT', MESSAGES.cantCancel);
+      if (b.status === 'confirmed' && refund.refundPiasters > 0 && deps.onRefundDue)
+        // A gateway hiccup must not undo the cancellation: the refund stays pending and is retried.
+        await deps.onRefundDue(id).catch(() => undefined);
       if (b.status === 'confirmed') {
         const other = by === 'student' ? b.mentorId : b.studentId;
         await notify(

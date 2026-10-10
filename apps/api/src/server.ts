@@ -13,6 +13,7 @@ import { createAccountModule } from './modules/account/index.js';
 import { createAuthModule } from './modules/auth/index.js';
 import { createBookingsModule } from './modules/bookings/index.js';
 import { createCatalogModule } from './modules/catalog/index.js';
+import { createPaymentsModule } from './modules/payments/index.js';
 import { createMediaModule } from './modules/media/index.js';
 import { createSchedulingModule } from './modules/scheduling/index.js';
 import { createSearchModule } from './modules/search/index.js';
@@ -62,7 +63,15 @@ function main() {
     db,
     auth,
     scheduling: scheduling.scheduling,
-    appEnv: config.appEnv,
+    // Late-bound: payments is created next and needs bookings.
+    onRefundDue: (id) => payments.payments.refundBooking(id),
+  });
+  const payments = createPaymentsModule({
+    db,
+    auth,
+    bookings: bookings.bookings,
+    config,
+    logger,
   });
   const search = createSearchModule({ catalog: catalog.catalog, mentors: mentors.mentors, redis });
   const mentorApplication = createMentorApplicationModule({ db, store, crypto, auth });
@@ -81,16 +90,18 @@ function main() {
       mentors.mount(v1);
       search.mount(v1);
       bookings.mount(v1);
+      payments.mount(v1);
       mentorApplication.mount(v1);
       verification.mount(v1);
     },
   });
-  // Every minute: free unpaid holds and complete sessions nobody marked (bookings, Phase 15).
+  // Every minute: free unpaid holds, complete sessions nobody marked (Phase 15), retry refunds (16).
   // Idempotent, so running it on every API instance is safe.
   const sweeper = setInterval(() => {
     bookings.bookings
       .sweep()
       .catch((err: unknown) => logger.error({ err }, 'booking sweep failed'));
+    payments.payments.sweep().catch((err: unknown) => logger.error({ err }, 'refund retry failed'));
   }, 60_000);
   sweeper.unref();
 

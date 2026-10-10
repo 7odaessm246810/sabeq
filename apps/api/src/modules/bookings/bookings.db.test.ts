@@ -1,5 +1,5 @@
 /**
- * Bookings (Phase 15): holding a slot, the race for one slot, test payment, cancellation refunds,
+ * Bookings (Phase 15): holding a slot, the race for one slot, paying (fake gateway), cancellation refunds,
  * completion and the sweeper. Shared test database — every mentor and student here is new.
  */
 import request from 'supertest';
@@ -8,6 +8,15 @@ import { createHarness } from '../../testing/harness.js';
 
 const h = createHarness();
 afterAll(() => h.close());
+
+/** Pays through the fake gateway's checkout — the same signed-callback path as Paymob. */
+async function payFor(agent: ReturnType<typeof request.agent>, id: string) {
+  const { paymentId } = (
+    await agent.post(`/api/v1/bookings/${id}/pay`).send({ method: 'card' }).expect(200)
+  ).body.data;
+  await agent.post(`/api/v1/payments/fake/checkout/${paymentId}/success`).expect(303);
+  return (await agent.get(`/api/v1/bookings/${id}`).expect(200)).body.data.booking;
+}
 
 /** Open all day, every day — so there are slots both inside and outside 24 hours. */
 const ALL_DAY = [0, 1, 2, 3, 4, 5, 6].map((weekday) => ({
@@ -129,7 +138,10 @@ describe('booking a slot', () => {
       .post('/api/v1/bookings')
       .send({ mentorSlug: m.slug, kind: 'consultation', startsAt: at })
       .expect(201);
-    const pay = await s.agent.post(`/api/v1/bookings/${held.id}/dev-pay`).expect(409);
+    const pay = await s.agent
+      .post(`/api/v1/bookings/${held.id}/pay`)
+      .send({ method: 'card' })
+      .expect(409);
     expect(pay.body.error.message).toBeTruthy();
   });
 });
@@ -159,8 +171,7 @@ describe('paying, listing and cancelling', () => {
         .expect(201)
     ).body.data.booking;
 
-    const paid = (await s.agent.post(`/api/v1/bookings/${held.id}/dev-pay`).expect(200)).body.data
-      .booking;
+    const paid = await payFor(s.agent, held.id);
     expect(paid).toMatchObject({ status: 'confirmed', holdExpiresAt: null });
 
     const mine = (await s.agent.get('/api/v1/bookings?scope=upcoming').expect(200)).body.data
@@ -200,19 +211,20 @@ describe('paying, listing and cancelling', () => {
           .send({ mentorSlug: m.slug, kind: 'consultation', startsAt: at })
           .expect(201)
       ).body.data.booking;
-      await s.agent.post(`/api/v1/bookings/${b.id}/dev-pay`).expect(200);
+      await payFor(s.agent, b.id);
       return { s, id: b.id as string };
     };
 
     const e = await book(early);
     const eRes = (await e.s.agent.post(`/api/v1/bookings/${e.id}/cancel`).send({}).expect(200)).body
       .data.booking;
-    expect(eRes).toMatchObject({ status: 'cancelled', cancelledBy: 'student', refundEgp: 215 });
+    // Paid through the fake gateway, so the refund goes through at once.
+    expect(eRes).toMatchObject({ status: 'refunded', cancelledBy: 'student', refundEgp: 215 });
 
     const l = await book(late);
     const lRes = (await l.s.agent.post(`/api/v1/bookings/${l.id}/cancel`).send({}).expect(200)).body
       .data.booking;
-    expect(lRes).toMatchObject({ status: 'cancelled', refundEgp: 100 }); // half of 200, fee kept
+    expect(lRes).toMatchObject({ status: 'refunded', refundEgp: 100 }); // half of 200, fee kept
 
     const x = await book(byMentor);
     const xRes = (
@@ -265,6 +277,9 @@ describe('after the session', () => {
     expect(res.body.data.booking.status).toBe('completed');
     const mentorRow = await h.db.mentor.findUniqueOrThrow({ where: { userId: done.m.userId } });
     expect(mentorRow.sessionsCompleted).toBe(1);
+    // The mentor's earning: 200 EGP minus the 10% commission, on the ledger.
+    const ledger = await h.db.ledgerEntry.findMany({ where: { bookingId: done.id } });
+    expect(ledger).toMatchObject([{ type: 'mentor_earning', amountPiasters: 18_000 }]);
     await done.s.agent.post(`/api/v1/bookings/${done.id}/cancel`).send({}).expect(409);
 
     const absent = await pastBooking(20);

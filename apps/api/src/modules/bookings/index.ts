@@ -3,7 +3,6 @@
  *   POST   /                { mentorSlug, kind, startsAt, note? }   student → { booking } (pending, held)
  *   GET    /?scope=upcoming|past                                    → { bookings } (own, by role)
  *   GET    /:id                                                     → { booking } (participants)
- *   POST   /:id/dev-pay     local development only (until Paymob)   → { booking } (confirmed)
  *   POST   /:id/cancel      { reason? }  student or mentor          → { booking }
  *   POST   /:id/complete    mentor, after the end                   → { booking }
  *   POST   /:id/no-show     mentor, 15 min after the start          → { booking }
@@ -37,7 +36,7 @@ export function createBookingsModule(deps: {
   db: Db;
   auth: ReturnType<typeof createAuthModule>;
   scheduling: SchedulingService;
-  appEnv: 'local' | 'staging' | 'production';
+  onRefundDue?: (bookingId: string) => Promise<void>;
   now?: () => Date;
 }) {
   const bookings = createBookingsService(deps);
@@ -69,11 +68,6 @@ export function createBookingsModule(deps: {
       r.get('/:id', async (req, res) => {
         const { id } = parseInput(idParam, req.params);
         sendData(res, { booking: await bookings.get(who(req).userId, id) });
-      });
-
-      r.post('/:id/dev-pay', requireRole('student'), async (req, res) => {
-        const { id } = parseInput(idParam, req.params);
-        sendData(res, { booking: await bookings.devPay(who(req).userId, id) });
       });
 
       r.post('/:id/cancel', async (req, res) => {

@@ -15,6 +15,9 @@ const csv = z
   )
   .pipe(z.array(z.url({ message: 'must be a comma-separated list of URLs' })));
 
+/** Empty variables (`KEY=` in .env) count as unset. */
+const unsetIfEmpty = (v: unknown) => (v === '' ? undefined : v);
+
 const schema = z
   .object({
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
@@ -74,6 +77,27 @@ const schema = z
       return keys;
     }),
     DOCUMENTS_ENCRYPTION_ACTIVE_KEY: z.string().min(1),
+    /** The website origin people use — payment return links and Paymob callbacks go through it. */
+    API_PUBLIC_WEB_URL: z.url().default('http://localhost:3000'),
+    /** "fake": a local test checkout (never in production). "paymob": real payments. */
+    PAYMOB_MODE: z.preprocess(unsetIfEmpty, z.enum(['fake', 'paymob']).default('fake')),
+    PAYMOB_API_BASE: z.url().default('https://accept.paymob.com'),
+    PAYMOB_SECRET_KEY: z.preprocess(unsetIfEmpty, z.string().min(1).optional()),
+    PAYMOB_PUBLIC_KEY: z.preprocess(unsetIfEmpty, z.string().min(1).optional()),
+    PAYMOB_HMAC_SECRET: z.preprocess(unsetIfEmpty, z.string().min(1).optional()),
+    /** Integration ids from the Paymob dashboard, one per method (kiosk = Aman / Masary). */
+    PAYMOB_INTEGRATION_CARD: z.preprocess(
+      unsetIfEmpty,
+      z.coerce.number().int().positive().optional(),
+    ),
+    PAYMOB_INTEGRATION_WALLET: z.preprocess(
+      unsetIfEmpty,
+      z.coerce.number().int().positive().optional(),
+    ),
+    PAYMOB_INTEGRATION_KIOSK: z.preprocess(
+      unsetIfEmpty,
+      z.coerce.number().int().positive().optional(),
+    ),
     API_BODY_LIMIT: z
       .string()
       .regex(/^\d+(kb|mb)$/, 'e.g. 100kb or 1mb')
@@ -87,6 +111,27 @@ const schema = z
         message: 'must be one of the ids in DOCUMENTS_ENCRYPTION_KEYS',
       });
     }
+    if (env.PAYMOB_MODE === 'paymob') {
+      for (const key of ['PAYMOB_SECRET_KEY', 'PAYMOB_PUBLIC_KEY', 'PAYMOB_HMAC_SECRET'] as const)
+        if (!env[key])
+          ctx.addIssue({
+            code: 'custom',
+            path: [key],
+            message: 'required when PAYMOB_MODE=paymob',
+          });
+      if (!env.PAYMOB_INTEGRATION_CARD && !env.PAYMOB_INTEGRATION_WALLET)
+        ctx.addIssue({
+          code: 'custom',
+          path: ['PAYMOB_INTEGRATION_CARD'],
+          message: 'set at least one integration id (card or wallet)',
+        });
+    }
+    if (env.APP_ENV === 'production' && env.PAYMOB_MODE !== 'paymob')
+      ctx.addIssue({
+        code: 'custom',
+        path: ['PAYMOB_MODE'],
+        message: 'production takes real payments: set PAYMOB_MODE=paymob',
+      });
     if (env.APP_ENV === 'production') {
       for (const origin of env.CORS_ORIGINS) {
         if (!origin.startsWith('https://')) {
@@ -141,6 +186,15 @@ export interface Config {
     /** Secure + `__Host-` cookies everywhere except plain-http local development. */
     secureCookies: boolean;
   };
+  publicWebUrl: string;
+  payments: {
+    mode: 'fake' | 'paymob';
+    apiBase: string;
+    secretKey: string | undefined;
+    publicKey: string | undefined;
+    hmacSecret: string | undefined;
+    integrations: { card?: number; wallet?: number; kiosk?: number };
+  };
 }
 
 export class ConfigError extends Error {
@@ -182,6 +236,19 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       otpSecret: e.AUTH_OTP_SECRET,
       smsProvider: e.SMS_PROVIDER,
       secureCookies: e.APP_ENV !== 'local',
+    },
+    publicWebUrl: e.API_PUBLIC_WEB_URL.replace(/\/$/, ''),
+    payments: {
+      mode: e.PAYMOB_MODE,
+      apiBase: e.PAYMOB_API_BASE.replace(/\/$/, ''),
+      secretKey: e.PAYMOB_SECRET_KEY,
+      publicKey: e.PAYMOB_PUBLIC_KEY,
+      hmacSecret: e.PAYMOB_HMAC_SECRET,
+      integrations: {
+        ...(e.PAYMOB_INTEGRATION_CARD ? { card: e.PAYMOB_INTEGRATION_CARD } : {}),
+        ...(e.PAYMOB_INTEGRATION_WALLET ? { wallet: e.PAYMOB_INTEGRATION_WALLET } : {}),
+        ...(e.PAYMOB_INTEGRATION_KIOSK ? { kiosk: e.PAYMOB_INTEGRATION_KIOSK } : {}),
+      },
     },
   };
 }

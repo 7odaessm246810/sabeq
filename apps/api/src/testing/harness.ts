@@ -16,6 +16,7 @@ import { createAuthModule } from '../modules/auth/index.js';
 import type { SmsSender } from '../modules/auth/sms.js';
 import { createBookingsModule } from '../modules/bookings/index.js';
 import { createCatalogModule } from '../modules/catalog/index.js';
+import { createPaymentsModule } from '../modules/payments/index.js';
 import { createMediaModule } from '../modules/media/index.js';
 import { createSchedulingModule } from '../modules/scheduling/index.js';
 import { createSearchModule } from '../modules/search/index.js';
@@ -61,7 +62,15 @@ export function createHarness() {
     db,
     auth,
     scheduling: scheduling.scheduling,
-    appEnv: 'local' as const,
+    // Late-bound: payments is created next and needs bookings.
+    onRefundDue: (id) => payments.payments.refundBooking(id),
+  });
+  const payments = createPaymentsModule({
+    db,
+    auth,
+    bookings: bookings.bookings,
+    config,
+    logger,
   });
   const search = createSearchModule({ catalog: catalog.catalog, mentors: mentors.mentors, redis });
   const mentorApplication = createMentorApplicationModule({ db, store, crypto, auth });
@@ -78,6 +87,7 @@ export function createHarness() {
       mentors.mount(v1);
       search.mount(v1);
       bookings.mount(v1);
+      payments.mount(v1);
       mentorApplication.mount(v1);
       verification.mount(v1);
     },
