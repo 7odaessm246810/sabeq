@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ApiError } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import { useDemo } from '@/lib/demo-store';
+import { getOwnMentor } from '@/lib/mentors';
 
 type Role = 'student' | 'mentor';
 const EMPTY = ['', '', '', '', '', ''];
@@ -109,7 +110,13 @@ export function LoginFlow() {
         router.push('/welcome');
         return;
       }
-      const target = demo.after ?? (user.role === 'mentor' ? '/become-mentor' : '/sessions');
+      // Approved mentors go to their profile; applicants continue their application.
+      const mentorHome = () =>
+        getOwnMentor().then(
+          () => '/account/mentor',
+          () => '/become-mentor',
+        );
+      const target = demo.after ?? (user.role === 'mentor' ? await mentorHome() : '/sessions');
       demo.setAfter(null);
       router.push(target);
     } catch (err) {

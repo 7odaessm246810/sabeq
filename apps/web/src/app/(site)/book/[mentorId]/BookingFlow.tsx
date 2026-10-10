@@ -1,77 +1,36 @@
 'use client';
 
 import {
-  Avatar,
-  Banner,
-  FieldError,
-  Icon,
-  Stepper,
-  SuccessRing,
-  cx,
-  useToast,
-  type IconName,
-} from '@sabeq/ui';
+  BOOKING_HOLD_MINUTES,
+  FREE_CANCEL_HOURS,
+  STUDENT_FEE_PIASTERS,
+  type SessionKind,
+} from '@sabeq/types';
+import { cairoDate, formatCairoDay, formatCairoTime, weekdayOf, WEEKDAY_NAMES } from '@sabeq/utils';
+import { Avatar, Banner, Icon, Stepper, SuccessRing, useToast, type IconName } from '@sabeq/ui';
 import Link from 'next/link';
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState, type KeyboardEvent } from 'react';
 import { Crumb } from '@/components/Crumb';
+import { ApiError } from '@/lib/api';
+import { useAuth } from '@/lib/auth';
+import { getAvailability, type Availability } from '@/lib/availability';
+import { calendarFile, createBooking, devPay, type Booking } from '@/lib/bookings';
 import { useDemo } from '@/lib/demo-store';
-import type { Mentor } from '@/lib/mock/data';
+import type { MentorProfileData } from '@/lib/mentors';
 
 const STEPS = ['الجلسة', 'اليوم', 'الوقت', 'الدفع', 'التأكيد'];
-/** Service fee in EGP shown in the design summary. */
-const FEE = 15;
-
-const DAYS: [string, number, number][] = [
-  ['الثلاثاء', 6, 0],
-  ['الأربعاء', 7, 0],
-  ['الخميس', 8, 4],
-  ['الجمعة', 9, 2],
-  ['السبت', 10, 0],
-  ['الأحد', 11, 3],
-  ['الاثنين', 12, 0],
-  ['الثلاثاء', 13, 5],
-  ['الأربعاء', 14, 2],
-];
-
-const TIMES: [string, boolean][] = [
-  ['4:00 م', true],
-  ['5:00 م', false],
-  ['6:30 م', true],
-  ['7:00 م', true],
-  ['8:00 م', true],
-  ['9:30 م', false],
-];
-
+const FEE = STUDENT_FEE_PIASTERS / 100;
+const DESCRIPTIONS: Record<SessionKind, string> = {
+  consultation: 'أسئلتك عن الدراسة، الدكاترة، الحياة جوه الكلية.',
+  comparison: 'لو محتار بين قسمين أو جامعتين.',
+  quick_call: 'سؤال أو اتنين محددين.',
+};
 const PAY_METHODS: [IconName, string, string][] = [
   ['card', 'بطاقة بنكية', 'فيزا، ماستركارد، ميزة'],
   ['wallet', 'محفظة إلكترونية', 'فودافون كاش، اتصالات كاش، أورنج كاش'],
   ['phone', 'فوري', 'ادفع في أي منفذ خلال 24 ساعة'],
 ];
-
-type SessionType = [name: string, duration: string, description: string, price: number];
-
-function sessionTypes(price: number): [SessionType, SessionType, SessionType] {
-  return [
-    [
-      'استشارة عن الكلية',
-      '45 دقيقة · فيديو',
-      'أسئلتك عن الدراسة، الدكاترة، الحياة جوه الكلية.',
-      price,
-    ],
-    [
-      'مقارنة بين قسمين',
-      '60 دقيقة · فيديو',
-      'لو محتار بين قسمين أو جامعتين.',
-      Math.round((price * 1.3) / 10) * 10,
-    ],
-    [
-      'مكالمة سريعة',
-      '20 دقيقة · صوت',
-      'سؤال أو اتنين محددين.',
-      Math.round((price * 0.5) / 10) * 10,
-    ],
-  ];
-}
 
 /** Radio cards: Enter / Space select (Accessibility → Semantics). */
 function radioKeys(select: () => void) {
@@ -83,88 +42,149 @@ function radioKeys(select: () => void) {
   };
 }
 
-export function BookingFlow({ mentor: m }: { mentor: Mentor }) {
+const errorText = (err: unknown) =>
+  err instanceof ApiError ? err.message : 'حصلت مشكلة في الاتصال. جرّب تاني.';
+
+/**
+ * Booking (Phase 15 — design «06-booking»): session type → day → time → payment → confirmed, with
+ * the mentor's real slots. Going to payment holds the slot for BOOKING_HOLD_MINUTES. Until Paymob
+ * (Phase 16) only local development can confirm, with a clearly marked test payment.
+ */
+export function BookingFlow({
+  mentor: m,
+  initial,
+  devPayments,
+}: {
+  mentor: MentorProfileData;
+  initial: { kind: SessionKind; at: string | null; availability: Availability | null };
+  devPayments: boolean;
+}) {
   const toast = useToast();
+  const router = useRouter();
+  const auth = useAuth();
   const demo = useDemo();
-  const types = sessionTypes(m.price);
   const first = m.name.split(' ')[0] ?? m.name;
 
   const [step, setStep] = useState(0);
-  const [type, setType] = useState(0);
-  const [day, setDay] = useState<string | null>(null);
-  const [time, setTime] = useState<string | null>(null);
+  const [kind, setKind] = useState<SessionKind>(initial.kind);
+  const [availability, setAvailability] = useState(initial.availability);
+  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [day, setDay] = useState<string | null>(
+    initial.at ? cairoDate(new Date(initial.at)) : null,
+  );
+  const [time, setTime] = useState<string | null>(initial.at);
   const [note, setNote] = useState('');
   const [pay, setPay] = useState(0);
-  const [account, setAccount] = useState('4242 4242 4242 4242');
-  const [accountError, setAccountError] = useState<string | null>(null);
+  const [booking, setBooking] = useState<Booking | null>(null);
   const [busy, setBusy] = useState(false);
-  const [simulateFail, setSimulateFail] = useState(false);
-  const [failed, setFailed] = useState(false);
-  const accountRef = useRef<HTMLInputElement>(null);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [left, setLeft] = useState(0);
 
-  // A slot picked on the profile («احجز الموعد ده») pre-fills day and time.
-  const { pre, setPre } = demo;
+  const offering = m.offerings.find((o) => o.kind === kind) ?? m.offerings[0];
+  const total = (offering?.priceEgp ?? 0) + FEE;
+  const days = availability?.days ?? [];
+  const daySlots = days.find((d) => d.date === day)?.slots ?? [];
+
+  // Changing the session type changes which slots fit.
+  function chooseKind(k: SessionKind) {
+    if (k === kind) return;
+    setKind(k);
+    setLoadingSlots(true);
+    getAvailability(m.slug, k)
+      .then((a) => {
+        setAvailability(a);
+        const all = a.days.flatMap((d) => d.slots);
+        if (time && !all.includes(time)) {
+          setTime(null);
+          setDay(null);
+        }
+      })
+      .catch(() => setAvailability(null))
+      .finally(() => setLoadingSlots(false));
+  }
+
+  // Hold countdown on the payment step.
   useEffect(() => {
-    if (pre && pre.mentorId === m.id) {
-      // One-time hand-off from the profile page.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setDay(pre.day);
-      setTime(pre.time);
-      setPre(null);
+    if (!booking?.holdExpiresAt || booking.status !== 'pending') return;
+    const end = Date.parse(booking.holdExpiresAt);
+    const tick = () => setLeft(Math.max(0, Math.round((end - Date.now()) / 1000)));
+    tick();
+    const t = setInterval(tick, 1000);
+    return () => clearInterval(t);
+  }, [booking]);
+
+  async function goToPayment() {
+    if (!time) return;
+    setError(null);
+    if (auth.status !== 'signed-in') {
+      const qs = new URLSearchParams({ kind, at: time }).toString();
+      demo.setAfter(`/book/${m.slug}?${qs}`);
+      router.push('/login');
+      return;
     }
-  }, [pre, setPre, m.id]);
-
-  useEffect(
-    () => () => {
-      if (timer.current) clearTimeout(timer.current);
-    },
-    [],
-  );
-
-  const t = types[type] ?? types[0];
-  const total = t[3] + FEE;
-
-  function next() {
-    setStep((s) => (s === 0 && day && time ? 3 : s + 1));
-  }
-  function back() {
-    setStep((s) => s - 1);
-  }
-
-  function choosePay(i: number) {
-    setPay(i);
-    setAccountError(null);
-    setAccount(i === 0 ? '4242 4242 4242 4242' : '');
-  }
-
-  function submitPayment() {
-    if (pay !== 2 && account.replace(/\D/g, '').length < 11) {
-      setAccountError(pay === 0 ? 'رقم البطاقة ناقص.' : 'اكتب رقم المحفظة: 11 رقم يبدأ بـ 01.');
-      accountRef.current?.focus();
+    if (auth.user?.role === 'student' && auth.user.needsProfile) {
+      // The mentor sees the student's name with the booking: ask for it, then come back here.
+      demo.setAfter(`/book/${m.slug}?${new URLSearchParams({ kind, at: time }).toString()}`);
+      router.push('/welcome');
+      return;
+    }
+    if (auth.user?.role !== 'student') {
+      setError('الحجز للطلبة بس. ادخل بحساب طالب عشان تحجز.');
+      return;
+    }
+    if (!devPayments) {
+      setStep(3);
       return;
     }
     setBusy(true);
-    timer.current = setTimeout(() => {
-      setBusy(false);
-      if (simulateFail) {
-        setFailed(true);
-        return;
-      }
-      setFailed(false);
-      demo.addSession({
-        id: `s${Date.now()}`,
-        mentorId: Number(m.id),
-        type: t[0],
-        day: day ?? '',
-        time: time ?? '',
-        price: total,
-        status: 'upcoming',
+    try {
+      const b = await createBooking({
+        mentorSlug: m.slug,
+        kind,
+        startsAt: time,
+        ...(note.trim() ? { note: note.trim() } : {}),
       });
-      if (!demo.user) demo.signIn('ملك أشرف');
+      setBooking(b);
+      setStep(3);
+    } catch (err) {
+      setError(errorText(err));
+      // The slot may be gone: show what's left and suggest the nearest two.
+      const fresh = await getAvailability(m.slug, kind).catch(() => null);
+      if (fresh) setAvailability(fresh);
+      setTime(null);
+      setStep(2);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function confirmTestPayment() {
+    if (!booking) return;
+    setBusy(true);
+    setError(null);
+    try {
+      setBooking(await devPay(booking.id));
       setStep(4);
-      toast({ kind: 'success', title: 'تم حجز جلستك', description: 'هيوصلك تأكيد على الموبايل.' });
-    }, 1000);
+      toast({
+        kind: 'success',
+        title: 'تم حجز جلستك',
+        description: `مع ${first} — هتلاقيها في «جلساتي».`,
+      });
+    } catch (err) {
+      setError(errorText(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function addToCalendar() {
+    if (!booking) return;
+    const url = URL.createObjectURL(calendarFile(booking));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'sabeq-session.ics';
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   const row = (k: string, v: React.ReactNode) => (
@@ -173,28 +193,31 @@ export function BookingFlow({ mentor: m }: { mentor: Mentor }) {
       <b>{v}</b>
     </div>
   );
-
+  const back = () => {
+    setError(null);
+    setStep((s) => Math.max(0, s - 1));
+  };
   const navBack =
     step === 0 ? (
-      <Link className="sb-btn sb-btn--ghost" href={`/mentor/${m.id}`}>
+      <Link className="sb-btn sb-btn--ghost" href={`/mentor/${m.slug}`}>
         <Icon name="chevR" />
         الملف
       </Link>
     ) : (
-      <button type="button" className="sb-btn sb-btn--ghost" onClick={back}>
+      <button type="button" className="sb-btn sb-btn--ghost" onClick={back} disabled={busy}>
         <Icon name="chevR" />
         رجوع
       </button>
     );
-
-  const nextButton = (label: string, disabled = false) => (
+  const nextButton = (label: string, onClick: () => void, disabled = false) => (
     <div className="nav-b">
       {navBack}
       <button
         type="button"
         className="sb-btn sb-btn--primary sb-btn--lg"
-        disabled={disabled}
-        onClick={next}
+        disabled={disabled || busy}
+        aria-busy={busy}
+        onClick={onClick}
       >
         {label}{' '}
         <span className="sb-arrow i18">
@@ -203,13 +226,17 @@ export function BookingFlow({ mentor: m }: { mentor: Mentor }) {
       </button>
     </div>
   );
+  const when = time
+    ? `${formatCairoDay(new Date(time))} · ${formatCairoTime(new Date(time))}`
+    : null;
+  const suggestions = days.flatMap((d) => d.slots).slice(0, 2);
 
   return (
     <section className="sb-container page-body" style={{ maxWidth: 1080, paddingTop: 28 }}>
       <Crumb
         items={[
           { label: 'المرشدين', href: '/mentors' },
-          { label: m.name, href: `/mentor/${m.id}` },
+          { label: m.name, href: `/mentor/${m.slug}` },
           { label: 'حجز جلسة' },
         ]}
       />
@@ -225,24 +252,26 @@ export function BookingFlow({ mentor: m }: { mentor: Mentor }) {
                   نوع الجلسة
                 </h2>
                 <div role="radiogroup" aria-label="نوع الجلسة" className="opts">
-                  {types.map(([name, dur, desc, price], i) => (
+                  {m.offerings.map((o) => (
                     <div
-                      key={name}
+                      key={o.kind}
                       className="opt"
                       role="radio"
                       tabIndex={0}
-                      aria-checked={type === i}
-                      onClick={() => setType(i)}
-                      onKeyDown={radioKeys(() => setType(i))}
+                      aria-checked={kind === o.kind}
+                      onClick={() => chooseKind(o.kind)}
+                      onKeyDown={radioKeys(() => chooseKind(o.kind))}
                     >
                       <span className="sb-radio" style={{ marginTop: 3 }} />
                       <span className="g">
-                        <b>{name}</b>
-                        <span className="sb-small">{desc}</span>
-                        <span className="sb-caption">{dur}</span>
+                        <b>{o.label}</b>
+                        <span className="sb-small">{DESCRIPTIONS[o.kind]}</span>
+                        <span className="sb-caption">
+                          {o.durationMin} دقيقة · {o.medium === 'video' ? 'فيديو' : 'صوت'}
+                        </span>
                       </span>
                       <span className="pr">
-                        <span className="sb-num">{price}</span> ج.م
+                        <span className="sb-num">{o.priceEgp}</span> ج.م
                       </span>
                     </div>
                   ))}
@@ -254,13 +283,18 @@ export function BookingFlow({ mentor: m }: { mentor: Mentor }) {
                   <textarea
                     className="sb-input"
                     id="nq"
+                    maxLength={1000}
                     style={{ height: 88, padding: '12px 14px' }}
                     placeholder="مثلًا: الفرق بين حاسبات واتصالات لو بحب البرمجة"
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                   />
                 </div>
-                {nextButton(day && time ? 'كمّل' : 'اختار اليوم')}
+                {nextButton(
+                  time ? 'كمّل' : 'اختار اليوم',
+                  () => setStep(time ? 3 - 1 : 1),
+                  loadingSlots,
+                )}
               </>
             ) : null}
 
@@ -269,36 +303,43 @@ export function BookingFlow({ mentor: m }: { mentor: Mentor }) {
                 <h2 className="sb-h2" style={{ fontSize: 26 }}>
                   اختار اليوم
                 </h2>
-                <span className="sb-small">
-                  مواعيد {first} في الأسبوعين الجايين · بتوقيت القاهرة
-                </span>
-                <div className="days">
-                  {DAYS.map(([name, date, count]) => {
-                    const label = `${name} ${date} أكتوبر`;
-                    return (
-                      <button
-                        key={label}
-                        type="button"
-                        className="day"
-                        disabled={!count}
-                        aria-pressed={day === label}
-                        aria-label={`${label}، ${count ? `${count} مواعيد` : 'مفيش مواعيد'}`}
-                        onClick={() => {
-                          setDay(label);
-                          setTime(null);
-                        }}
-                      >
-                        <span>{name}</span>
-                        <b>{date}</b>
-                        <i>{count ? `${count} مواعيد` : 'مفيش'}</i>
-                      </button>
-                    );
-                  })}
-                </div>
+                <span className="sb-small">مواعيد {first} في الأسابيع الجاية · بتوقيت القاهرة</span>
+                {days.some((d) => d.slots.length) ? (
+                  <div className="days">
+                    {days.slice(0, 14).map((d) => {
+                      const [, , dd] = d.date.split('-');
+                      const count = d.slots.length;
+                      const name = WEEKDAY_NAMES[weekdayOf(d.date)];
+                      return (
+                        <button
+                          key={d.date}
+                          type="button"
+                          className="day"
+                          disabled={!count}
+                          aria-pressed={day === d.date}
+                          aria-label={`${name} ${Number(dd)}، ${count ? `${count} مواعيد` : 'مفيش مواعيد'}`}
+                          onClick={() => {
+                            setDay(d.date);
+                            setTime(null);
+                          }}
+                        >
+                          <span>{name}</span>
+                          <b>{Number(dd)}</b>
+                          <i>{count ? `${count} مواعيد` : 'مفيش'}</i>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <Banner kind="warning" title={`مفيش مواعيد لـ ${first} دلوقتي`}>
+                    جرّب نوع جلسة تاني، أو{' '}
+                    <Link href={`/mentors/${m.field.slug}`}>مرشدين مشابهين</Link>.
+                  </Banner>
+                )}
                 <Banner kind="info" title="الحجز بيتأكد فورًا بعد الدفع.">
-                  وهيوصلك لينك الجلسة قبلها بساعة.
+                  وهتلاقي لينك الجلسة في «جلساتي» قبلها.
                 </Banner>
-                {nextButton('اختار الوقت', !day)}
+                {nextButton('اختار الوقت', () => setStep(2), !day)}
               </>
             ) : null}
 
@@ -307,28 +348,55 @@ export function BookingFlow({ mentor: m }: { mentor: Mentor }) {
                 <h2 className="sb-h2" style={{ fontSize: 26 }}>
                   اختار الوقت
                 </h2>
+                {error ? (
+                  <Banner kind="error" title={error}>
+                    {suggestions.length ? (
+                      <>
+                        أقرب مواعيد متاحة:{' '}
+                        {suggestions.map((s, i) => (
+                          <button
+                            key={s}
+                            type="button"
+                            className="sb-btn sb-btn--link"
+                            style={{ fontSize: 14 }}
+                            onClick={() => {
+                              setDay(cairoDate(new Date(s)));
+                              setTime(s);
+                              setError(null);
+                            }}
+                          >
+                            {formatCairoDay(new Date(s))} {formatCairoTime(new Date(s))}
+                            {i === 0 && suggestions.length > 1 ? '،' : ''}
+                          </button>
+                        ))}
+                      </>
+                    ) : null}
+                  </Banner>
+                ) : null}
                 <span className="sb-small">
-                  {day} · {t[1]}
+                  {day ? `${formatCairoDay(new Date(daySlots[0] ?? `${day}T12:00:00Z`))} · ` : ''}
+                  {offering?.durationMin} دقيقة
                 </span>
                 <div className="sb-slots">
-                  {TIMES.map(([tm, ok]) => (
+                  {daySlots.map((s) => (
                     <button
-                      key={tm}
+                      key={s}
                       type="button"
                       className="sb-slot"
-                      disabled={!ok}
-                      aria-pressed={time === tm}
-                      onClick={() => setTime(tm)}
+                      aria-pressed={time === s}
+                      onClick={() => setTime(s)}
                     >
-                      {tm}
+                      {formatCairoTime(new Date(s))}
                     </button>
                   ))}
                 </div>
-                <span className="sb-badge sb-badge--warning" style={{ width: 'max-content' }}>
-                  <Icon name="clock" />
-                  فاضل 4 مواعيد بس اليوم ده
-                </span>
-                {nextButton('كمّل للدفع', !time)}
+                {daySlots.length && daySlots.length <= 4 ? (
+                  <span className="sb-badge sb-badge--warning" style={{ width: 'max-content' }}>
+                    <Icon name="clock" />
+                    فاضل {daySlots.length} مواعيد بس اليوم ده
+                  </span>
+                ) : null}
+                {nextButton('كمّل للدفع', () => void goToPayment(), !time)}
               </>
             ) : null}
 
@@ -337,11 +405,14 @@ export function BookingFlow({ mentor: m }: { mentor: Mentor }) {
                 <h2 className="sb-h2" style={{ fontSize: 26 }}>
                   الدفع
                 </h2>
-                {failed ? (
-                  <Banner kind="error" title="الدفع ما تمش">
-                    البنك رفض العملية، وما اتخصمش أي مبلغ. جرّب بطاقة تانية أو محفظة.
-                  </Banner>
+                {booking && booking.status === 'pending' ? (
+                  <span className="sb-badge sb-badge--warning" style={{ width: 'max-content' }}>
+                    <Icon name="clock" />
+                    الموعد محجوز ليك {Math.floor(left / 60)}:{String(left % 60).padStart(2, '0')}{' '}
+                    دقيقة
+                  </span>
                 ) : null}
+                {error ? <Banner kind="error" title={error} /> : null}
                 <div role="radiogroup" aria-label="طريقة الدفع" className="opts">
                   {PAY_METHODS.map(([icon, label, sub], i) => (
                     <div
@@ -350,8 +421,8 @@ export function BookingFlow({ mentor: m }: { mentor: Mentor }) {
                       role="radio"
                       tabIndex={0}
                       aria-checked={pay === i}
-                      onClick={() => choosePay(i)}
-                      onKeyDown={radioKeys(() => choosePay(i))}
+                      onClick={() => setPay(i)}
+                      onKeyDown={radioKeys(() => setPay(i))}
                     >
                       <span className="sb-radio" />
                       <span className="lbl">
@@ -364,81 +435,27 @@ export function BookingFlow({ mentor: m }: { mentor: Mentor }) {
                     </div>
                   ))}
                 </div>
-                {pay === 2 ? (
-                  <Banner kind="info" title="هتاخد كود فوري بعد التأكيد.">
-                    الحجز بيتأكد أول ما تدفع في أي منفذ خلال 24 ساعة.
+                {devPayments ? (
+                  <Banner kind="info" title="دفع تجريبي — على جهاز التطوير بس">
+                    الدفع الحقيقي (Paymob) بيتوصّل في المرحلة الجاية. الزرار ده بيأكّد الحجز من غير
+                    أي فلوس، ومش موجود في الموقع الحقيقي.
                   </Banner>
                 ) : (
-                  <>
-                    <div className={cx('sb-field', accountError && 'sb-field--error')}>
-                      <label className="sb-label" htmlFor="cn">
-                        {pay === 0 ? 'رقم البطاقة' : 'رقم المحفظة'}
-                      </label>
-                      <input
-                        ref={accountRef}
-                        className="sb-input"
-                        id="cn"
-                        inputMode="numeric"
-                        autoComplete={pay === 0 ? 'cc-number' : 'tel'}
-                        dir="ltr"
-                        style={{ textAlign: 'right' }}
-                        placeholder={pay === 0 ? '0000 0000 0000 0000' : '01x xxxx xxxx'}
-                        value={account}
-                        aria-invalid={Boolean(accountError)}
-                        aria-describedby={
-                          accountError ? 'cn-err' : pay === 1 ? 'cn-hint' : undefined
-                        }
-                        onChange={(e) => {
-                          setAccount(e.target.value);
-                          setAccountError(null);
-                        }}
-                      />
-                      {pay === 1 ? (
-                        <span className="sb-hint" id="cn-hint">
-                          هيوصلك طلب تأكيد على الموبايل.
-                        </span>
-                      ) : null}
-                      {accountError ? <FieldError id="cn-err">{accountError}</FieldError> : null}
-                    </div>
-                    {pay === 0 ? (
-                      <div className="cardf">
-                        <div className="sb-field">
-                          <label className="sb-label" htmlFor="ce">
-                            تاريخ الانتهاء
-                          </label>
-                          <input
-                            className="sb-input"
-                            id="ce"
-                            dir="ltr"
-                            autoComplete="cc-exp"
-                            style={{ textAlign: 'right' }}
-                            defaultValue="08 / 29"
-                          />
-                        </div>
-                        <div className="sb-field">
-                          <label className="sb-label" htmlFor="cv">
-                            CVV
-                          </label>
-                          <input
-                            className="sb-input"
-                            id="cv"
-                            dir="ltr"
-                            autoComplete="cc-csc"
-                            style={{ textAlign: 'right' }}
-                            defaultValue="123"
-                            maxLength={4}
-                          />
-                        </div>
-                      </div>
-                    ) : null}
-                  </>
+                  <Banner kind="info" title="الدفع أونلاين بيفتح قريب جدًا">
+                    لسه مش بنقبل دفع. احفظ {first} من ملفه وارجعله أول ما الحجز يفتح.
+                  </Banner>
                 )}
                 <div className="sb-secure">
                   <Icon name="lock" />
                   الدفع مشفّر. مش هنخصم أي مبلغ قبل ما تأكد.
                 </div>
                 <div className="nav-b">
-                  <button type="button" className="sb-btn sb-btn--ghost" onClick={back}>
+                  <button
+                    type="button"
+                    className="sb-btn sb-btn--ghost"
+                    onClick={back}
+                    disabled={busy}
+                  >
                     <Icon name="chevR" />
                     رجوع
                   </button>
@@ -446,23 +463,25 @@ export function BookingFlow({ mentor: m }: { mentor: Mentor }) {
                     type="button"
                     className="sb-btn sb-btn--primary sb-btn--lg"
                     aria-busy={busy}
-                    onClick={submitPayment}
+                    disabled={!devPayments || !booking || busy || left === 0}
+                    onClick={() => void confirmTestPayment()}
                   >
-                    ادفع {total} ج.م وأكّد الحجز
+                    ادفع {total} ج.م وأكّد الحجز{devPayments ? ' (تجريبي)' : ''}
                   </button>
                 </div>
               </>
             ) : null}
 
-            {step === 4 ? (
+            {step === 4 && booking ? (
               <div className="done-ok">
                 <SuccessRing />
                 <h2 className="sb-h2" style={{ fontSize: 28 }}>
                   تم حجز جلستك
                 </h2>
                 <p className="sb-lead" style={{ maxWidth: 460 }}>
-                  جلستك مع {first} يوم {day} الساعة {time}. هيوصلك اللينك على الموبايل والإيميل
-                  قبلها بساعة.
+                  جلستك مع {first} {formatCairoDay(new Date(booking.startsAt))} الساعة{' '}
+                  {formatCairoTime(new Date(booking.startsAt))}. لينك الجلسة هيظهر في «جلساتي»
+                  قبلها.
                 </p>
                 <div
                   style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}
@@ -473,7 +492,7 @@ export function BookingFlow({ mentor: m }: { mentor: Mentor }) {
                   <button
                     type="button"
                     className="sb-btn sb-btn--secondary"
-                    onClick={() => toast({ kind: 'success', title: 'اتضافت للتقويم' })}
+                    onClick={addToCalendar}
                   >
                     أضف للتقويم
                   </button>
@@ -486,28 +505,24 @@ export function BookingFlow({ mentor: m }: { mentor: Mentor }) {
         <aside className="bk-side">
           <div className="sb-card sb-summary">
             <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-              <Avatar name={m.name} verified tone={m.tone} />
+              <Avatar name={m.name} verified tone={m.tone} {...(m.photo ? { src: m.photo } : {})} />
               <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.4 }}>
                 <b>{m.name}</b>
                 <span className="sb-caption">
-                  {m.major} · {m.uni}
+                  {m.major} · {m.university.name}
                 </span>
               </div>
             </div>
             <hr />
             {row('مع مين', m.name)}
-            {row('هتحجز إيه', t[0])}
-            {row('المدة', t[1])}
+            {row('هتحجز إيه', offering?.label)}
             {row(
-              'إمتى',
-              day ? (
-                `${day}${time ? ` · ${time}` : ''}`
-              ) : (
-                <span className="sb-caption">لسه ما اخترتش</span>
-              ),
+              'المدة',
+              `${offering?.durationMin ?? ''} دقيقة · ${offering?.medium === 'audio' ? 'صوت' : 'فيديو'}`,
             )}
+            {row('إمتى', when ?? <span className="sb-caption">لسه ما اخترتش</span>)}
             <hr />
-            {row('سعر الجلسة', <span className="sb-num">{t[3]}.00</span>)}
+            {row('سعر الجلسة', <span className="sb-num">{offering?.priceEgp}.00</span>)}
             {row('رسوم الخدمة', <span className="sb-num">{FEE}.00</span>)}
             <hr />
             <div className="sb-summary-total">
@@ -516,18 +531,10 @@ export function BookingFlow({ mentor: m }: { mentor: Mentor }) {
                 <span className="sb-num">{total}</span> ج.م
               </b>
             </div>
-            <span className="sb-caption">إلغاء مجاني حتى 24 ساعة قبل الجلسة.</span>
-          </div>
-          <div className="demo">
-            <span>للعرض:</span>
-            <button
-              type="button"
-              className="sb-chip sb-chip--sm"
-              aria-pressed={simulateFail}
-              onClick={() => setSimulateFail((v) => !v)}
-            >
-              جرّب حالة فشل الدفع
-            </button>
+            <span className="sb-caption">
+              إلغاء مجاني حتى {FREE_CANCEL_HOURS} ساعة قبل الجلسة. الموعد بيتحجز ليك{' '}
+              {BOOKING_HOLD_MINUTES} دقايق وانت بتدفع.
+            </span>
           </div>
         </aside>
       </div>

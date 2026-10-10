@@ -9,7 +9,7 @@ import { nextSlotLabel, type MentorProfileData } from '@/lib/mentors';
 
 /**
  * The profile's booking box (design «profile» / «profile-unavailable»), with real slots (Phase 14).
- * Booking itself opens with Phase 15; until then the chosen slot is shown but not sold.
+ * «احجز الموعد ده» opens the booking flow (Phase 15) with the picked slot.
  */
 export function BookingBox({
   mentor: m,
@@ -81,17 +81,12 @@ export function BookingBox({
               </button>
             ))}
           </div>
-          <button
-            type="button"
+          <Link
             className="sb-btn sb-btn--primary sb-btn--lg sb-btn--block"
-            disabled
-            aria-describedby="book-soon"
+            href={`/book/${m.slug}?kind=consultation&at=${encodeURIComponent(picked)}`}
           >
             احجز الموعد ده
-          </button>
-          <span className="sb-caption" id="book-soon" style={{ textAlign: 'center' }}>
-            الحجز والدفع أونلاين بيفتحوا قريب. احفظ {first} عشان ترجعله.
-          </span>
+          </Link>
           <button
             type="button"
             className="sb-btn sb-btn--ghost sb-btn--block"
