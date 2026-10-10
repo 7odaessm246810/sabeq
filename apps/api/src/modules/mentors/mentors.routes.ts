@@ -1,6 +1,7 @@
 /**
  * Public  /api/v1/mentors
- *   GET  /                ?field&faculty&university&sort&page&pageSize → { total, page, pageSize, results }
+ *   GET  /                ?q&field&faculty&university(,…)&minRating&maxPrice&available&sort&page&pageSize
+ *                         → { total, page, pageSize, results, facets }
  *   GET  /:slug           → { mentor }   (listed mentors only) · 404
  *
  * The mentor  /api/v1/me/mentor   (role mentor)
@@ -28,17 +29,28 @@ import type { MentorsService } from './mentors.service.js';
 
 const slugParam = z.object({ slug: z.string().regex(/^[a-z0-9-]{1,80}$/) });
 
+const slugList = z
+  .string()
+  .regex(/^[a-z0-9-]{1,60}(,[a-z0-9-]{1,60}){0,19}$/)
+  .transform((s) => s.split(','));
 const listQuery = z.object({
+  q: z.string().max(100).optional(),
   field: z
     .string()
     .regex(/^[a-z0-9-]{1,40}$/)
     .optional(),
   faculty: z.uuid().optional(),
-  university: z
-    .string()
-    .regex(/^[a-z0-9-]{1,60}$/)
+  /** One slug or several, comma-separated. */
+  university: slugList.optional(),
+  minRating: z.coerce.number().min(0).max(5).optional(),
+  maxPrice: z.coerce.number().int().min(1).max(10_000).optional(),
+  available: z
+    .enum(['1', 'true'])
+    .transform(() => true)
     .optional(),
-  sort: z.enum(['recommended', 'rating', 'price_asc', 'price_desc']).default('recommended'),
+  sort: z
+    .enum(['recommended', 'rating', 'price_asc', 'price_desc', 'sessions'])
+    .default('recommended'),
   page: z.coerce.number().int().min(1).max(200).default(1),
   pageSize: z.coerce.number().int().min(1).max(24).default(12),
 });
@@ -83,7 +95,8 @@ export function mentorsRouter({ mentors }: { mentors: MentorsService }): Router 
 
   r.get('/', async (req, res) => {
     res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
-    sendData(res, await mentors.list(parseInput(listQuery, req.query)));
+    const { university, ...rest } = parseInput(listQuery, req.query);
+    sendData(res, await mentors.search({ ...rest, universities: university }));
   });
 
   r.get('/:slug', async (req, res) => {

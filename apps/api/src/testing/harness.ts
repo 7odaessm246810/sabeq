@@ -16,6 +16,7 @@ import { createAuthModule } from '../modules/auth/index.js';
 import type { SmsSender } from '../modules/auth/sms.js';
 import { createCatalogModule } from '../modules/catalog/index.js';
 import { createMediaModule } from '../modules/media/index.js';
+import { createSearchModule } from '../modules/search/index.js';
 import { createMentorsModule } from '../modules/mentors/index.js';
 import { createMentorApplicationModule } from '../modules/mentor-application/index.js';
 import { createVerificationModule } from '../modules/verification/index.js';
@@ -46,7 +47,8 @@ export function createHarness() {
   const account = createAccountModule({ db, auth });
   const media = createMediaModule({ store });
   const catalog = createCatalogModule({ db, auth, logos: media.logos });
-  const mentors = createMentorsModule({ db, auth, avatars: media.avatars });
+  const mentors = createMentorsModule({ db, auth, avatars: media.avatars, indexTtlMs: 0 });
+  const search = createSearchModule({ catalog: catalog.catalog, mentors: mentors.mentors, redis });
   const mentorApplication = createMentorApplicationModule({ db, store, crypto, auth });
   const verification = createVerificationModule({ db, store, crypto, auth });
   const app = createApp({
@@ -58,6 +60,7 @@ export function createHarness() {
       media.mount(v1);
       catalog.mount(v1);
       mentors.mount(v1);
+      search.mount(v1);
       mentorApplication.mount(v1);
       verification.mount(v1);
     },
@@ -70,6 +73,10 @@ export function createHarness() {
 
   async function login(phone: string, base: string, role?: 'student' | 'mentor') {
     await redis.del(`otp:cooldown:${e164(phone)}`);
+    // Every test signs in from the same address; the per-IP hourly limits (tested on their own in
+    // auth.db.test) would otherwise trip across files and across runs within the hour.
+    const ipKeys = await redis.keys('otp:*ip:*');
+    if (ipKeys.length) await redis.del(...ipKeys);
     const agent = request.agent(app);
     await agent.post(`${base}/otp/request`).send({ phone }).expect(202);
     const res = await agent
@@ -84,6 +91,8 @@ export function createHarness() {
     db,
     redis,
     store,
+    /** Search service (popular terms are tested directly with chosen IPs). */
+    searchService: search.search,
     crypto,
     newPhone,
     /** A website account (new number unless one is given). */

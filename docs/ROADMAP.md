@@ -60,8 +60,8 @@ sabeq/
 | 09  | Mentor Onboarding (Draft → Submitted → Under Review → Approved/Rejected)          | ✅ done                      |
 | 10  | Admin Verification System + Audit trail                                           | ✅ done                      |
 | 11  | University / Faculty / Department / Specialization                                | ✅ done                      |
-| 12  | Mentor Profiles                                                                   | 🔍 review                    |
-| 13  | Search & Discovery                                                                | —                            |
+| 12  | Mentor Profiles                                                                   | ✅ done                      |
+| 13  | Search & Discovery                                                                | 🔍 review                    |
 | 14  | Availability & Scheduling (no double booking / overlap)                           | —                            |
 | 15  | Booking System (Pending / Confirmed / Cancelled / Completed / No-show / Refunded) | —                            |
 | 16  | Payment System — Paymob، التأكيد من الـ Backend فقط (webhooks + HMAC)             | —                            |

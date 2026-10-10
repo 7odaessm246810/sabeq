@@ -22,6 +22,12 @@ import { Errors } from '../../core/errors.js';
 import type { Prisma } from '../../generated/prisma/client.js';
 import type { Db } from '../../infra/db.js';
 import { avatarUrl, logoUrl, type AvatarStore } from '../media/index.js';
+import {
+  indexMentor,
+  searchMentors,
+  type IndexedMentor,
+  type MentorQuery,
+} from './mentors.search.js';
 
 const MESSAGES = {
   notFound: 'المرشد ده مش موجود أو مش متاح دلوقتي.',
@@ -94,15 +100,6 @@ function card(m: CardRow) {
 
 export type MentorCard = ReturnType<typeof card>;
 
-export interface ListParams {
-  field?: string | undefined;
-  faculty?: string | undefined;
-  university?: string | undefined;
-  sort: 'recommended' | 'rating' | 'price_asc' | 'price_desc';
-  page: number;
-  pageSize: number;
-}
-
 export interface MentorPatch {
   bio?: string | undefined;
   city?: string | null | undefined;
@@ -126,7 +123,51 @@ function offerings(basePiasters: number | null, active: { kind: SessionKind }[])
   });
 }
 
-export function createMentorsService({ db, avatars }: { db: Db; avatars: AvatarStore }) {
+export function createMentorsService({
+  db,
+  avatars,
+  indexTtlMs = 60_000,
+}: {
+  db: Db;
+  avatars: AvatarStore;
+  /** How long the in-memory discovery index may be stale (tests use 0). */
+  indexTtlMs?: number;
+}) {
+  // ---------- discovery index ----------
+  let index: { at: number; rows: Promise<IndexedMentor[]> } | null = null;
+  const invalidate = () => {
+    index = null;
+  };
+  async function buildIndex() {
+    const rows = await db.mentor.findMany({
+      where: { ...LISTED, faculty: { isActive: true, university: { isActive: true } } },
+      select: {
+        ...CARD_SELECT,
+        facultyId: true,
+        listedAt: true,
+        department: { select: { nameAr: true } },
+      },
+    });
+    return rows.map((m) =>
+      indexMentor(card(m), {
+        facultyId: m.facultyId,
+        listedAt: m.listedAt,
+        department: m.department?.nameAr ?? null,
+      }),
+    );
+  }
+  function currentIndex() {
+    if (!index || Date.now() - index.at >= indexTtlMs) {
+      const rows = buildIndex();
+      index = { at: Date.now(), rows };
+      // A failed build must not stay cached.
+      rows.catch(() => {
+        if (index?.rows === rows) index = null;
+      });
+    }
+    return index.rows;
+  }
+
   async function own(userId: string) {
     const m = await db.mentor.findUnique({
       where: { userId },
@@ -225,42 +266,12 @@ export function createMentorsService({ db, avatars }: { db: Db; avatars: AvatarS
       };
     },
 
-    async list(p: ListParams) {
-      const where: Prisma.MentorWhereInput = {
-        ...LISTED,
-        faculty: {
-          isActive: true,
-          ...(p.faculty ? { id: p.faculty } : {}),
-          ...(p.field ? { kind: { slug: p.field } } : {}),
-          ...(p.university ? { university: { slug: p.university } } : {}),
-        },
-      };
-      const orderBy: Prisma.MentorOrderByWithRelationInput[] =
-        p.sort === 'price_asc'
-          ? [{ basePricePiasters: 'asc' }]
-          : p.sort === 'price_desc'
-            ? [{ basePricePiasters: 'desc' }]
-            : p.sort === 'rating'
-              ? [{ ratingAvg: 'desc' }, { ratingCount: 'desc' }]
-              : // Recommended: open for bookings first, then experience, then newest.
-                [
-                  { acceptsBookings: 'desc' },
-                  { sessionsCompleted: 'desc' },
-                  { ratingAvg: 'desc' },
-                  { listedAt: 'desc' },
-                ];
-      const [total, rows] = await Promise.all([
-        db.mentor.count({ where }),
-        db.mentor.findMany({
-          where,
-          orderBy: [...orderBy, { slug: 'asc' }],
-          skip: (p.page - 1) * p.pageSize,
-          take: p.pageSize,
-          select: CARD_SELECT,
-        }),
-      ]);
-      return { total, page: p.page, pageSize: p.pageSize, results: rows.map(card) };
+    /** Discovery: filters, facets, ranking (in memory — see mentors.search.ts). */
+    async search(p: MentorQuery) {
+      return searchMentors(await currentIndex(), p);
     },
+
+    invalidate,
 
     // ---------- the mentor's own profile ----------
 
@@ -305,6 +316,7 @@ export function createMentorsService({ db, avatars }: { db: Db; avatars: AvatarS
           });
         }
       });
+      invalidate();
       return own(userId);
     },
 
@@ -317,6 +329,7 @@ export function createMentorsService({ db, avatars }: { db: Db; avatars: AvatarS
       const name = await avatars.save(body);
       await db.user.update({ where: { id: userId }, data: { avatarKey: name } });
       await avatars.remove(user.avatarKey);
+      invalidate();
       return avatarUrl(name);
     },
 
@@ -325,6 +338,7 @@ export function createMentorsService({ db, avatars }: { db: Db; avatars: AvatarS
       if (!user?.avatarKey) return;
       await db.user.update({ where: { id: userId }, data: { avatarKey: null } });
       await avatars.remove(user.avatarKey);
+      invalidate();
     },
 
     // ---------- students' saved mentors ----------

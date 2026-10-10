@@ -10,6 +10,7 @@ export function createMentorsModule(deps: {
   db: Db;
   auth: ReturnType<typeof createAuthModule>;
   avatars: AvatarStore;
+  indexTtlMs?: number;
 }) {
   const mentors = createMentorsService(deps);
   const authenticate = deps.auth.authenticate('web');
