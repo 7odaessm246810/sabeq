@@ -4,9 +4,11 @@ import { Avatar, Icon, Logo } from '@sabeq/ui';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+import { useAuth } from '@/lib/auth';
 import { useDemo } from '@/lib/demo-store';
 import { MAIN_NAV, isCurrent } from '@/lib/site';
 import { MobileMenu } from './MobileMenu';
+import { NotificationsBell } from './NotificationsBell';
 
 const SCROLL_THRESHOLD = 24;
 
@@ -19,6 +21,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, upcomingCount } = useDemo();
+  const auth = useAuth();
   // Stable reference: MobileMenu re-runs its focus/scroll-lock effect when onClose changes.
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
@@ -55,6 +58,7 @@ export function Navbar() {
           <div className="sb-nav-end">
             {user ? (
               <>
+                {auth.status === 'signed-in' ? <NotificationsBell /> : null}
                 <Link className="sb-btn sb-btn--ghost sb-hide-m" href="/sessions">
                   <Icon name="calendar" />
                   جلساتي

@@ -8,6 +8,7 @@ import { useSignOut } from '@/lib/use-signed-in';
 
 const ACCOUNT_NAV = [
   { href: '/sessions', label: 'جلساتي' },
+  { href: '/notifications', label: 'الإشعارات' },
   { href: '/account', label: 'حسابي' },
 ] as const;
 

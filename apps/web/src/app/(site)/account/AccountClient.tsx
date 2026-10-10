@@ -4,6 +4,7 @@ import { formatEgyptianMobile } from '@sabeq/utils';
 import { Icon, Modal, useToast } from '@sabeq/ui';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
+import { EmailSettings } from '@/components/account/EmailSettings';
 import { ProfileForm } from '@/components/account/ProfileForm';
 import { PageHead } from '@/components/PageHead';
 import { getProfile, listDevices, signOutDevice, type Device, type Profile } from '@/lib/account';
@@ -122,6 +123,14 @@ export function AccountClient() {
           ) : (
             <div aria-busy="true" style={{ minHeight: 200 }} />
           )}
+        </div>
+
+        <div className="sb-card acct-card">
+          <h2 className="sb-h3">إشعارات الإيميل</h2>
+          <p className="sb-small">
+            الإشعارات بتوصلك هنا على الموقع دايمًا. ضيف إيميلك لو عايزها توصلك عليه كمان.
+          </p>
+          <EmailSettings />
         </div>
 
         <div className="sb-card acct-card">
