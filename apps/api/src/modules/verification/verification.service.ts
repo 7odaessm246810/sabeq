@@ -28,6 +28,11 @@ const OFFERINGS = [
 ] as const;
 
 const REVIEWABLE: MentorApplicationStatus[] = ['submitted', 'under_review'];
+
+/** Application days → weekday numbers (0 = Sunday). */
+const WEEKDAY_OF = { sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 } as const;
+/** Starting hours on the days the mentor picked (Cairo time); they adjust them in «مواعيدي». */
+const DEFAULT_HOURS = { startMinute: 18 * 60, endMinute: 21 * 60 } as const;
 const PAGE_SIZE = 20;
 
 const MESSAGES = {
@@ -293,6 +298,9 @@ export function createVerificationService(deps: {
               offerings: { create: OFFERINGS.map((o) => ({ ...o })) },
               topics: {
                 create: splitTopics(p.topics).map((label, sortOrder) => ({ label, sortOrder })),
+              },
+              availability: {
+                create: p.days.map((d) => ({ weekday: WEEKDAY_OF[d], ...DEFAULT_HOURS })),
               },
             },
           });

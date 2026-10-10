@@ -149,7 +149,11 @@ describe('decisions', () => {
 
     const profile = await h.db.mentor.findUniqueOrThrow({
       where: { userId: mentor.userId },
-      include: { offerings: true, topics: { orderBy: { sortOrder: 'asc' } } },
+      include: {
+        offerings: true,
+        topics: { orderBy: { sortOrder: 'asc' } },
+        availability: { orderBy: { weekday: 'asc' } },
+      },
     });
     expect(profile).toMatchObject({
       kind: 'graduate',
@@ -166,6 +170,11 @@ describe('decisions', () => {
       'الإعدادي',
       'التدريب الصيفي',
       'الفرق بين الأقسام',
+    ]);
+    // The days picked in the application become starting hours (Saturday = 6, Tuesday = 2).
+    expect(profile.availability.map((r) => [r.weekday, r.startMinute, r.endMinute])).toEqual([
+      [2, 1080, 1260],
+      [6, 1080, 1260],
     ]);
     const note = await h.db.notification.findFirst({ where: { userId: mentor.userId } });
     expect(note?.type).toBe('mentor_application.approved');

@@ -61,8 +61,8 @@ sabeq/
 | 10  | Admin Verification System + Audit trail                                           | ✅ done                      |
 | 11  | University / Faculty / Department / Specialization                                | ✅ done                      |
 | 12  | Mentor Profiles                                                                   | ✅ done                      |
-| 13  | Search & Discovery                                                                | 🔍 review                    |
-| 14  | Availability & Scheduling (no double booking / overlap)                           | —                            |
+| 13  | Search & Discovery                                                                | ✅ done                      |
+| 14  | Availability & Scheduling (no double booking / overlap)                           | 🔍 review                    |
 | 15  | Booking System (Pending / Confirmed / Cancelled / Completed / No-show / Refunded) | —                            |
 | 16  | Payment System — Paymob، التأكيد من الـ Backend فقط (webhooks + HMAC)             | —                            |
 | 17  | Session Management                                                                | —                            |

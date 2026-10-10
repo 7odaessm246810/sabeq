@@ -26,7 +26,7 @@ export interface MentorQuery {
   universities?: string[] | undefined;
   minRating?: number | undefined;
   maxPrice?: number | undefined;
-  /** Only mentors taking bookings (open slots arrive with scheduling, Phase 14). */
+  /** «متاح الأسبوع ده»: a bookable slot within the next 7 days. */
   available?: boolean | undefined;
   sort: MentorSort;
   page: number;
@@ -62,6 +62,8 @@ function score(m: IndexedMentor, tokens: string[]): number {
   return total;
 }
 
+const WEEK_MS = 7 * 86_400_000;
+
 type Filter = 'field' | 'university' | 'other';
 
 function passes(m: IndexedMentor, p: MentorQuery, skip?: Filter) {
@@ -74,13 +76,14 @@ function passes(m: IndexedMentor, p: MentorQuery, skip?: Filter) {
     (!p.faculty || m.facultyId === p.faculty) &&
     (!p.minRating || (c.rating ?? 0) >= p.minRating) &&
     (!p.maxPrice || (c.priceEgp ?? Infinity) <= p.maxPrice) &&
-    (!p.available || c.acceptsBookings)
+    (!p.available || (c.nextSlot !== null && Date.parse(c.nextSlot) < Date.now() + WEEK_MS))
   );
 }
 
 const SORTS: Record<MentorSort, (a: IndexedMentor, b: IndexedMentor) => number> = {
   // Open for bookings first, then rated and experienced, then newest.
   recommended: (a, b) =>
+    Number(b.card.nextSlot !== null) - Number(a.card.nextSlot !== null) ||
     Number(b.card.acceptsBookings) - Number(a.card.acceptsBookings) ||
     (b.card.rating ?? 0) - (a.card.rating ?? 0) ||
     b.card.sessions - a.card.sessions ||

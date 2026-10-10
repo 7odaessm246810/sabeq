@@ -16,6 +16,7 @@ import { createAuthModule } from '../modules/auth/index.js';
 import type { SmsSender } from '../modules/auth/sms.js';
 import { createCatalogModule } from '../modules/catalog/index.js';
 import { createMediaModule } from '../modules/media/index.js';
+import { createSchedulingModule } from '../modules/scheduling/index.js';
 import { createSearchModule } from '../modules/search/index.js';
 import { createMentorsModule } from '../modules/mentors/index.js';
 import { createMentorApplicationModule } from '../modules/mentor-application/index.js';
@@ -47,7 +48,14 @@ export function createHarness() {
   const account = createAccountModule({ db, auth });
   const media = createMediaModule({ store });
   const catalog = createCatalogModule({ db, auth, logos: media.logos });
-  const mentors = createMentorsModule({ db, auth, avatars: media.avatars, indexTtlMs: 0 });
+  const scheduling = createSchedulingModule({ db, auth });
+  const mentors = createMentorsModule({
+    db,
+    auth,
+    avatars: media.avatars,
+    nextSlots: scheduling.scheduling.nextSlots,
+    indexTtlMs: 0,
+  });
   const search = createSearchModule({ catalog: catalog.catalog, mentors: mentors.mentors, redis });
   const mentorApplication = createMentorApplicationModule({ db, store, crypto, auth });
   const verification = createVerificationModule({ db, store, crypto, auth });
@@ -59,6 +67,7 @@ export function createHarness() {
       account.mount(v1);
       media.mount(v1);
       catalog.mount(v1);
+      scheduling.mount(v1);
       mentors.mount(v1);
       search.mount(v1);
       mentorApplication.mount(v1);

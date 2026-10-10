@@ -553,6 +553,7 @@ model SessionOffering {
 model AvailabilityRule {
   id          String @id @default(uuid(7)) @db.Uuid
   mentorId    String @map("mentor_id") @db.Uuid
+  /// 0 = Sunday … 6 = Saturday; minutes since midnight, Cairo time. Never overlap (DB constraint).
   weekday     Int    @db.SmallInt
   startMinute Int    @map("start_minute") @db.SmallInt
   endMinute   Int    @map("end_minute") @db.SmallInt

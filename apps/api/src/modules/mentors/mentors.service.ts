@@ -70,7 +70,7 @@ const CARD_SELECT = {
 
 type CardRow = Prisma.MentorGetPayload<{ select: typeof CARD_SELECT }>;
 
-function card(m: CardRow) {
+function card(m: CardRow, next: Date | null = null) {
   return {
     slug: m.slug,
     name: m.user.fullName ?? 'مرشد سابق',
@@ -95,6 +95,8 @@ function card(m: CardRow) {
     priceEgp: m.basePricePiasters ? m.basePricePiasters / 100 : null,
     acceptsBookings: m.acceptsBookings,
     topics: m.topics.map((t) => t.label),
+    /** First bookable consultation (Phase 14), null when none in the next three weeks. */
+    nextSlot: m.acceptsBookings ? (next?.toISOString() ?? null) : null,
   };
 }
 
@@ -126,10 +128,13 @@ function offerings(basePiasters: number | null, active: { kind: SessionKind }[])
 export function createMentorsService({
   db,
   avatars,
+  nextSlots = () => Promise.resolve(new Map<string, Date | null>()),
   indexTtlMs = 60_000,
 }: {
   db: Db;
   avatars: AvatarStore;
+  /** First bookable slot per mentor (scheduling module). */
+  nextSlots?: (mentorIds: string[]) => Promise<Map<string, Date | null>>;
   /** How long the in-memory discovery index may be stale (tests use 0). */
   indexTtlMs?: number;
 }) {
@@ -143,13 +148,15 @@ export function createMentorsService({
       where: { ...LISTED, faculty: { isActive: true, university: { isActive: true } } },
       select: {
         ...CARD_SELECT,
+        userId: true,
         facultyId: true,
         listedAt: true,
         department: { select: { nameAr: true } },
       },
     });
+    const next = await nextSlots(rows.map((m) => m.userId));
     return rows.map((m) =>
-      indexMentor(card(m), {
+      indexMentor(card(m, next.get(m.userId) ?? null), {
         facultyId: m.facultyId,
         listedAt: m.listedAt,
         department: m.department?.nameAr ?? null,
@@ -249,8 +256,9 @@ export function createMentorsService({
         },
       });
       if (!m) return null;
+      const next = await nextSlots([m.userId]);
       return {
-        ...card(m),
+        ...card(m, next.get(m.userId) ?? null),
         bio: m.bio,
         department: m.department?.nameAr ?? null,
         offerings: offerings(m.basePricePiasters, m.offerings),
@@ -347,9 +355,10 @@ export function createMentorsService({
       const rows = await db.savedMentor.findMany({
         where: { studentId, mentor: LISTED },
         orderBy: { createdAt: 'desc' },
-        select: { mentor: { select: CARD_SELECT } },
+        select: { mentor: { select: { ...CARD_SELECT, userId: true } } },
       });
-      return rows.map((r) => card(r.mentor));
+      const next = await nextSlots(rows.map((r) => r.mentor.userId));
+      return rows.map((r) => card(r.mentor, next.get(r.mentor.userId) ?? null));
     },
 
     async save(studentId: string, slug: string) {

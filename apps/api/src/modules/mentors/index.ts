@@ -10,6 +10,7 @@ export function createMentorsModule(deps: {
   db: Db;
   auth: ReturnType<typeof createAuthModule>;
   avatars: AvatarStore;
+  nextSlots?: (mentorIds: string[]) => Promise<Map<string, Date | null>>;
   indexTtlMs?: number;
 }) {
   const mentors = createMentorsService(deps);
