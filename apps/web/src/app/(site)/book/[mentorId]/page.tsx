@@ -59,14 +59,6 @@ export default async function BookPage({ params, searchParams }: PageProps<'/boo
     );
   }
 
-  // Test payments exist only in local development (the API refuses them anywhere else too).
-  const devPayments = (process.env.APP_ENV ?? 'local') === 'local';
   const validAt = at && availability?.days.some((d) => d.slots.includes(at)) ? at : null;
-  return (
-    <BookingFlow
-      mentor={m}
-      initial={{ kind, at: validAt, availability }}
-      devPayments={devPayments}
-    />
-  );
+  return <BookingFlow mentor={m} initial={{ kind, at: validAt, availability }} />;
 }

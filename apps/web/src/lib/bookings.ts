@@ -1,4 +1,4 @@
-/** Bookings (Phase 15): the signed-in user's sessions and the booking flow's calls. */
+/** Bookings (Phase 15) and paying for them (Phase 16): the signed-in user's sessions and the booking flow's calls. */
 import type { BookingStatus, SessionKind } from '@sabeq/types';
 import { api } from './api';
 
@@ -28,11 +28,21 @@ export interface Booking {
     faculty: string;
     university: string;
   };
+  /** The latest payment attempt. */
+  payment: {
+    status: 'pending' | 'succeeded' | 'failed' | 'refunded' | 'partially_refunded';
+    method: PayMethod;
+    failureReason: string | null;
+    /** Kiosk payments: the code the student pays with at an Aman / Masary outlet. */
+    kioskReference: string | null;
+  } | null;
   /** Only when the viewer is the mentor. */
   student?: { name: string };
   /** Only when the viewer is the mentor: session price minus the commission. */
   earningEgp?: number;
 }
+
+export type PayMethod = 'card' | 'wallet' | 'kiosk';
 
 interface One {
   booking: Booking;
@@ -45,8 +55,18 @@ export const createBooking = (input: {
   note?: string;
 }) => api<One>('/bookings', { method: 'POST', body: input }).then((d) => d.booking);
 
-export const devPay = (id: string) =>
-  api<One>(`/bookings/${id}/dev-pay`, { method: 'POST' }).then((d) => d.booking);
+export const getBooking = (id: string) => api<One>(`/bookings/${id}`).then((d) => d.booking);
+
+/** Starts a payment: the browser then goes to the gateway's checkout (card numbers never touch Sabeq). */
+export const startPayment = (id: string, method: PayMethod) =>
+  api<{ redirectUrl: string; paymentId: string }>(`/bookings/${id}/pay`, {
+    method: 'POST',
+    body: { method },
+  });
+
+/** Methods the payment account takes right now. */
+export const paymentMethods = () =>
+  api<{ methods: PayMethod[]; mode: 'paymob' | 'fake' }>('/payments/methods');
 
 export const cancelBooking = (id: string, reason?: string) =>
   api<One>(`/bookings/${id}/cancel`, { method: 'POST', body: reason ? { reason } : {} }).then(
