@@ -214,6 +214,17 @@ Bookings carry `session: { opensAt, closesAt, mentorJoined, studentJoined }`. Th
 
 The website's room is `/sessions/:id` (the call embedded beside the details and the student's questions). `Permissions-Policy` lets `https://*.daily.co` use the camera, microphone and screen share.
 
+## Reviews (Phase 18)
+
+Module `src/modules/reviews`.
+
+| Endpoint                          | Result                                                                                                                                                                                                                                                                                                                                                                                  |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `POST /bookings/:id/review`       | (the booking's student) `{ rating: 1–5, text? ≤ 1000 }` → `201 { review }`. Only a `completed` session, within 30 days of its end, once (unique `reviews.booking_id` — a second try or a race gets `409`). The mentor's `rating_avg` / `rating_count` are recomputed from published reviews in the same transaction, the mentor is notified (`review.created`) and mentor cards refresh |
+| `GET /mentors/:slug/reviews?page` | `{ rating, ratingCount, reviews, hasMore }` — published reviews, newest first, 10 a page, reviewer's first name only                                                                                                                                                                                                                                                                    |
+
+Bookings carry `review: { rating, text } | null`. Hiding a review (admin, Phase 20) recomputes the rating the same way.
+
 ## Search box (Phase 13)
 
 | Endpoint                 | Result                                                                                                                                                                                                                                                                                      |

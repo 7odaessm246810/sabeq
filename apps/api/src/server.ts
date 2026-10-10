@@ -15,6 +15,7 @@ import { createBookingsModule } from './modules/bookings/index.js';
 import { createCatalogModule } from './modules/catalog/index.js';
 import { createPaymentsModule } from './modules/payments/index.js';
 import { createSessionsModule } from './modules/sessions/index.js';
+import { createReviewsModule } from './modules/reviews/index.js';
 import { createMediaModule } from './modules/media/index.js';
 import { createSchedulingModule } from './modules/scheduling/index.js';
 import { createSearchModule } from './modules/search/index.js';
@@ -81,6 +82,11 @@ function main() {
     config,
     logger,
   });
+  const reviews = createReviewsModule({
+    db,
+    auth,
+    onRatingChanged: () => mentors.mentors.invalidate(),
+  });
   const search = createSearchModule({ catalog: catalog.catalog, mentors: mentors.mentors, redis });
   const mentorApplication = createMentorApplicationModule({ db, store, crypto, auth });
   const verification = createVerificationModule({ db, store, crypto, auth });
@@ -100,6 +106,7 @@ function main() {
       bookings.mount(v1);
       payments.mount(v1);
       sessions.mount(v1);
+      reviews.mount(v1);
       mentorApplication.mount(v1);
       verification.mount(v1);
     },

@@ -90,6 +90,7 @@ const BOOKING_SELECT = {
     select: { status: true, method: true, failureReason: true, kioskReference: true },
   },
   meeting: { select: { mentorJoinedAt: true, studentJoinedAt: true } },
+  review: { select: { rating: true, text: true } },
   student: { select: { user: { select: { fullName: true } } } },
   mentor: {
     select: {
@@ -146,6 +147,8 @@ function view(b: Row, viewer: 'student' | 'mentor') {
       mentorJoined: Boolean(b.meeting?.mentorJoinedAt),
       studentJoined: Boolean(b.meeting?.studentJoinedAt),
     },
+    /** The student's rating of this session (Phase 18), once given. */
+    review: b.review,
     mentor: {
       slug: b.mentor.slug,
       name: b.mentor.user.fullName ?? 'مرشد سابق',

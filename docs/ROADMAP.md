@@ -65,8 +65,8 @@ sabeq/
 | 14  | Availability & Scheduling (no double booking / overlap)                           | ✅ done                      |
 | 15  | Booking System (Pending / Confirmed / Cancelled / Completed / No-show / Refunded) | ✅ done                      |
 | 16  | Payment System — Paymob، التأكيد من الـ Backend فقط (webhooks + HMAC)             | ✅ done                      |
-| 17  | Session Management                                                                | 🔍 review                    |
-| 18  | Reviews & Ratings (بعد الجلسة فقط، بدون تكرار)                                    | —                            |
+| 17  | Session Management                                                                | ✅ done                      |
+| 18  | Reviews & Ratings (بعد الجلسة فقط، بدون تكرار)                                    | 🔍 review                    |
 | 19  | Notifications (in-app + email، SMS لاحقًا)                                        | —                            |
 | 20  | Admin Dashboard                                                                   | —                            |
 | 21  | Security & Production Hardening                                                   | —                            |
@@ -100,6 +100,7 @@ sabeq/
 | 2026-10-10 | رسوم خدمة ثابتة 15 ج.م على الطالب فوق سعر الجلسة (بترجع كاملة لو الإلغاء قبل 24 ساعة). لحد Paymob: دفع تجريبي على جهاز التطوير بس.                                                                                                                                                                       |
 | 2026-10-10 | Phase 16: Paymob Unified Checkout (بطاقة / محفظة / منافذ أمان ومصاري). لحد ما الحساب يتفعّل: `PAYMOB_MODE=fake` (صفحة دفع تجريبية بتعدّي على نفس التحقق بالـ HMAC) — ممنوع في production.                                                                                                                |
 | 2026-10-10 | Phase 17: الفيديو = Daily.co (غرفة خاصة لكل جلسة، توكن لكل شخص). المرشد لو ما دخلش خلال 15 دقيقة من البداية → الجلسة بتتلغي والطالب بياخد فلوسه كاملة. غياب الطالب (والمرشد دخل) → مفيش استرداد والمرشد بياخد حقه. لحد ما حساب Daily يتفعّل: `VIDEO_PROVIDER=fake` (غرفة تجريبية) — ممنوع في production. |
+| 2026-10-10 | Phase 18: التقييم من الطالب بس، بعد جلسة مكتملة، مرة واحدة، خلال 30 يوم. تقييم المرشد = متوسط التقييمات المنشورة (مفيش تقييمات مخترعة). الإخفاء من الأدمن في Phase 20.                                                                                                                                   |
 | 2026-10-06 | TypeScript 6.0.3 مثبت (typescript-eslint لسه ما يدعمش 7) — ADR-0002.                                                                                                                                                                                                                                     |
 
 كل القرارات بالتفصيل: [docs/adr/](adr/README.md).

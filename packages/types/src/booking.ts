@@ -31,6 +31,10 @@ export const JOIN_CLOSES_MINUTES_AFTER = 15;
  */
 export const NO_SHOW_GRACE_MINUTES = 15;
 
+/** A completed session can be rated by its student, once, for this long after it ended (Phase 18). */
+export const REVIEW_WINDOW_DAYS = 30;
+export const REVIEW_TEXT_MAX = 1000;
+
 export const BOOKING_STATUS_LABELS: Record<BookingStatus, string> = {
   pending: 'مستني الدفع',
   confirmed: 'قادمة',
