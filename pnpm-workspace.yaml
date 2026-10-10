@@ -56,3 +56,9 @@ allowBuilds:
   esbuild: true # tsx → esbuild: installs the platform binary
   '@prisma/engines': true # downloads the Prisma schema engine (migrations)
   prisma: true
+
+# Security fixes for transitive dependencies (Phase 21, `pnpm audit --prod`). Both sit under the
+# Prisma CLI (build / migrate time); mysql2 is never used — Sabeq runs on PostgreSQL.
+overrides:
+  mysql2: 3.24.5 # GHSA: auth plugin downgrade, zlib decompression bomb
+  deepmerge-ts: 8.0.2 # GHSA: stack exhaustion on recursive objects
