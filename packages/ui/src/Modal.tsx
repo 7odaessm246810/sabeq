@@ -25,6 +25,12 @@ const FOCUSABLE =
 export function Modal({ title, onClose, children, footer, sheet = false }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
+  // The latest onClose, without re-running the setup below: callers usually pass a new function on
+  // every render, and re-running it would move focus back to the first button on each keystroke.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     const opener = document.activeElement as HTMLElement | null;
@@ -35,7 +41,7 @@ export function Modal({ title, onClose, children, footer, sheet = false }: Modal
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        onCloseRef.current();
         return;
       }
       if (e.key !== 'Tab' || !dialog) return;
@@ -57,7 +63,7 @@ export function Modal({ title, onClose, children, footer, sheet = false }: Modal
       document.body.style.overflow = previousOverflow;
       opener?.focus();
     };
-  }, [onClose]);
+  }, []);
 
   return createPortal(
     <div
