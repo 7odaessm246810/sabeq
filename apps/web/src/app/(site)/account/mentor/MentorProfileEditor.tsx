@@ -13,6 +13,7 @@ import { sessionPricePiasters } from '@sabeq/utils';
 import { Avatar, Banner, Icon, useToast } from '@sabeq/ui';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
+import { MentorMoney } from '@/components/account/MentorMoney';
 import { Field, Select } from '@/components/form';
 import { PageHead } from '@/components/PageHead';
 import { ApiError } from '@/lib/api';
@@ -324,6 +325,8 @@ function Editor({
           </button>
         </div>
       </form>
+
+      <MentorMoney />
 
       <div className="sb-card acct-card">
         <h2 className="sb-h3">بيانات موثقة</h2>

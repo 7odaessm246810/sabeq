@@ -1693,3 +1693,17 @@
   height: 40px;
   opacity: 0.8;
 }
+
+/* mentor money (Phase 20) */
+.money-row {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+.money-row > div {
+  display: flex;
+  flex-direction: column;
+}
+.money-row b {
+  font-size: 24px;
+}
