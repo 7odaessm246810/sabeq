@@ -646,6 +646,8 @@ model Booking {
   /// 10000 = full refund, 5000 = the 50% late-cancellation refund (decision 2026-10-07).
   refundShareBps Int?          @map("refund_share_bps") @db.SmallInt
   completedAt    DateTime?     @map("completed_at") @db.Timestamptz
+  /// The pre-session reminder went out (Phase 19) — sent once.
+  reminderSentAt DateTime?     @map("reminder_sent_at") @db.Timestamptz
   createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz
   updatedAt      DateTime      @updatedAt @map("updated_at") @db.Timestamptz
 
@@ -838,7 +840,7 @@ model NotificationDelivery {
 
   notification Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
 
-  @@index([notificationId])
+  @@unique([notificationId, channel])
   @@index([status, createdAt])
   @@map("notification_deliveries")
 }

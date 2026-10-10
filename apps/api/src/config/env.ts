@@ -98,6 +98,10 @@ const schema = z
       unsetIfEmpty,
       z.coerce.number().int().positive().optional(),
     ),
+    /** "console": emails are logged, not sent (never in production). "resend": Resend.com. */
+    EMAIL_PROVIDER: z.preprocess(unsetIfEmpty, z.enum(['console', 'resend']).default('console')),
+    EMAIL_FROM: z.string().min(3).default('سابق <no-reply@localhost>'),
+    EMAIL_API_KEY: z.preprocess(unsetIfEmpty, z.string().min(1).optional()),
     /** "fake": a local test room (never in production). "daily": Daily.co video rooms. */
     VIDEO_PROVIDER: z.preprocess(unsetIfEmpty, z.enum(['fake', 'daily']).default('fake')),
     DAILY_API_BASE: z.url().default('https://api.daily.co/v1'),
@@ -130,6 +134,18 @@ const schema = z
           message: 'set at least one integration id (card or wallet)',
         });
     }
+    if (env.EMAIL_PROVIDER === 'resend' && !env.EMAIL_API_KEY)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['EMAIL_API_KEY'],
+        message: 'required when EMAIL_PROVIDER=resend',
+      });
+    if (env.APP_ENV === 'production' && env.EMAIL_PROVIDER === 'console')
+      ctx.addIssue({
+        code: 'custom',
+        path: ['EMAIL_PROVIDER'],
+        message: 'production sends real emails: set EMAIL_PROVIDER=resend',
+      });
     if (env.VIDEO_PROVIDER === 'daily' && !env.DAILY_API_KEY)
       ctx.addIssue({
         code: 'custom',
@@ -211,6 +227,11 @@ export interface Config {
     hmacSecret: string | undefined;
     integrations: { card?: number; wallet?: number; kiosk?: number };
   };
+  email: {
+    provider: 'console' | 'resend';
+    from: string;
+    apiKey: string | undefined;
+  };
   video: {
     provider: 'fake' | 'daily';
     apiBase: string;
@@ -271,6 +292,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
         ...(e.PAYMOB_INTEGRATION_KIOSK ? { kiosk: e.PAYMOB_INTEGRATION_KIOSK } : {}),
       },
     },
+    email: { provider: e.EMAIL_PROVIDER, from: e.EMAIL_FROM, apiKey: e.EMAIL_API_KEY },
     video: {
       provider: e.VIDEO_PROVIDER,
       apiBase: e.DAILY_API_BASE.replace(/\/$/, ''),

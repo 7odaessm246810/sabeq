@@ -225,6 +225,20 @@ Module `src/modules/reviews`.
 
 Bookings carry `review: { rating, text } | null`. Hiding a review (admin, Phase 20) recomputes the rating the same way.
 
+## Notifications (Phase 19)
+
+Module `src/modules/notifications`. Every module writes `notifications` rows (`type` = `area.event`; where each leads: `notificationLink` in `@sabeq/types`).
+
+| Endpoint                                                              | Result                                                                                                                                                                              |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /me/notifications?before&limit`                                  | `{ items: [{ id, type, title, body, link, read, createdAt }], unread, nextBefore }` — newest first, cursor paging                                                                   |
+| `GET /me/notifications/unread`                                        | `{ unread }` (the bell)                                                                                                                                                             |
+| `POST /me/notifications/read { ids? }`                                | marks these — or all — of your own as read                                                                                                                                          |
+| `GET` · `PUT { email }` · `DELETE /me/email`, `POST /me/email/resend` | the account's address; setting it sends a signed confirmation link (24 h). 1 link a minute, 5 a day. In local development (`EMAIL_PROVIDER=console`) the response carries `devLink` |
+| `POST /email/verify { token }`                                        | confirms the address the link was sent for, while it is still the account's (signed out is fine)                                                                                    |
+
+The sweeper (every minute): reminders `REMINDER_MINUTES_BEFORE` (60) before confirmed sessions, once (`bookings.reminder_sent_at`), to both sides (`session.reminder`); then one email per new notification for confirmed addresses (`notification_deliveries`, unique per channel), claimed before sending so instances never double-send, retried up to 5 times. Email: `EMAIL_PROVIDER=resend` (Resend HTTP API, `EMAIL_FROM` on a verified domain) — required in production.
+
 ## Search box (Phase 13)
 
 | Endpoint                 | Result                                                                                                                                                                                                                                                                                      |

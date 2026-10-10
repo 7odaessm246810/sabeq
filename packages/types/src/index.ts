@@ -6,3 +6,4 @@ export * from './student.js';
 export * from './catalog.js';
 export * from './mentor.js';
 export * from './booking.js';
+export * from './notifications.js';

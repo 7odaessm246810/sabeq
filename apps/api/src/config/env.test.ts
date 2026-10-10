@@ -64,6 +64,12 @@ describe('loadConfig', () => {
     ).toThrow(/SMS_PROVIDER/);
   });
 
+  it('production sends real emails; Resend needs its key', () => {
+    expect(() => loadConfig({ ...BASE, APP_ENV: 'production' })).toThrow(/EMAIL_PROVIDER/);
+    expect(() => loadConfig({ ...BASE, EMAIL_PROVIDER: 'resend' })).toThrow(/EMAIL_API_KEY/);
+    expect(loadConfig(BASE).email.provider).toBe('console');
+  });
+
   it('production refuses the test video room; Daily needs its key', () => {
     expect(() => loadConfig({ ...BASE, APP_ENV: 'production' })).toThrow(/VIDEO_PROVIDER/);
     expect(() => loadConfig({ ...BASE, VIDEO_PROVIDER: 'daily' })).toThrow(/DAILY_API_KEY/);

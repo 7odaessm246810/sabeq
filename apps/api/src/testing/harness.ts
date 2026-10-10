@@ -19,6 +19,8 @@ import { createCatalogModule } from '../modules/catalog/index.js';
 import { createPaymentsModule } from '../modules/payments/index.js';
 import { createSessionsModule } from '../modules/sessions/index.js';
 import { createReviewsModule } from '../modules/reviews/index.js';
+import { createNotificationsModule } from '../modules/notifications/index.js';
+import { createConsoleSender } from '../modules/notifications/email.js';
 import { createMediaModule } from '../modules/media/index.js';
 import { createSchedulingModule } from '../modules/scheduling/index.js';
 import { createSearchModule } from '../modules/search/index.js';
@@ -86,6 +88,15 @@ export function createHarness() {
     auth,
     onRatingChanged: () => mentors.mentors.invalidate(),
   });
+  const emails = createConsoleSender(logger);
+  const notifications = createNotificationsModule({
+    db,
+    redis,
+    auth,
+    config,
+    logger,
+    email: emails,
+  });
   const search = createSearchModule({ catalog: catalog.catalog, mentors: mentors.mentors, redis });
   const mentorApplication = createMentorApplicationModule({ db, store, crypto, auth });
   const verification = createVerificationModule({ db, store, crypto, auth });
@@ -104,6 +115,7 @@ export function createHarness() {
       payments.mount(v1);
       sessions.mount(v1);
       reviews.mount(v1);
+      notifications.mount(v1);
       mentorApplication.mount(v1);
       verification.mount(v1);
     },
@@ -140,6 +152,10 @@ export function createHarness() {
     bookingsService: bookings.bookings,
     /** Sessions service (the mentor no-show sweep is tested directly). */
     sessionsService: sessions.sessions,
+    /** Notifications service (reminders and email sending are tested directly). */
+    notificationsService: notifications.notifications,
+    /** Every email "sent" (the console sender keeps them). */
+    emails: emails.sent,
     crypto,
     newPhone,
     /** A website account (new number unless one is given). */
