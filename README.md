@@ -40,6 +40,7 @@ Details, production-like images and Windows notes: [docs/docker.md](docs/docker.
 - [Architecture](docs/architecture.md)
 - [Conventions](docs/conventions.md)
 - [Environments](docs/environments.md)
+- [Security](docs/security.md)
 - [Development workflow](docs/workflow.md)
 - [Architecture decisions (ADRs)](docs/adr/README.md)
 

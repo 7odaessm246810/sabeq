@@ -68,8 +68,8 @@ sabeq/
 | 17  | Session Management                                                                | ✅ done                      |
 | 18  | Reviews & Ratings (بعد الجلسة فقط، بدون تكرار)                                    | ✅ done                      |
 | 19  | Notifications (in-app + email، SMS لاحقًا)                                        | 🔍 review                    |
-| 20  | Admin Dashboard                                                                   | 🔍 review                    |
-| 21  | Security & Production Hardening                                                   | —                            |
+| 20  | Admin Dashboard                                                                   | ✅ done                      |
+| 21  | Security & Production Hardening                                                   | 🔍 review                    |
 | 22  | Testing & QA (unit / integration / E2E)                                           | —                            |
 | 23  | Deployment & Production (web + admin + api منفصلين)                               | —                            |
 
@@ -103,6 +103,7 @@ sabeq/
 | 2026-10-10 | Phase 18: التقييم من الطالب بس، بعد جلسة مكتملة، مرة واحدة، خلال 30 يوم. تقييم المرشد = متوسط التقييمات المنشورة (مفيش تقييمات مخترعة). الإخفاء من الأدمن في Phase 20.                                                                                                                                                             |
 | 2026-10-10 | Phase 19: الإشعارات جوه الموقع دايمًا (الجرس + صفحة)، وعلى الإيميل لو المستخدم أكّد إيميله برابط. تذكير قبل الجلسة بساعة للاتنين. الإيميل عن طريق Resend (`EMAIL_PROVIDER=resend`)؛ محليًا `console` ورابط التأكيد بيظهر في الصفحة. SMS لاحقًا.                                                                                    |
 | 2026-10-10 | Phase 20: لوحة الأدمن = نظرة عامة، الحجوزات (استرداد كامل لحل أي خلاف، حتى بعد الجلسة — مكسب المرشد بيتشال)، التقييمات (إخفاء / رجوع)، الحسابات (إيقاف / رجوع)، فلوس المرشدين. المرشد بيضيف طريقة الاستلام (InstaPay / فودافون كاش / بنك) متشفّرة؛ المالية بتحوّل برّه سابق وبتسجّل التحويل برقم العملية. كل حاجة في سجل العمليات. |
+| 2026-10-11 | Phase 21: IP الزائر بيوصل للـ API من الـ proxy بسر مشترك (`API_PROXY_SECRET`) — مفيش X-Forwarded-For مزوّر؛ حدود الطلبات في Redis + حدود أضيق للعمليات الحساسة؛ CSP بـ nonce للموقع واللوحة (كل الصفحات بتترندر مع كل طلب). التفاصيل: [security.md](security.md).                                                                  |
 | 2026-10-06 | TypeScript 6.0.3 مثبت (typescript-eslint لسه ما يدعمش 7) — ADR-0002.                                                                                                                                                                                                                                                               |
 
 كل القرارات بالتفصيل: [docs/adr/](adr/README.md).
