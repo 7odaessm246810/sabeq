@@ -64,6 +64,17 @@ describe('loadConfig', () => {
     ).toThrow(/SMS_PROVIDER/);
   });
 
+  it('production refuses the test video room; Daily needs its key', () => {
+    expect(() => loadConfig({ ...BASE, APP_ENV: 'production' })).toThrow(/VIDEO_PROVIDER/);
+    expect(() => loadConfig({ ...BASE, VIDEO_PROVIDER: 'daily' })).toThrow(/DAILY_API_KEY/);
+    expect(loadConfig({ ...BASE, VIDEO_PROVIDER: 'daily', DAILY_API_KEY: 'k' }).video).toEqual({
+      provider: 'daily',
+      apiBase: 'https://api.daily.co/v1',
+      apiKey: 'k',
+    });
+    expect(loadConfig({ ...BASE, VIDEO_PROVIDER: '' }).video.provider).toBe('fake');
+  });
+
   it('requires a long OTP secret and uses secure cookies outside local', () => {
     expect(() => loadConfig({ ...BASE, AUTH_OTP_SECRET: 'short' })).toThrow(/AUTH_OTP_SECRET/);
     expect(loadConfig(BASE).auth.secureCookies).toBe(false);

@@ -98,6 +98,10 @@ const schema = z
       unsetIfEmpty,
       z.coerce.number().int().positive().optional(),
     ),
+    /** "fake": a local test room (never in production). "daily": Daily.co video rooms. */
+    VIDEO_PROVIDER: z.preprocess(unsetIfEmpty, z.enum(['fake', 'daily']).default('fake')),
+    DAILY_API_BASE: z.url().default('https://api.daily.co/v1'),
+    DAILY_API_KEY: z.preprocess(unsetIfEmpty, z.string().min(1).optional()),
     API_BODY_LIMIT: z
       .string()
       .regex(/^\d+(kb|mb)$/, 'e.g. 100kb or 1mb')
@@ -126,6 +130,18 @@ const schema = z
           message: 'set at least one integration id (card or wallet)',
         });
     }
+    if (env.VIDEO_PROVIDER === 'daily' && !env.DAILY_API_KEY)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['DAILY_API_KEY'],
+        message: 'required when VIDEO_PROVIDER=daily',
+      });
+    if (env.APP_ENV === 'production' && env.VIDEO_PROVIDER !== 'daily')
+      ctx.addIssue({
+        code: 'custom',
+        path: ['VIDEO_PROVIDER'],
+        message: 'production holds real sessions: set VIDEO_PROVIDER=daily',
+      });
     if (env.APP_ENV === 'production' && env.PAYMOB_MODE !== 'paymob')
       ctx.addIssue({
         code: 'custom',
@@ -195,6 +211,11 @@ export interface Config {
     hmacSecret: string | undefined;
     integrations: { card?: number; wallet?: number; kiosk?: number };
   };
+  video: {
+    provider: 'fake' | 'daily';
+    apiBase: string;
+    apiKey: string | undefined;
+  };
 }
 
 export class ConfigError extends Error {
@@ -249,6 +270,11 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
         ...(e.PAYMOB_INTEGRATION_WALLET ? { wallet: e.PAYMOB_INTEGRATION_WALLET } : {}),
         ...(e.PAYMOB_INTEGRATION_KIOSK ? { kiosk: e.PAYMOB_INTEGRATION_KIOSK } : {}),
       },
+    },
+    video: {
+      provider: e.VIDEO_PROVIDER,
+      apiBase: e.DAILY_API_BASE.replace(/\/$/, ''),
+      apiKey: e.DAILY_API_KEY,
     },
   };
 }

@@ -668,6 +668,8 @@ model Meeting {
   bookingId       String    @id @map("booking_id") @db.Uuid
   provider        String    @db.VarChar(40)
   roomId          String    @map("room_id") @db.VarChar(200)
+  /// The provider's room address (Daily: https://<domain>.daily.co/<room>); joining needs a token.
+  roomUrl         String?   @map("room_url") @db.VarChar(300)
   startsAt        DateTime  @map("starts_at") @db.Timestamptz
   endedAt         DateTime? @map("ended_at") @db.Timestamptz
   studentJoinedAt DateTime? @map("student_joined_at") @db.Timestamptz

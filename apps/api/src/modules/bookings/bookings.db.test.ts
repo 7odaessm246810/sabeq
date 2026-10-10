@@ -243,7 +243,12 @@ describe('paying, listing and cancelling', () => {
 });
 
 describe('after the session', () => {
-  async function pastBooking(minutesAgoStart: number, durationMin = 45) {
+  /** A confirmed session that started a while ago; by default the mentor opened its room. */
+  async function pastBooking(
+    minutesAgoStart: number,
+    joined: { mentor?: boolean; student?: boolean } = { mentor: true },
+  ) {
+    const durationMin = 45;
     const m = await mentor();
     const s = await student();
     const startsAt = new Date(Date.now() - minutesAgoStart * 60_000);
@@ -263,6 +268,17 @@ describe('after the session', () => {
         status: 'confirmed',
       },
     });
+    if (joined.mentor || joined.student)
+      await h.db.meeting.create({
+        data: {
+          bookingId: b.id,
+          provider: 'fake',
+          roomId: `fake-${b.id}`,
+          startsAt,
+          ...(joined.mentor ? { mentorJoinedAt: startsAt } : {}),
+          ...(joined.student ? { studentJoinedAt: startsAt } : {}),
+        },
+      });
     return { m, s, id: b.id };
   }
 
@@ -270,6 +286,11 @@ describe('after the session', () => {
     const live = await pastBooking(10);
     await live.m.agent.post(`/api/v1/bookings/${live.id}/complete`).expect(409); // not over yet
     await live.m.agent.post(`/api/v1/bookings/${live.id}/no-show`).expect(409); // too early
+
+    // Only a mentor who came into the room can close the session.
+    const skipped = await pastBooking(60, {});
+    await skipped.m.agent.post(`/api/v1/bookings/${skipped.id}/complete`).expect(409);
+    await skipped.m.agent.post(`/api/v1/bookings/${skipped.id}/no-show`).expect(409);
 
     const done = await pastBooking(60);
     await done.s.agent.post(`/api/v1/bookings/${done.id}/complete`).expect(403);
@@ -285,6 +306,12 @@ describe('after the session', () => {
     const absent = await pastBooking(20);
     const ns = await absent.m.agent.post(`/api/v1/bookings/${absent.id}/no-show`).expect(200);
     expect(ns.body.data.booking.status).toBe('no_show');
+    // The mentor waited: the student's absence still pays them.
+    const paidLedger = await h.db.ledgerEntry.findMany({ where: { bookingId: absent.id } });
+    expect(paidLedger).toMatchObject([{ type: 'mentor_earning', amountPiasters: 18_000 }]);
+    // A student who opened the room wasn't absent.
+    const came = await pastBooking(20, { mentor: true, student: true });
+    await came.m.agent.post(`/api/v1/bookings/${came.id}/no-show`).expect(409);
     const past = (await absent.s.agent.get('/api/v1/bookings?scope=past')).body.data.bookings;
     expect(past.map((x: { id: string }) => x.id)).toContain(absent.id);
   });

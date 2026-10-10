@@ -36,6 +36,7 @@
         "PAYMOB_*",
         "EMAIL_*",
         "VIDEO_*",
+        "DAILY_*",
         "WATCHPACK_*"
       ]
     },

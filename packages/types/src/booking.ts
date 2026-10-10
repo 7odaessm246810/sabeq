@@ -20,6 +20,17 @@ export const LATE_CANCEL_REFUND_BPS = 5000;
 /** Sessions the mentor didn't mark are completed automatically this long after they end. */
 export const AUTO_COMPLETE_HOURS = 24;
 
+/** The session room opens this long before the start (Phase 17)… */
+export const JOIN_OPENS_MINUTES_BEFORE = 10;
+/** …and closes this long after the end. */
+export const JOIN_CLOSES_MINUTES_AFTER = 15;
+
+/**
+ * If the mentor hasn't joined this long after the start, the session is cancelled with a full
+ * refund (decision 2026-10-10). Also the earliest a mentor can mark the student absent.
+ */
+export const NO_SHOW_GRACE_MINUTES = 15;
+
 export const BOOKING_STATUS_LABELS: Record<BookingStatus, string> = {
   pending: 'مستني الدفع',
   confirmed: 'قادمة',

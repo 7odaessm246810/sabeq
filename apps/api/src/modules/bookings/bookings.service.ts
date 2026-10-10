@@ -11,11 +11,17 @@
  * - Payments (Phase 16) confirm a booking through `confirmPaid` — only after the gateway's signed
  *   callback. Refunds start from `cancel` through the `onRefundDue` hook.
  * - Completing a session writes the mentor's earning to the append-only ledger.
+ * - Sessions (Phase 17): the mentor must have opened the room to complete it or to mark the student
+ *   absent (which still pays the mentor); a mentor who never came is handled by `mentorNoShow` —
+ *   cancelled with a full refund.
  * Prices are snapshotted on the booking so later price changes never touch it.
  */
 import {
   AUTO_COMPLETE_HOURS,
   BOOKING_HOLD_MINUTES,
+  JOIN_CLOSES_MINUTES_AFTER,
+  JOIN_OPENS_MINUTES_BEFORE,
+  NO_SHOW_GRACE_MINUTES,
   PLATFORM,
   SESSION_TYPES,
   STUDENT_FEE_PIASTERS,
@@ -48,6 +54,9 @@ const MESSAGES = {
   notEnded: 'تقدر تعلّم الجلسة بعد ما تخلص.',
   noShowTooEarly: 'تقدر تعلّم إن الطالب ما حضرش بعد 15 دقيقة من بداية الجلسة.',
   notConfirmed: 'الحجز ده مش جلسة مؤكدة.',
+  mentorNotJoined: 'لازم تكون دخلت الجلسة الأول.',
+  studentJoined: 'الطالب دخل الجلسة، فمينفعش تتعلّم إنه ما حضرش.',
+  mentorAbsent: 'المرشد ما دخلش الجلسة',
 };
 
 const MAX_PENDING_PER_STUDENT = 3;
@@ -80,6 +89,7 @@ const BOOKING_SELECT = {
     take: 1,
     select: { status: true, method: true, failureReason: true, kioskReference: true },
   },
+  meeting: { select: { mentorJoinedAt: true, studentJoinedAt: true } },
   student: { select: { user: { select: { fullName: true } } } },
   mentor: {
     select: {
@@ -129,6 +139,13 @@ function view(b: Row, viewer: 'student' | 'mentor') {
     refundEgp: refund === null ? null : refund / 100,
     /** The latest payment attempt (Phase 16). */
     payment: b.payments[0] ?? null,
+    /** The session room (Phase 17): when it can be joined and who has come in. */
+    session: {
+      opensAt: new Date(b.startsAt.getTime() - JOIN_OPENS_MINUTES_BEFORE * 60_000).toISOString(),
+      closesAt: new Date(b.endsAt.getTime() + JOIN_CLOSES_MINUTES_AFTER * 60_000).toISOString(),
+      mentorJoined: Boolean(b.meeting?.mentorJoinedAt),
+      studentJoined: Boolean(b.meeting?.studentJoinedAt),
+    },
     mentor: {
       slug: b.mentor.slug,
       name: b.mentor.user.fullName ?? 'مرشد سابق',
@@ -171,16 +188,23 @@ export function createBookingsService(deps: {
     });
   }
 
-  async function completeBooking(tx: Prisma.TransactionClient, id: string, mentorId: string) {
+  /** completed, or no_show (the student's absence still pays the mentor, who waited). */
+  async function completeBooking(
+    tx: Prisma.TransactionClient,
+    id: string,
+    mentorId: string,
+    status: 'completed' | 'no_show' = 'completed',
+  ) {
     const done = await tx.booking.updateMany({
       where: { id, status: 'confirmed' },
-      data: { status: 'completed', completedAt: now() },
+      data: { status, completedAt: now() },
     });
     if (done.count) {
-      await tx.mentor.update({
-        where: { userId: mentorId },
-        data: { sessionsCompleted: { increment: 1 } },
-      });
+      if (status === 'completed')
+        await tx.mentor.update({
+          where: { userId: mentorId },
+          data: { sessionsCompleted: { increment: 1 } },
+        });
       // The mentor's earning: session price minus the commission (ADR-0009). Payable later.
       const b = await tx.booking.findUniqueOrThrow({
         where: { id },
@@ -421,19 +445,61 @@ export function createBookingsService(deps: {
       if (b.mentorId !== mentorId) throw Errors.notFound(MESSAGES.notFound);
       if (b.status !== 'confirmed') throw new AppError('CONFLICT', MESSAGES.notConfirmed);
       if (b.endsAt > now()) throw new AppError('CONFLICT', MESSAGES.notEnded);
+      if (!b.meeting?.mentorJoinedAt) throw new AppError('CONFLICT', MESSAGES.mentorNotJoined);
       await db.$transaction((tx) => completeBooking(tx, id, mentorId));
       return view(await load(id), 'mentor');
     },
 
-    /** The student never joined (15 minutes after the start at the earliest). */
+    /**
+     * The student never joined (15 minutes after the start at the earliest). Only a mentor who came
+     * can say so, and not if the student opened the room. No refund; the mentor is paid.
+     */
     async noShow(mentorId: string, id: string) {
       const b = await load(id);
       if (b.mentorId !== mentorId) throw Errors.notFound(MESSAGES.notFound);
       if (b.status !== 'confirmed') throw new AppError('CONFLICT', MESSAGES.notConfirmed);
-      if (b.startsAt.getTime() + 15 * 60_000 > now().getTime())
+      if (b.startsAt.getTime() + NO_SHOW_GRACE_MINUTES * 60_000 > now().getTime())
         throw new AppError('CONFLICT', MESSAGES.noShowTooEarly);
-      await db.booking.update({ where: { id }, data: { status: 'no_show' } });
+      if (!b.meeting?.mentorJoinedAt) throw new AppError('CONFLICT', MESSAGES.mentorNotJoined);
+      if (b.meeting.studentJoinedAt) throw new AppError('CONFLICT', MESSAGES.studentJoined);
+      await db.$transaction((tx) => completeBooking(tx, id, mentorId, 'no_show'));
       return view(await load(id), 'mentor');
+    },
+
+    /**
+     * The mentor never came (sessions sweeper, NO_SHOW_GRACE_MINUTES after the start): cancelled as
+     * if the mentor had cancelled — the student gets everything back. Returns whether it applied.
+     */
+    async mentorNoShow(id: string) {
+      const b = await load(id);
+      if (b.status !== 'confirmed' || b.meeting?.mentorJoinedAt) return false;
+      const moved = await db.booking.updateMany({
+        where: { id, status: 'confirmed' },
+        data: {
+          status: 'cancelled',
+          cancelledAt: now(),
+          cancelledById: b.mentorId,
+          cancelReason: MESSAGES.mentorAbsent,
+          refundShareBps: 10_000,
+        },
+      });
+      if (!moved.count) return false;
+      if (deps.onRefundDue) await deps.onRefundDue(id).catch(() => undefined);
+      await notify(
+        b.studentId,
+        'booking.mentor_absent',
+        'المرشد ما حضرش',
+        `${b.mentor.user.fullName ?? 'المرشد'} ما دخلش جلسة ${when(b.startsAt)}. لغينا الجلسة وهترجعلك فلوسك كاملة (${b.totalPiasters / 100} ج.م).`,
+        id,
+      );
+      await notify(
+        b.mentorId,
+        'booking.mentor_absent',
+        'فاتتك جلسة',
+        `ما دخلتش جلسة ${when(b.startsAt)} مع ${b.student.user.fullName ?? 'الطالب'}، فاتلغت ورجعنا للطالب فلوسه.`,
+        id,
+      );
+      return true;
     },
 
     async list(userId: string, role: 'student' | 'mentor', scope: 'upcoming' | 'past') {

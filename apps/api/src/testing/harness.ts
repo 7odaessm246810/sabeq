@@ -17,6 +17,7 @@ import type { SmsSender } from '../modules/auth/sms.js';
 import { createBookingsModule } from '../modules/bookings/index.js';
 import { createCatalogModule } from '../modules/catalog/index.js';
 import { createPaymentsModule } from '../modules/payments/index.js';
+import { createSessionsModule } from '../modules/sessions/index.js';
 import { createMediaModule } from '../modules/media/index.js';
 import { createSchedulingModule } from '../modules/scheduling/index.js';
 import { createSearchModule } from '../modules/search/index.js';
@@ -72,6 +73,13 @@ export function createHarness() {
     config,
     logger,
   });
+  const sessions = createSessionsModule({
+    db,
+    auth,
+    bookings: bookings.bookings,
+    config,
+    logger,
+  });
   const search = createSearchModule({ catalog: catalog.catalog, mentors: mentors.mentors, redis });
   const mentorApplication = createMentorApplicationModule({ db, store, crypto, auth });
   const verification = createVerificationModule({ db, store, crypto, auth });
@@ -88,6 +96,7 @@ export function createHarness() {
       search.mount(v1);
       bookings.mount(v1);
       payments.mount(v1);
+      sessions.mount(v1);
       mentorApplication.mount(v1);
       verification.mount(v1);
     },
@@ -122,6 +131,8 @@ export function createHarness() {
     searchService: search.search,
     /** Bookings service (the sweeper is tested directly). */
     bookingsService: bookings.bookings,
+    /** Sessions service (the mentor no-show sweep is tested directly). */
+    sessionsService: sessions.sessions,
     crypto,
     newPhone,
     /** A website account (new number unless one is given). */
