@@ -36,6 +36,8 @@ export interface Booking {
     /** Kiosk payments: the code the student pays with at an Aman / Masary outlet. */
     kioskReference: string | null;
   } | null;
+  /** The session room (Phase 17): open from `opensAt` to `closesAt`, and who has come in. */
+  session: { opensAt: string; closesAt: string; mentorJoined: boolean; studentJoined: boolean };
   /** Only when the viewer is the mentor. */
   student?: { name: string };
   /** Only when the viewer is the mentor: session price minus the commission. */
@@ -67,6 +69,15 @@ export const startPayment = (id: string, method: PayMethod) =>
 /** Methods the payment account takes right now. */
 export const paymentMethods = () =>
   api<{ methods: PayMethod[]; mode: 'paymob' | 'fake' }>('/payments/methods');
+
+/** Into the session room: the video address (null for the local test room). */
+export const joinSession = (id: string) =>
+  api<{ provider: 'daily' | 'fake'; url: string | null; closesAt: string }>(
+    `/bookings/${id}/join`,
+    {
+      method: 'POST',
+    },
+  );
 
 export const cancelBooking = (id: string, reason?: string) =>
   api<One>(`/bookings/${id}/cancel`, { method: 'POST', body: reason ? { reason } : {} }).then(

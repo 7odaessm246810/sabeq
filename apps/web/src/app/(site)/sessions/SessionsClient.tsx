@@ -55,7 +55,8 @@ const errorText = (err: unknown) =>
 
 /**
  * «جلساتي» (Phase 15): the signed-in student's bookings, or the mentor's sessions, from the API.
- * Joining the call arrives with Phase 17 and ratings with Phase 18.
+ * «ادخل الجلسة» opens the session room from 10 minutes before the start (Phase 17); ratings
+ * arrive with Phase 18.
  */
 export function SessionsClient() {
   const toast = useToast();
@@ -88,6 +89,11 @@ export function SessionsClient() {
       live = false;
     };
   }, [canList, tab, reloads]);
+  // Keep «now» moving while the page is open, so «ادخل الجلسة» unlocks on time.
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 30_000);
+    return () => clearInterval(t);
+  }, []);
   const switchTab = (t: Tab) => {
     setList(null);
     setFailed(false);
@@ -213,6 +219,9 @@ export function SessionsClient() {
                     {role === 'mentor' && b.note ? (
                       <span className="sb-caption">سؤاله: {b.note}</span>
                     ) : null}
+                    {(b.status === 'cancelled' || b.status === 'refunded') && b.cancelReason ? (
+                      <span className="sb-caption">{b.cancelReason}</span>
+                    ) : null}
                   </div>
                   <div className="when">
                     <b>{formatCairoDay(start)}</b>
@@ -231,7 +240,15 @@ export function SessionsClient() {
                   </div>
                   <StatusBadge b={b} now={now} />
                   <div className="acts">
-                    {live ? (
+                    {live && now >= Date.parse(b.session.opensAt) ? (
+                      <Link
+                        className="sb-btn sb-btn--primary sb-btn--sm"
+                        href={`/sessions/${b.id}`}
+                      >
+                        <Icon name="video" />
+                        ادخل الجلسة
+                      </Link>
+                    ) : live ? (
                       <button
                         type="button"
                         className="sb-btn sb-btn--primary sb-btn--sm"
@@ -239,7 +256,7 @@ export function SessionsClient() {
                           toast({
                             kind: 'info',
                             title: 'الجلسة لسه ما بدأتش',
-                            description: 'اللينك هيشتغل قبل الميعاد بـ 10 دقايق.',
+                            description: `بتفتح الساعة ${formatCairoTime(new Date(b.session.opensAt))}، قبل الميعاد بـ 10 دقايق.`,
                           })
                         }
                       >
@@ -261,7 +278,10 @@ export function SessionsClient() {
                         إلغاء
                       </button>
                     ) : null}
-                    {role === 'mentor' && b.status === 'confirmed' && ended ? (
+                    {role === 'mentor' &&
+                    b.status === 'confirmed' &&
+                    ended &&
+                    b.session.mentorJoined ? (
                       <>
                         <button
                           type="button"
@@ -274,16 +294,18 @@ export function SessionsClient() {
                           <Icon name="check" />
                           الجلسة خلصت
                         </button>
-                        <button
-                          type="button"
-                          className="sb-btn sb-btn--ghost sb-btn--sm"
-                          disabled={busy}
-                          onClick={() =>
-                            void act(() => markNoShow(b.id), 'اتسجّل إن الطالب ما حضرش')
-                          }
-                        >
-                          الطالب ما حضرش
-                        </button>
+                        {b.session.studentJoined ? null : (
+                          <button
+                            type="button"
+                            className="sb-btn sb-btn--ghost sb-btn--sm"
+                            disabled={busy}
+                            onClick={() =>
+                              void act(() => markNoShow(b.id), 'اتسجّل إن الطالب ما حضرش')
+                            }
+                          >
+                            الطالب ما حضرش
+                          </button>
+                        )}
                       </>
                     ) : null}
                     {role === 'student' && b.status === 'completed' ? (

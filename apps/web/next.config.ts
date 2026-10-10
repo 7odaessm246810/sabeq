@@ -8,7 +8,12 @@ const securityHeaders = [
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   { key: 'X-Frame-Options', value: 'DENY' },
-  { key: 'Permissions-Policy', value: 'camera=(self), microphone=(self), geolocation=()' },
+  // The session room embeds a Daily call (Phase 17): it may use the camera, mic and screen share.
+  {
+    key: 'Permissions-Policy',
+    value:
+      'camera=(self "https://*.daily.co"), microphone=(self "https://*.daily.co"), display-capture=(self "https://*.daily.co"), geolocation=()',
+  },
 ];
 
 const config: NextConfig = {
