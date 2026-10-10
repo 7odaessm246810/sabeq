@@ -1440,3 +1440,21 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ===== home search: clear recent, «all results» (Phase 13 — design-system pieces) ===== */
+.sb-suggest-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sg-clear {
+  font-size: 12px;
+  padding: 0;
+  height: auto;
+}
+.sg-all {
+  width: 100%;
+  justify-content: center;
+  font-size: 14px;
+  margin-top: 4px;
+}

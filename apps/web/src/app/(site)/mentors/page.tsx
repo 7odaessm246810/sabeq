@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { connection } from 'next/server';
-import { fieldsOf, listMentors, toMentorView } from '@/lib/mentors';
+import { filtersFromParams, searchMentorsServer } from '@/lib/mentors';
 import { MentorsClient } from './MentorsClient';
 
 export const metadata: Metadata = {
@@ -9,8 +9,9 @@ export const metadata: Metadata = {
   alternates: { canonical: '/mentors' },
 };
 
-export default async function MentorsPage() {
+export default async function MentorsPage({ searchParams }: PageProps<'/mentors'>) {
   await connection();
-  const { results } = await listMentors({ pageSize: 24 });
-  return <MentorsClient mentors={results.map(toMentorView)} fields={fieldsOf(results)} />;
+  const filters = filtersFromParams(await searchParams);
+  const initial = await searchMentorsServer(filters, 12);
+  return <MentorsClient initial={initial} initialFilters={filters} />;
 }

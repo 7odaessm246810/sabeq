@@ -55,6 +55,89 @@ export interface MentorList {
   page: number;
   pageSize: number;
   results: MentorCardData[];
+  facets?: {
+    fields: { slug: string; name: string; count: number }[];
+    universities: { slug: string; name: string; count: number }[];
+    price: { min: number; max: number } | null;
+  };
+}
+
+/** /mentors filters (Phase 13) — the same names in the page URL and the API query. */
+export interface MentorFilters {
+  q?: string | undefined;
+  field?: string | undefined;
+  universities?: string[] | undefined;
+  minRating?: number | undefined;
+  maxPrice?: number | undefined;
+  available?: boolean | undefined;
+  sort?: 'recommended' | 'rating' | 'price_asc' | 'price_desc' | 'sessions' | undefined;
+}
+
+export function mentorQuery(f: MentorFilters, page = 1, pageSize = 12): string {
+  const qs = new URLSearchParams();
+  if (f.q?.trim()) qs.set('q', f.q.trim());
+  if (f.field) qs.set('field', f.field);
+  if (f.universities?.length) qs.set('university', f.universities.join(','));
+  if (f.minRating) qs.set('minRating', String(f.minRating));
+  if (f.maxPrice) qs.set('maxPrice', String(f.maxPrice));
+  if (f.available) qs.set('available', '1');
+  if (f.sort && f.sort !== 'recommended') qs.set('sort', f.sort);
+  if (page > 1) qs.set('page', String(page));
+  if (pageSize !== 12) qs.set('pageSize', String(pageSize));
+  return qs.toString();
+}
+
+/** Browser side, through the same-origin proxy. */
+export async function searchMentors(
+  f: MentorFilters,
+  page: number,
+  pageSize: number,
+  signal?: AbortSignal,
+): Promise<MentorList> {
+  const res = await fetch(
+    `/api/v1/mentors?${mentorQuery(f, page, pageSize)}`,
+    signal ? { signal } : {},
+  );
+  if (!res.ok) throw new Error(`mentors → ${res.status}`);
+  return ((await res.json()) as { data: MentorList }).data;
+}
+
+/** Server side: the first page for /mentors (search engines and shared links see real results). */
+export async function searchMentorsServer(f: MentorFilters, pageSize: number): Promise<MentorList> {
+  return (
+    (await get<MentorList>(`/mentors?${mentorQuery(f, 1, pageSize)}`)) ?? {
+      total: 0,
+      page: 1,
+      pageSize,
+      results: [],
+    }
+  );
+}
+
+/** Filters from a page URL; anything the API would refuse is dropped. */
+export function filtersFromParams(
+  sp: Record<string, string | string[] | undefined>,
+): MentorFilters {
+  const one = (k: string) => (typeof sp[k] === 'string' ? sp[k] : undefined);
+  const f: MentorFilters = {};
+  const q = one('q')?.slice(0, 100);
+  if (q) f.q = q;
+  const field = one('field');
+  if (field && /^[a-z0-9-]{1,40}$/.test(field)) f.field = field;
+  const unis = one('university')
+    ?.split(',')
+    .filter((u) => /^[a-z0-9-]{1,60}$/.test(u))
+    .slice(0, 20);
+  if (unis?.length) f.universities = unis;
+  const minRating = Number(one('minRating'));
+  if (minRating > 0 && minRating <= 5) f.minRating = minRating;
+  const maxPrice = Number(one('maxPrice'));
+  if (Number.isInteger(maxPrice) && maxPrice > 0 && maxPrice <= 10_000) f.maxPrice = maxPrice;
+  if (one('available') === '1') f.available = true;
+  const sort = one('sort');
+  if (sort === 'rating' || sort === 'price_asc' || sort === 'price_desc' || sort === 'sessions')
+    f.sort = sort;
+  return f;
 }
 
 /** API card → the design's `Mentor` shape (cards, filters). */
@@ -79,19 +162,6 @@ export function toMentorView(m: MentorCardData): Mentor {
     topics: m.topics,
     photo: m.photo,
   };
-}
-
-/** A field (faculty kind) mentors studied, for the «الكلية» filter chips. */
-export interface FieldOption {
-  id: string;
-  name: string;
-}
-
-/** Fields the loaded mentors studied. */
-export function fieldsOf(cards: readonly MentorCardData[]): FieldOption[] {
-  return [...new Map(cards.map((c) => [c.field.slug, c.field.name])).entries()].map(
-    ([id, name]) => ({ id, name }),
-  );
 }
 
 async function get<T>(path: string): Promise<T | null> {
