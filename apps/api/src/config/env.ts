@@ -30,6 +30,14 @@ const schema = z
     CORS_ORIGINS: csv.default(['http://localhost:3000', 'http://localhost:3001']),
     /** Number of reverse proxies in front of the API; needed for correct client IPs (rate limits). */
     API_TRUST_PROXY: z.coerce.number().int().min(0).max(10).default(0),
+    /**
+     * Shared with the website and admin apps: their proxy sends the visitor's IP in a header together
+     * with this secret, and only then does the API believe it (Phase 21). Required in production.
+     */
+    API_PROXY_SECRET: z.preprocess(
+      unsetIfEmpty,
+      z.string().min(32, 'use at least 32 random characters').optional(),
+    ),
     API_RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
     /** Requests per client IP per window on /api/v1. */
     API_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(300),
@@ -164,6 +172,12 @@ const schema = z
         path: ['PAYMOB_MODE'],
         message: 'production takes real payments: set PAYMOB_MODE=paymob',
       });
+    if (env.APP_ENV === 'production' && !env.API_PROXY_SECRET)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['API_PROXY_SECRET'],
+        message: 'production needs the proxy secret shared with the web and admin apps',
+      });
     if (env.APP_ENV === 'production') {
       for (const origin of env.CORS_ORIGINS) {
         if (!origin.startsWith('https://')) {
@@ -198,6 +212,8 @@ export interface Config {
   logLevel: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | 'silent';
   corsOrigins: readonly string[];
   trustProxy: number;
+  /** Unset locally: the API then uses the connection's address. */
+  proxySecret: string | undefined;
   rateLimit: { windowMs: number; max: number };
   bodyLimit: string;
   databaseUrl: string;
@@ -260,6 +276,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     logLevel: e.LOG_LEVEL,
     corsOrigins: e.CORS_ORIGINS,
     trustProxy: e.API_TRUST_PROXY,
+    proxySecret: e.API_PROXY_SECRET,
     rateLimit: { windowMs: e.API_RATE_LIMIT_WINDOW_MS, max: e.API_RATE_LIMIT_MAX },
     bodyLimit: e.API_BODY_LIMIT,
     databaseUrl: e.DATABASE_URL,

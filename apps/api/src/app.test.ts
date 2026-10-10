@@ -187,3 +187,79 @@ describe('rate limit', () => {
     await request(app).get('/api/v1').expect(200);
   });
 });
+
+describe('client IP (Phase 21)', () => {
+  const SECRET = 'p'.repeat(40);
+  const ipApp = (env: NodeJS.ProcessEnv = {}) =>
+    makeApp(
+      {
+        mountV1(v1: Router) {
+          v1.get('/test/ip', (req, res) => sendData(res, { ip: req.ip }));
+        },
+      },
+      env,
+    );
+
+  it('believes the proxy header only with the shared secret', async () => {
+    const app = ipApp({ API_PROXY_SECRET: SECRET });
+    const trusted = await request(app)
+      .get('/api/v1/test/ip')
+      .set('x-sabeq-client-ip', '197.45.10.20')
+      .set('x-sabeq-proxy-secret', SECRET);
+    expect(trusted.body.data.ip).toBe('197.45.10.20');
+
+    for (const headers of [
+      { 'x-sabeq-client-ip': '197.45.10.20' },
+      { 'x-sabeq-client-ip': '197.45.10.20', 'x-sabeq-proxy-secret': 'p'.repeat(39) + 'q' },
+      { 'x-sabeq-client-ip': 'not-an-ip', 'x-sabeq-proxy-secret': SECRET },
+      { 'x-forwarded-for': '197.45.10.20' },
+    ]) {
+      const res = await request(app).get('/api/v1/test/ip').set(headers);
+      expect(res.body.data.ip).not.toBe('197.45.10.20');
+      expect(res.body.data.ip).toMatch(/127\.0\.0\.1|::1/);
+    }
+  });
+
+  it('without a configured secret, nobody can set the IP', async () => {
+    const res = await request(ipApp())
+      .get('/api/v1/test/ip')
+      .set('x-sabeq-client-ip', '197.45.10.20')
+      .set('x-sabeq-proxy-secret', SECRET);
+    expect(res.body.data.ip).not.toBe('197.45.10.20');
+  });
+
+  it('a spoofed IP cannot dodge the rate limit', async () => {
+    const app = makeApp({}, { API_RATE_LIMIT_MAX: '2', API_PROXY_SECRET: SECRET });
+    for (let i = 0; i < 2; i++)
+      await request(app).get('/api/v1').set('x-sabeq-client-ip', `10.0.0.${i}`).expect(200);
+    await request(app).get('/api/v1').set('x-sabeq-client-ip', '10.0.0.9').expect(429);
+  });
+
+  it('production refuses to start without the proxy secret', () => {
+    expect(() =>
+      loadConfig({
+        ...TEST_ENV,
+        DATABASE_URL: 'postgresql://u:p@localhost:5432/db',
+        REDIS_URL: 'redis://localhost:6379',
+        APP_ENV: 'production',
+      }),
+    ).toThrow(/API_PROXY_SECRET/);
+  });
+});
+
+describe('sensitive actions (Phase 21)', () => {
+  it('have their own, tighter hourly budget per IP', async () => {
+    const app = makeApp({
+      mountV1(v1: Router) {
+        v1.put('/me/email', (_req, res) => sendData(res, { ok: true }));
+        v1.get('/me/email', (_req, res) => sendData(res, { ok: true }));
+      },
+    });
+    for (let i = 0; i < 10; i++) await request(app).put('/api/v1/me/email').send({}).expect(200);
+    const blocked = await request(app).put('/api/v1/me/email').send({});
+    expect(blocked.status).toBe(429);
+    expect(blocked.headers['retry-after']).toBeDefined();
+    // Reading is not limited by it.
+    await request(app).get('/api/v1/me/email').expect(200);
+  });
+});

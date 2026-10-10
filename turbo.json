@@ -37,6 +37,7 @@
         "EMAIL_*",
         "VIDEO_*",
         "DAILY_*",
+        "PROXY_*",
         "WATCHPACK_*"
       ]
     },

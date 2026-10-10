@@ -112,6 +112,7 @@ function main() {
     config,
     logger,
     readinessChecks: [dbReadiness(db, logger), redisReadiness(redis), store.readiness()],
+    redis,
     mountV1: (v1) => {
       auth.mount(v1);
       account.mount(v1);
