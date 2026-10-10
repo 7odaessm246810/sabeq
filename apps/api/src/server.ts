@@ -17,6 +17,8 @@ import { createPaymentsModule } from './modules/payments/index.js';
 import { createSessionsModule } from './modules/sessions/index.js';
 import { createReviewsModule } from './modules/reviews/index.js';
 import { createNotificationsModule } from './modules/notifications/index.js';
+import { createPayoutsModule } from './modules/payouts/index.js';
+import { createAdminModule } from './modules/admin/index.js';
 import { createMediaModule } from './modules/media/index.js';
 import { createSchedulingModule } from './modules/scheduling/index.js';
 import { createSearchModule } from './modules/search/index.js';
@@ -95,6 +97,13 @@ function main() {
     config,
     logger,
   });
+  const payouts = createPayoutsModule({ db, crypto, auth });
+  const admin = createAdminModule({
+    db,
+    auth,
+    bookings: bookings.bookings,
+    onMentorsChanged: () => mentors.mentors.invalidate(),
+  });
   const search = createSearchModule({ catalog: catalog.catalog, mentors: mentors.mentors, redis });
   const mentorApplication = createMentorApplicationModule({ db, store, crypto, auth });
   const verification = createVerificationModule({ db, store, crypto, auth });
@@ -118,6 +127,8 @@ function main() {
       notifications.mount(v1);
       mentorApplication.mount(v1);
       verification.mount(v1);
+      payouts.mount(v1);
+      admin.mount(v1);
     },
   });
   // Every minute: free unpaid holds, complete sessions nobody marked (Phase 15), retry refunds (16),

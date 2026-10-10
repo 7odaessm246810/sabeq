@@ -57,6 +57,7 @@ const MESSAGES = {
   mentorNotJoined: 'لازم تكون دخلت الجلسة الأول.',
   studentJoined: 'الطالب دخل الجلسة، فمينفعش تتعلّم إنه ما حضرش.',
   mentorAbsent: 'المرشد ما دخلش الجلسة',
+  adminCantRefund: 'الحجز ده مش مدفوع أو اترجع بالفعل.',
 };
 
 const MAX_PENDING_PER_STUDENT = 3;
@@ -473,6 +474,66 @@ export function createBookingsService(deps: {
      * The mentor never came (sessions sweeper, NO_SHOW_GRACE_MINUTES after the start): cancelled as
      * if the mentor had cancelled — the student gets everything back. Returns whether it applied.
      */
+    /**
+     * Support settles a dispute (Phase 20): the student gets everything back — before, during or
+     * after the session. A completed session's earning is reversed on the mentor's ledger.
+     * The caller writes the audit entry.
+     */
+    async adminRefund(adminId: string, id: string, reason: string) {
+      const b = await load(id);
+      if (!['confirmed', 'completed', 'no_show'].includes(b.status))
+        throw new AppError('CONFLICT', MESSAGES.adminCantRefund);
+      const before = b.status;
+      const moved = await db.$transaction(async (tx) => {
+        const res = await tx.booking.updateMany({
+          where: { id, status: b.status },
+          data: {
+            status: 'cancelled',
+            cancelledAt: now(),
+            cancelledById: adminId,
+            cancelReason: reason,
+            refundShareBps: 10_000,
+            holdExpiresAt: null,
+          },
+        });
+        if (!res.count) return false;
+        if (before === 'completed' || before === 'no_show') {
+          const earned = await tx.ledgerEntry.aggregate({
+            where: { bookingId: id, type: { in: ['mentor_earning', 'refund_reversal'] } },
+            _sum: { amountPiasters: true },
+          });
+          const net = earned._sum.amountPiasters ?? 0;
+          if (net > 0)
+            await tx.ledgerEntry.create({
+              data: {
+                mentorId: b.mentorId,
+                bookingId: id,
+                type: 'refund_reversal',
+                amountPiasters: -net,
+              },
+            });
+          if (before === 'completed')
+            await tx.mentor.update({
+              where: { userId: b.mentorId },
+              data: { sessionsCompleted: { decrement: 1 } },
+            });
+        }
+        return true;
+      });
+      if (!moved) throw new AppError('CONFLICT', MESSAGES.adminCantRefund);
+      if (deps.onRefundDue) await deps.onRefundDue(id).catch(() => undefined);
+      const text = `فريق سابق لغى جلسة ${when(b.startsAt)}`;
+      await notify(
+        b.studentId,
+        'booking.cancelled',
+        'جلسة اتلغت',
+        `${text}، وهترجعلك فلوسك كاملة.`,
+        id,
+      );
+      await notify(b.mentorId, 'booking.cancelled', 'جلسة اتلغت', `${text}. السبب: ${reason}`, id);
+      return { before, booking: view(await load(id), 'student') };
+    },
+
     async mentorNoShow(id: string) {
       const b = await load(id);
       if (b.status !== 'confirmed' || b.meeting?.mentorJoinedAt) return false;

@@ -239,6 +239,22 @@ Module `src/modules/notifications`. Every module writes `notifications` rows (`t
 
 The sweeper (every minute): reminders `REMINDER_MINUTES_BEFORE` (60) before confirmed sessions, once (`bookings.reminder_sent_at`), to both sides (`session.reminder`); then one email per new notification for confirmed addresses (`notification_deliveries`, unique per channel), claimed before sending so instances never double-send, retried up to 5 times. Email: `EMAIL_PROVIDER=resend` (Resend HTTP API, `EMAIL_FROM` on a verified domain) — required in production.
 
+## Admin dashboard (Phase 20)
+
+Modules `src/modules/admin` and `src/modules/payouts`. Admin-app sessions only; `super_admin` passes every role check. Every change writes `audit_logs` in the same transaction.
+
+| Endpoint                                                                                | Who              | Result                                                                                                                                                       |
+| --------------------------------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `GET /admin/overview`                                                                   | any admin        | people, sessions, money this month (Cairo): paid, refunded, kept (commission + fee of completed sessions), owed to mentors, pending refunds                  |
+| `GET /admin/bookings?status&q&page` · `GET /admin/bookings/:id`                         | support, finance | list (name / phone / id); detail with payments, refunds, attendance, review, ledger                                                                          |
+| `POST /admin/bookings/:id/refund { reason }`                                            | support          | full refund of a `confirmed` / `completed` / `no_show` booking; a completed session's earning is reversed (`refund_reversal`); both sides notified           |
+| `GET /admin/reviews?status&page` · `POST /admin/reviews/:id/status { status, note }`    | support          | hide / restore; the mentor's rating is recomputed                                                                                                            |
+| `GET /admin/users?q&role&status&page` · `POST /admin/users/:id/status { status, note }` | support          | suspend (signed out everywhere at once) / reactivate; admins are refused                                                                                     |
+| `GET /admin/payouts/balances` · `GET /admin/payouts?page`                               | finance          | who is owed what (ledger sum), masked account; payouts made                                                                                                  |
+| `GET /admin/payouts/accounts/:mentorId`                                                 | finance          | the full payout details, to make the transfer (audited)                                                                                                      |
+| `POST /admin/payouts { mentorId, amountEgp, reference }`                                | finance          | records a transfer made outside Sabeq: `paid` payout + negative `payout` ledger entry, under a row lock; never more than the balance; the mentor is notified |
+| `GET` · `PUT /me/mentor/payout-account` · `GET /me/mentor/earnings`                     | the mentor       | InstaPay / Vodafone Cash / bank account, sealed with the document keys (AES-256-GCM, bound to the mentor), shown back masked; balance, earned, paid, payouts |
+
 ## Search box (Phase 13)
 
 | Endpoint                 | Result                                                                                                                                                                                                                                                                                      |
