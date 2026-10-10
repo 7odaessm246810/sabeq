@@ -52,6 +52,13 @@ export const ACTION_LABELS: Record<string, string> = {
   'mentor_document.view': 'اتفتح مستند',
   'auth.login': 'دخول أدمن',
   'admin.create': 'اتعمل حساب أدمن',
+  'booking.admin_refund': 'استرداد كامل من الدعم',
+  'review.hide': 'اتخفى تقييم',
+  'review.restore': 'رجع تقييم',
+  'user.suspend': 'اتوقف حساب',
+  'user.reactivate': 'رجع حساب',
+  'payout_account.view': 'اتفتحت بيانات تحويل مرشد',
+  'payout.record': 'اتسجل تحويل لمرشد',
 };
 
 export interface QueueItem {

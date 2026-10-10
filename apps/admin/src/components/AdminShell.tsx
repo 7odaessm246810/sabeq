@@ -22,15 +22,18 @@ export function AdminShell({
 
   if (!admin) return <main className="adm-loading" aria-busy="true" />;
 
+  const is = (...roles: AdminUser['adminRole'][]) =>
+    admin.adminRole === 'super_admin' || roles.includes(admin.adminRole);
   const nav = [
+    { href: '/overview', label: 'نظرة عامة', show: true },
     {
       href: '/',
-      label: 'طلبات المرشدين',
+      label: 'الطلبات',
       show: admin.adminRole === 'super_admin' || admin.adminRole === 'verifier',
     },
     {
       href: '/universities',
-      label: 'الجامعات والكليات',
+      label: 'الكليات',
       show: admin.adminRole === 'super_admin' || admin.adminRole === 'support',
     },
     {
@@ -38,7 +41,11 @@ export function AdminShell({
       label: 'أنواع الكليات',
       show: admin.adminRole === 'super_admin' || admin.adminRole === 'support',
     },
-    { href: '/audit', label: 'سجل العمليات', show: admin.adminRole === 'super_admin' },
+    { href: '/bookings', label: 'الحجوزات', show: is('support', 'finance') },
+    { href: '/reviews', label: 'التقييمات', show: is('support') },
+    { href: '/users', label: 'الحسابات', show: is('support') },
+    { href: '/payouts', label: 'التحويلات', show: is('finance') },
+    { href: '/audit', label: 'السجل', show: admin.adminRole === 'super_admin' },
   ].filter((n) => n.show);
 
   return (

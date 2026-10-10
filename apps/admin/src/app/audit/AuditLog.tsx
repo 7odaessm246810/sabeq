@@ -18,7 +18,17 @@ const ENTITY_FILTERS = [
   ['mentor_application', 'طلبات المرشدين'],
   ['mentor_document', 'فتح المستندات'],
   ['user', 'الحسابات والدخول'],
+  ['booking', 'الحجوزات'],
+  ['review', 'التقييمات'],
+  ['mentor', 'تحويلات المرشدين'],
 ] as const;
+
+const ENTITY_LABELS: Record<string, string> = {
+  user: 'حساب',
+  review: 'تقييم',
+  mentor: 'مرشد',
+  mentor_document: 'مستند',
+};
 
 /** Append-only audit trail (the database refuses edits and deletes). Super admins only. */
 export function AuditLog() {
@@ -117,8 +127,10 @@ function AuditBody() {
                   <td>
                     {e.entityType === 'mentor_application' ? (
                       <Link href={`/applications/${e.entityId}`}>طلب مرشد</Link>
+                    ) : e.entityType === 'booking' ? (
+                      <Link href={`/bookings/${e.entityId}`}>حجز</Link>
                     ) : (
-                      e.entityType
+                      (ENTITY_LABELS[e.entityType] ?? e.entityType)
                     )}
                     <span className="sb-caption sb-num" dir="ltr">
                       {e.entityId.slice(0, 8)}

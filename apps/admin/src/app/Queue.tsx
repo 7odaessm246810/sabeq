@@ -34,12 +34,15 @@ export function Queue() {
           <QueueBody />
         ) : (
           <Banner kind="info" title="مراجعة الطلبات للمراجعين بس">
+            ابدأ من <Link href="/overview">النظرة العامة</Link>
             {admin.adminRole === 'support' ? (
               <>
-                تقدر تدير <Link href="/catalog">الكليات والجامعات</Link>.
+                ، أو <Link href="/bookings">الحجوزات</Link> و<Link href="/catalog">الكليات</Link>.
               </>
             ) : (
-              'الأقسام الخاصة بدورك هتظهر هنا في المراحل الجاية.'
+              <>
+                ، أو <Link href="/payouts">فلوس المرشدين</Link>.
+              </>
             )}
           </Banner>
         )

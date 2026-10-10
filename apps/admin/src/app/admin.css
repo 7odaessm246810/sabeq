@@ -69,6 +69,7 @@
   color: var(--ink-2);
   text-decoration: none;
   font-weight: 500;
+  white-space: nowrap;
 }
 .adm-nav a:hover {
   background: var(--bg);
@@ -226,6 +227,8 @@
 /* Phone numbers read left-to-right but sit on the Arabic side of the cell. */
 .adm-ltr {
   text-align: right;
+  direction: ltr;
+  unicode-bidi: isolate;
 }
 .adm-modal-body {
   display: flex;
@@ -362,4 +365,27 @@
   flex-wrap: wrap;
   padding-top: 12px;
   border-top: 1px solid var(--border);
+}
+
+/* dashboard numbers (Phase 20) */
+.adm-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.adm-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px;
+  color: inherit;
+  text-decoration: none;
+}
+.adm-stat b {
+  font-size: 26px;
+  line-height: 1.2;
+}
+a.adm-stat:hover {
+  border-color: var(--primary);
 }
