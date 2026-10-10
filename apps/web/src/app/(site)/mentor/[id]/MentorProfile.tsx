@@ -2,24 +2,68 @@
 
 import { Avatar, Icon, Modal, Stars, VerifiedBadge, useToast } from '@sabeq/ui';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { Crumb } from '@/components/Crumb';
+import { ApiError } from '@/lib/api';
+import { useAuth } from '@/lib/auth';
 import { useDemo } from '@/lib/demo-store';
-import { REVIEWS, type Mentor } from '@/lib/mock/data';
+import { listSaved, saveMentor, unsaveMentor, type MentorProfileData } from '@/lib/mentors';
 
-const QUICK_SLOTS = [
-  ['الخميس 8 أكتوبر', '7:00 م'],
-  ['الخميس 8 أكتوبر', '8:00 م'],
-  ['السبت 10 أكتوبر', '5:00 م'],
-] as const;
+const monthYear = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { month: 'long', year: 'numeric' });
 
-export function MentorProfile({ mentor: m }: { mentor: Mentor }) {
+/** «احفظ»: students only; signed-out visitors log in first and come back here. */
+function useSaved(slug: string) {
+  const { status, user } = useAuth();
+  const { setAfter } = useDemo();
+  const router = useRouter();
   const toast = useToast();
-  const demo = useDemo();
-  const [slot, setSlot] = useState(0);
+  const [saved, setSaved] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const isStudent = status === 'signed-in' && user?.role === 'student';
+
+  useEffect(() => {
+    if (!isStudent) return;
+    let live = true;
+    listSaved()
+      .then((list) => live && setSaved(list.some((m) => m.slug === slug)))
+      .catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, [isStudent, slug]);
+
+  async function toggle() {
+    if (status !== 'signed-in') {
+      setAfter(`/mentor/${slug}`);
+      router.push('/login');
+      return;
+    }
+    if (!isStudent) {
+      toast({ kind: 'info', title: 'حفظ المرشدين للطلبة بس.' });
+      return;
+    }
+    setBusy(true);
+    try {
+      if (saved) await unsaveMentor(slug);
+      else await saveMentor(slug);
+      setSaved(!saved);
+      toast({ kind: 'info', title: saved ? 'اتشال من المحفوظات' : 'تم حفظ المرشد' });
+    } catch (err) {
+      toast({ kind: 'error', title: err instanceof ApiError ? err.message : 'جرّب تاني.' });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return { saved, busy, toggle };
+}
+
+export function MentorProfile({ mentor: m }: { mentor: MentorProfileData }) {
   const [why, setWhy] = useState(false);
-  const saved = Boolean(demo.saved[m.id]);
-  const first = m.name.split(' ')[0];
+  const save = useSaved(m.slug);
+  const first = m.name.split(' ')[0] ?? m.name;
+  const base = m.offerings.find((o) => o.kind === 'consultation');
 
   return (
     <section className="sb-container page-body" style={{ paddingTop: 28 }}>
@@ -33,7 +77,7 @@ export function MentorProfile({ mentor: m }: { mentor: Mentor }) {
       <div className="prof-lay">
         <div className="col-main">
           <div className="sb-card prof-top">
-            <Avatar name={m.name} size="xl" tone={m.tone} />
+            <Avatar name={m.name} size="xl" tone={m.tone} {...(m.photo ? { src: m.photo } : {})} />
             <div className="pt-id">
               <h1 className="sb-h2" style={{ fontSize: 28 }}>
                 {m.name}
@@ -42,34 +86,36 @@ export function MentorProfile({ mentor: m }: { mentor: Mentor }) {
                 <VerifiedBadge animate />
               </span>
               <span className="sb-small">
-                {m.major} · {m.uni}
+                {m.major} · {m.university.name}
               </span>
               <div className="sb-mentor-stats">
                 <span className="sb-rating">
                   <Icon name="star" />
-                  <span className="sb-num">{m.rating}</span>
+                  <span className="sb-num">{m.rating === null ? 'جديد' : m.rating.toFixed(1)}</span>
                 </span>
                 <span className="sep" />
                 <span>
                   <span className="sb-num">{m.sessions}</span> جلسة
                 </span>
-                <span className="sep" />
-                <span>
-                  <Icon name="pin" size={14} /> {m.city}
-                </span>
+                {m.city ? (
+                  <>
+                    <span className="sep" />
+                    <span>
+                      <Icon name="pin" size={14} /> {m.city}
+                    </span>
+                  </>
+                ) : null}
               </div>
             </div>
             <button
               type="button"
               className="sb-btn sb-btn--secondary sb-btn--sm save-btn"
-              aria-pressed={saved}
-              onClick={() => {
-                const now = !saved;
-                demo.toggleSaved(m.id);
-                toast({ kind: 'info', title: now ? 'تم حفظ المرشد' : 'اتشال من المحفوظات' });
-              }}
+              aria-pressed={save.saved}
+              aria-busy={save.busy}
+              disabled={save.busy}
+              onClick={() => void save.toggle()}
             >
-              {saved ? 'محفوظ' : 'احفظ'}
+              {save.saved ? 'محفوظ' : 'احفظ'}
             </button>
           </div>
 
@@ -78,14 +124,18 @@ export function MentorProfile({ mentor: m }: { mentor: Mentor }) {
             <div className="vpath">
               {(
                 [
-                  ['الكلية', m.faculty],
-                  ['الجامعة', m.uni],
-                  ['التخصص', m.major],
+                  ['الكلية', m.faculty.name],
+                  ['الجامعة', m.university.name],
+                  ['التخصص', m.department ?? m.major],
                   [
-                    'التخرج',
-                    <span key="y" className="sb-num">
-                      {m.year}
-                    </span>,
+                    m.kind === 'graduate' ? 'التخرج' : 'الصفة',
+                    m.kind === 'graduate' && m.graduationYear ? (
+                      <span key="y" className="sb-num">
+                        {m.graduationYear}
+                      </span>
+                    ) : (
+                      m.kindLabel
+                    ),
                   ],
                 ] as const
               ).map(([k, v]) => (
@@ -110,17 +160,25 @@ export function MentorProfile({ mentor: m }: { mentor: Mentor }) {
 
           <div className="sb-card block">
             <h2 className="bh">عن {first}</h2>
-            <p className="sb-lead" style={{ fontSize: 17 }}>
-              {m.bio}
-            </p>
-            <h3 className="bh2">بيتكلم عن</h3>
-            <div className="chips-row">
-              {m.topics.map((t) => (
-                <span key={t} className="sb-chip sb-chip--sm" style={{ cursor: 'default' }}>
-                  {t}
-                </span>
-              ))}
-            </div>
+            {m.bio ? (
+              <p className="sb-lead" style={{ fontSize: 17, whiteSpace: 'pre-line' }}>
+                {m.bio}
+              </p>
+            ) : (
+              <p className="sb-small">{first} لسه ما كتبش نبذة عن نفسه.</p>
+            )}
+            {m.topics.length ? (
+              <>
+                <h3 className="bh2">بيتكلم عن</h3>
+                <div className="chips-row">
+                  {m.topics.map((t) => (
+                    <span key={t} className="sb-chip sb-chip--sm" style={{ cursor: 'default' }}>
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </>
+            ) : null}
           </div>
 
           <div className="sb-card block">
@@ -128,102 +186,88 @@ export function MentorProfile({ mentor: m }: { mentor: Mentor }) {
               <h2 className="bh" style={{ margin: 0 }}>
                 التقييمات
               </h2>
-              <span className="sb-rating">
-                <Icon name="star" />
-                {m.rating} <span className="sb-caption">· {m.sessions - 3} تقييم</span>
-              </span>
+              {m.rating !== null ? (
+                <span className="sb-rating">
+                  <Icon name="star" />
+                  {m.rating.toFixed(1)} <span className="sb-caption">· {m.ratingCount} تقييم</span>
+                </span>
+              ) : null}
             </div>
-            <div className="rv-list">
-              {REVIEWS.slice(0, 3).map((r) => (
-                <div key={r.name} className="rv-item">
-                  <Avatar name={r.name} size="sm" tone={r.tone} />
-                  <div>
-                    <div
-                      style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}
-                    >
-                      <b style={{ fontSize: 14 }}>{r.name}</b>
-                      <Stars rating={r.rating} />
-                      <span className="sb-caption">{r.date}</span>
+            {m.reviews.length ? (
+              <div className="rv-list">
+                {m.reviews.map((r, i) => (
+                  <div key={r.id} className="rv-item">
+                    <Avatar name={r.name} size="sm" tone={((i % 3) + 1) as 1 | 2 | 3} />
+                    <div>
+                      <div
+                        style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}
+                      >
+                        <b style={{ fontSize: 14 }}>{r.name}</b>
+                        <Stars rating={r.rating} />
+                        <span className="sb-caption">{monthYear.format(new Date(r.date))}</span>
+                      </div>
+                      {r.topic ? <span className="sb-caption">جلسة عن: {r.topic}</span> : null}
+                      {r.text ? <p>{r.text}</p> : null}
                     </div>
-                    <span className="sb-caption">جلسة عن: {r.topic}</span>
-                    <p>{r.text}</p>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className="sb-small" style={{ marginTop: 12 }}>
+                لسه مفيش تقييمات. التقييمات بتيجي من طلبة حجزوا جلسات فعلًا مع {first}.
+              </p>
+            )}
           </div>
         </div>
 
         <aside className="prof-side">
           <div className="sb-card book-box">
-            <div className="sb-price" style={{ margin: 0 }}>
-              <b>
-                <span className="sb-num">{m.price}</span> ج.م
-              </b>
-              <span>جلسة 45 دقيقة · فيديو</span>
-            </div>
-            {m.available ? (
-              <>
-                <span className="sb-status sb-status--on">
-                  <span className="sb-dot" />
-                  {m.next}
+            {base ? (
+              <div className="sb-price" style={{ margin: 0 }}>
+                <b>
+                  <span className="sb-num">{base.priceEgp}</span> ج.م
+                </b>
+                <span>
+                  جلسة {base.durationMin} دقيقة · {base.medium === 'video' ? 'فيديو' : 'صوت'}
                 </span>
-                <b style={{ fontSize: 14 }}>مواعيد قريبة</b>
-                <div className="quick" role="radiogroup" aria-label="مواعيد قريبة">
-                  {QUICK_SLOTS.map(([day, time], i) => (
-                    <button
-                      key={`${day}-${time}`}
-                      type="button"
-                      className="sb-slot"
-                      aria-pressed={i === slot}
-                      onClick={() => setSlot(i)}
-                    >
-                      <span>{day.split(' ').slice(0, 2).join(' ')}</span> · {time}
-                    </button>
+              </div>
+            ) : null}
+            {m.offerings.length > 1 ? (
+              <ul className="prof-offers">
+                {m.offerings
+                  .filter((o) => o.kind !== 'consultation')
+                  .map((o) => (
+                    <li key={o.kind}>
+                      <span>
+                        {o.label} · {o.durationMin} دقيقة
+                      </span>
+                      <b>
+                        <span className="sb-num">{o.priceEgp}</span> ج.م
+                      </b>
+                    </li>
                   ))}
-                </div>
-                <Link
-                  className="sb-btn sb-btn--primary sb-btn--lg sb-btn--block"
-                  href={`/book/${m.id}`}
-                  onClick={() => {
-                    const picked = QUICK_SLOTS[slot];
-                    if (picked) demo.setPre({ mentorId: m.id, day: picked[0], time: picked[1] });
-                  }}
-                >
-                  احجز الموعد ده
-                </Link>
-                <Link className="sb-btn sb-btn--ghost sb-btn--block" href={`/book/${m.id}`}>
-                  كل المواعيد
-                </Link>
-              </>
-            ) : (
-              <>
-                <span className="sb-status sb-status--off">
-                  <span className="sb-dot" />
-                  لا توجد مواعيد هذا الأسبوع
-                </span>
-                <button
-                  type="button"
-                  className="sb-btn sb-btn--secondary sb-btn--block"
-                  onClick={() =>
-                    toast({
-                      kind: 'success',
-                      title: 'هنبلغك',
-                      description: `أول ما ${first} يفتح مواعيد.`,
-                    })
-                  }
-                >
-                  بلّغني لما يفتح مواعيد
-                </button>
-                <Link
-                  className="sb-btn sb-btn--link"
-                  href={`/mentors/${m.facId}`}
-                  style={{ alignSelf: 'center', fontSize: 14 }}
-                >
-                  مرشدين مشابهين
-                </Link>
-              </>
-            )}
+              </ul>
+            ) : null}
+            <span className="sb-status sb-status--off">
+              <span className="sb-dot" />
+              {m.acceptsBookings ? 'لا توجد مواعيد هذا الأسبوع' : `${first} مش بياخد حجوزات دلوقتي`}
+            </span>
+            <button
+              type="button"
+              className="sb-btn sb-btn--secondary sb-btn--block"
+              aria-pressed={save.saved}
+              disabled={save.busy}
+              onClick={() => void (save.saved ? undefined : save.toggle())}
+            >
+              {save.saved ? 'محفوظ — هتلاقيه في جلساتي' : 'احفظه وارجعله بعدين'}
+            </button>
+            <Link
+              className="sb-btn sb-btn--link"
+              href={`/mentors/${m.field.slug}`}
+              style={{ alignSelf: 'center', fontSize: 14 }}
+            >
+              مرشدين مشابهين
+            </Link>
             <div className="sb-secure">
               <Icon name="lock" />
               إلغاء مجاني قبل الجلسة بـ 24 ساعة.
@@ -243,9 +287,9 @@ export function MentorProfile({ mentor: m }: { mentor: Mentor }) {
           }
         >
           <ul style={{ margin: 0, paddingInlineStart: 18, lineHeight: 2 }}>
-            <li>مستند رسمي: شهادة تخرج أو إفادة قيد.</li>
+            <li>مستند رسمي: شهادة تخرج أو إفادة قيد أو ما يثبت التعيين.</li>
             <li>مطابقة الاسم مع بطاقة الرقم القومي.</li>
-            <li>مقابلة قصيرة مع فريق سابق.</li>
+            <li>فريق سابق بيراجع كل طلب بنفسه قبل ما الملف يظهر.</li>
           </ul>
         </Modal>
       ) : null}

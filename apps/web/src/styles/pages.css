@@ -1320,3 +1320,123 @@
     flex-wrap: wrap;
   }
 }
+
+/* ===== mentor profile: other session types (Phase 12 — design-system pieces) ===== */
+.prof-offers {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+.prof-offers li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--ink-2);
+}
+.col-mentors {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+@media (max-width: 640px) {
+  .col-mentors {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== «ملفي كمرشد» (Phase 12 — not in the handoff; account cards + design-system controls) ===== */
+.mp-photo {
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+.mp-photo-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.mp-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.mp-topics:empty {
+  display: none;
+}
+.mp-topics .sb-chip {
+  gap: 6px;
+}
+.mp-topic-add {
+  display: flex;
+  gap: 8px;
+}
+.mp-topic-add .sb-input {
+  flex: 1;
+}
+.mp-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.mp-prices {
+  list-style: none;
+  margin: -6px 0 0;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-sunken);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+.mp-prices li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.mp-check {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  cursor: pointer;
+}
+.mp-check input {
+  margin-top: 4px;
+  accent-color: var(--primary);
+  width: 18px;
+  height: 18px;
+}
+.mp-check > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.mp-verified {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 10px 20px;
+  margin: 0;
+}
+.mp-verified dt {
+  color: var(--muted);
+  font-size: 14px;
+}
+.mp-verified dd {
+  margin: 0;
+  font-weight: 600;
+}
+@media (max-width: 640px) {
+  .mp-photo {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .mp-two {
+    grid-template-columns: 1fr;
+  }
+}

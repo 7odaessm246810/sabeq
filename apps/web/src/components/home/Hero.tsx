@@ -4,6 +4,7 @@ import { Avatar, AvatarGroup, Icon, VerifiedBadge, cx } from '@sabeq/ui';
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { drawPath, hidePath, useMagnetic, useParallax } from '@/lib/motion';
+import { useHomeMentors } from './HomeMentors';
 
 const PATHS = [
   'M470 300 C400 300 390 120 290 120',
@@ -21,7 +22,6 @@ const CARDS = [
     outcome: '48 جلسة · ★ 5.0',
     tone: 2,
     top: 120,
-    mentorId: 2,
   },
   {
     name: 'أحمد محمد',
@@ -31,7 +31,6 @@ const CARDS = [
     outcome: '32 جلسة · ★ 4.9',
     tone: 1,
     top: 300,
-    mentorId: 1,
   },
   {
     name: 'نور إبراهيم',
@@ -40,7 +39,6 @@ const CARDS = [
     outcome: '26 جلسة · ★ 4.8',
     tone: 3,
     top: 480,
-    mentorId: 6,
   },
 ] as const;
 
@@ -48,6 +46,12 @@ const PROOF_AVATARS = ['أحمد محمد', 'سارة عبد', 'يوسف حسن'
 
 /** Hero: «you» → three faculties → the people who walked each path (Landing01Hero). */
 export function Hero() {
+  const { mentors } = useHomeMentors();
+  /** The sample cards link to a real profile when that mentor exists, otherwise to all mentors. */
+  const profileOf = (name: string) => {
+    const real = mentors.find((m) => m.name === name);
+    return real ? `/mentor/${real.id}` : '/mentors';
+  };
   const [active, setActive] = useState(1);
   const [go, setGo] = useState(false);
   /** Bumps to replay the one-time verified animation on the active card. */
@@ -259,7 +263,7 @@ export function Hero() {
                 <div className="outcome">
                   <span>{c.outcome}</span>
                   <Link
-                    href={`/mentor/${c.mentorId}`}
+                    href={profileOf(c.name)}
                     className="sb-btn sb-btn--link"
                     style={{ fontSize: 13 }}
                   >

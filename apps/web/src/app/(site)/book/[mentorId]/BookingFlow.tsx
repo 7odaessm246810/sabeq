@@ -154,7 +154,7 @@ export function BookingFlow({ mentor: m }: { mentor: Mentor }) {
       setFailed(false);
       demo.addSession({
         id: `s${Date.now()}`,
-        mentorId: m.id,
+        mentorId: Number(m.id),
         type: t[0],
         day: day ?? '',
         time: time ?? '',

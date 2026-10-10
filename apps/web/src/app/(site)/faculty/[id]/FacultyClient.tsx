@@ -3,12 +3,12 @@
 import { EmptyState, Icon, Tabs, useToast } from '@sabeq/ui';
 import Link from 'next/link';
 import { useState } from 'react';
-import { MentorCard, ReviewCard } from '@/components/cards';
+import { MentorCard } from '@/components/cards';
 import { Departments } from '@/components/faculty/Departments';
 import { Offerings } from '@/components/faculty/Offerings';
 import { PageHead } from '@/components/PageHead';
 import type { CatalogSources, FacultyOffering } from '@/lib/catalog';
-import { MENTORS, REVIEWS, type Faculty } from '@/lib/mock/data';
+import type { Faculty, Mentor } from '@/lib/mock/data';
 
 type Tab = 'about' | 'unis' | 'depts' | 'mentors' | 'reviews';
 
@@ -16,14 +16,16 @@ export function FacultyClient({
   faculty: f,
   offerings,
   sources,
+  mentors,
 }: {
   faculty: Faculty;
+  /** Listed mentors of this field (Phase 12). */
+  mentors: readonly Mentor[];
   offerings: readonly FacultyOffering[];
   sources: CatalogSources;
 }) {
   const [tab, setTab] = useState<Tab>('about');
   const toast = useToast();
-  const mentors = MENTORS.filter((m) => m.facId === f.id);
 
   return (
     <>
@@ -188,10 +190,12 @@ export function FacultyClient({
           ) : null}
 
           {tab === 'reviews' ? (
-            <div className="tgrid-site">
-              {REVIEWS.slice(0, 4).map((r) => (
-                <ReviewCard key={r.name} review={r} />
-              ))}
+            <div className="sb-card">
+              <EmptyState
+                roomy
+                title="لسه مفيش آراء"
+                description="الآراء هنا بتيجي من طلبة حجزوا جلسات فعلًا مع مرشدين من الكلية دي، وبتظهر بعد الجلسة."
+              />
             </div>
           ) : null}
         </div>

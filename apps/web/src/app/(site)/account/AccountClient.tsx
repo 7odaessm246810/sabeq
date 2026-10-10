@@ -85,10 +85,10 @@ export function AccountClient() {
           </div>
           <Link
             className="sb-btn sb-btn--secondary"
-            href={user.role === 'mentor' ? '/become-mentor' : '/sessions'}
+            href={user.role === 'mentor' ? '/account/mentor' : '/sessions'}
           >
-            <Icon name="calendar" />
-            {user.role === 'mentor' ? 'طلب الانضمام' : 'جلساتي'}
+            <Icon name={user.role === 'mentor' ? 'user' : 'calendar'} />
+            {user.role === 'mentor' ? 'ملفي كمرشد' : 'جلساتي'}
           </Link>
         </div>
       </PageHead>

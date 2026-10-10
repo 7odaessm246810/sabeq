@@ -4,7 +4,7 @@ import { Avatar, EmptyState, Icon, Modal, Tabs, useToast } from '@sabeq/ui';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { MentorCard } from '@/components/cards';
+import { SavedMentors } from '@/components/mentor/SavedMentors';
 import { PageHead } from '@/components/PageHead';
 import { useDemo, type DemoSession } from '@/lib/demo-store';
 import { getMentor } from '@/lib/mock/data';
@@ -103,7 +103,6 @@ export function SessionsClient() {
   const sessions = demo.sessions.filter((s) =>
     tab === 'up' ? s.status === 'upcoming' : s.status !== 'upcoming',
   );
-  const savedIds = Object.keys(demo.saved).filter((k) => demo.saved[Number(k)]);
 
   return (
     <>
@@ -136,27 +135,7 @@ export function SessionsClient() {
 
       <section className="sb-container page-body" role="tabpanel">
         {tab === 'saved' ? (
-          savedIds.length ? (
-            <div className="mgrid-site">
-              {savedIds.map((id) => {
-                const m = getMentor(id);
-                return m ? <MentorCard key={id} mentor={m} /> : null;
-              })}
-            </div>
-          ) : (
-            <div className="sb-card">
-              <EmptyState
-                roomy
-                title="مفيش مرشدين محفوظين"
-                description="اضغط «احفظ» في ملف أي مرشد عشان ترجعله بسهولة."
-                actions={
-                  <Link className="sb-btn sb-btn--primary sb-btn--sm" href="/mentors">
-                    استكشف المرشدين
-                  </Link>
-                }
-              />
-            </div>
-          )
+          <SavedMentors />
         ) : sessions.length ? (
           <div className="sess">
             {sessions.map((s) => {

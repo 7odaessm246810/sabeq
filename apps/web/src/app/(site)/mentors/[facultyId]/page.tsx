@@ -1,17 +1,17 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { FACULTIES, getFaculty } from '@/lib/mock/data';
+import { connection } from 'next/server';
+import { getFacultyPage } from '@/lib/catalog';
+import { fieldsOf, listMentors, toMentorView } from '@/lib/mentors';
 import { MentorsClient } from '../MentorsClient';
-
-export function generateStaticParams() {
-  return FACULTIES.map((f) => ({ facultyId: f.id }));
-}
 
 export async function generateMetadata({
   params,
 }: PageProps<'/mentors/[facultyId]'>): Promise<Metadata> {
-  const f = getFaculty((await params).facultyId);
-  if (!f) return {};
+  await connection();
+  const page = await getFacultyPage((await params).facultyId);
+  if (!page) return {};
+  const f = page.faculty;
   return {
     title: `مرشدين ${f.name}`,
     description: `طلاب وخريجين موثقين درسوا ${f.full}. احجز جلسة واسمع التجربة من جوه.`,
@@ -19,8 +19,23 @@ export async function generateMetadata({
   };
 }
 
+/** Mentors of one field («الهندسة» at every university), from the API. */
 export default async function FacultyMentorsPage({ params }: PageProps<'/mentors/[facultyId]'>) {
+  await connection();
   const { facultyId } = await params;
-  if (!getFaculty(facultyId)) notFound();
-  return <MentorsClient facultyId={facultyId} />;
+  const [page, mentors] = await Promise.all([
+    getFacultyPage(facultyId),
+    listMentors({ field: facultyId, pageSize: 24 }),
+  ]);
+  if (!page) notFound();
+  const fields = fieldsOf(mentors.results);
+  if (!fields.some((x) => x.id === facultyId))
+    fields.unshift({ id: facultyId, name: page.faculty.name });
+  return (
+    <MentorsClient
+      facultyId={facultyId}
+      mentors={mentors.results.map(toMentorView)}
+      fields={fields}
+    />
+  );
 }

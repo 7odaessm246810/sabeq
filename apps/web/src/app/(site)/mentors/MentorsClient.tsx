@@ -4,7 +4,8 @@ import { EmptyState, Icon, MentorCardSkeleton, Modal, Segmented } from '@sabeq/u
 import { useEffect, useRef, useState } from 'react';
 import { MentorCard } from '@/components/cards';
 import { PageHead } from '@/components/PageHead';
-import { FACULTIES, MENTORS, UNIVERSITIES, getFaculty, type Mentor } from '@/lib/mock/data';
+import type { FieldOption } from '@/lib/mentors';
+import type { Mentor } from '@/lib/mock/data';
 
 type Sort = 'fit' | 'rating' | 'price' | 'sessions';
 
@@ -18,9 +19,12 @@ interface Filters {
 
 const DEFAULT: Filters = { fac: 'all', unis: {}, rating: 0, price: 500, avail: false };
 
+/** «جديد» (no reviews yet) counts as 0 for rating filters and sorting. */
+const ratingOf = (m: Mentor) => Number(m.rating) || 0;
+
 const SORTERS: Record<Sort, (a: Mentor, b: Mentor) => number> = {
-  fit: (a, b) => Number(b.available) - Number(a.available) || Number(b.rating) - Number(a.rating),
-  rating: (a, b) => Number(b.rating) - Number(a.rating),
+  fit: (a, b) => Number(b.available) - Number(a.available) || ratingOf(b) - ratingOf(a),
+  rating: (a, b) => ratingOf(b) - ratingOf(a),
   price: (a, b) => a.price - b.price,
   sessions: (a, b) => b.sessions - a.sessions,
 };
@@ -58,11 +62,16 @@ function FilterPanel({
   f,
   set,
   reset,
+  mentors,
+  fields,
 }: {
   f: Filters;
   set: (patch: Partial<Filters>) => void;
   reset: () => void;
+  mentors: readonly Mentor[];
+  fields: readonly FieldOption[];
 }) {
+  const universities = [...new Set(mentors.map((m) => m.uni))];
   // Slider shows the dragged value immediately and commits on release; follow external resets.
   const [priceDraft, setPriceDraft] = useState(f.price);
   const [committed, setCommitted] = useState(f.price);
@@ -76,7 +85,7 @@ function FilterPanel({
       <div className="fg">
         <h4>الكلية</h4>
         <div className="fchips">
-          {[['all', 'الكل'] as const, ...FACULTIES.map((x) => [x.id, x.name] as const)].map(
+          {[['all', 'الكل'] as const, ...fields.map((x) => [x.id, x.name] as const)].map(
             ([id, name]) => (
               <button
                 key={id}
@@ -89,7 +98,7 @@ function FilterPanel({
                 {id !== 'all' ? (
                   <>
                     {' '}
-                    <span className="count">{MENTORS.filter((m) => m.facId === id).length}</span>
+                    <span className="count">{mentors.filter((m) => m.facId === id).length}</span>
                   </>
                 ) : null}
               </button>
@@ -99,7 +108,7 @@ function FilterPanel({
       </div>
       <div className="fg">
         <h4>الجامعة</h4>
-        {UNIVERSITIES.map((u) => (
+        {universities.map((u) => (
           <Checkbox
             key={u}
             checked={Boolean(f.unis[u])}
@@ -126,7 +135,7 @@ function FilterPanel({
         <h4>السعر للجلسة</h4>
         <input
           type="range"
-          min={150}
+          min={100}
           max={500}
           step={10}
           value={priceDraft}
@@ -137,7 +146,7 @@ function FilterPanel({
           onKeyUp={() => set({ price: priceDraft })}
         />
         <div className="rv">
-          <span>150 ج.م</span>
+          <span>100 ج.م</span>
           <b>حتى {priceDraft} ج.م</b>
         </div>
       </div>
@@ -158,7 +167,19 @@ function FilterPanel({
   );
 }
 
-export function MentorsClient({ facultyId }: { facultyId?: string }) {
+/**
+ * Listed mentors from the API (Phase 12). Filters and sorting run in the browser over the loaded
+ * page; search-side filtering and paging come with Search & Discovery (Phase 13).
+ */
+export function MentorsClient({
+  facultyId,
+  mentors,
+  fields,
+}: {
+  facultyId?: string;
+  mentors: readonly Mentor[];
+  fields: readonly FieldOption[];
+}) {
   const [f, setF] = useState<Filters>({ ...DEFAULT, fac: facultyId ?? 'all' });
   const [q, setQ] = useState('');
   const [sort, setSort] = useState<Sort>('fit');
@@ -191,17 +212,19 @@ export function MentorsClient({ facultyId }: { facultyId?: string }) {
 
   const selectedUnis = Object.keys(f.unis).filter((k) => f.unis[k]);
   const s = q.trim();
-  const list = MENTORS.filter(
-    (m) =>
-      (f.fac === 'all' || m.facId === f.fac) &&
-      (!selectedUnis.length || selectedUnis.includes(m.uni)) &&
-      Number(m.rating) >= f.rating &&
-      m.price <= f.price &&
-      (!f.avail || m.available) &&
-      (!s || (m.name + m.major + m.uni + m.faculty).includes(s)),
-  ).sort(SORTERS[sort]);
+  const list = mentors
+    .filter(
+      (m) =>
+        (f.fac === 'all' || m.facId === f.fac) &&
+        (!selectedUnis.length || selectedUnis.includes(m.uni)) &&
+        (f.rating === 0 || ratingOf(m) >= f.rating) &&
+        m.price <= f.price &&
+        (!f.avail || m.available) &&
+        (!s || (m.name + m.major + m.uni + m.faculty).includes(s)),
+    )
+    .sort(SORTERS[sort]);
 
-  const fac = getFaculty(f.fac);
+  const fac = fields.find((x) => x.id === f.fac);
 
   return (
     <>
@@ -233,7 +256,7 @@ export function MentorsClient({ facultyId }: { facultyId?: string }) {
       <section className="sb-container page-body">
         <div className="disc-lay">
           <aside className="filters" aria-label="الفلاتر">
-            <FilterPanel f={f} set={set} reset={reset} />
+            <FilterPanel f={f} set={set} reset={reset} mentors={mentors} fields={fields} />
           </aside>
           <div>
             <div className="disc-top">
@@ -319,7 +342,7 @@ export function MentorsClient({ facultyId }: { facultyId?: string }) {
             </button>
           }
         >
-          <FilterPanel f={f} set={set} reset={reset} />
+          <FilterPanel f={f} set={set} reset={reset} mentors={mentors} fields={fields} />
         </Modal>
       ) : null}
     </>

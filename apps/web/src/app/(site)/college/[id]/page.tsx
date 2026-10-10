@@ -4,8 +4,10 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
+import { MentorCard } from '@/components/cards';
 import { PageHead } from '@/components/PageHead';
 import { getCollegePage } from '@/lib/catalog';
+import { listMentors, toMentorView } from '@/lib/mentors';
 
 const TRACK: Record<string, string> = {
   science_bio: 'علمي علوم',
@@ -37,7 +39,11 @@ export async function generateMetadata({ params }: PageProps<'/college/[id]'>): 
  */
 export default async function CollegePage({ params }: PageProps<'/college/[id]'>) {
   await connection();
-  const c = await getCollegePage((await params).id);
+  const id = (await params).id;
+  const [c, mentors] = await Promise.all([
+    getCollegePage(id),
+    listMentors({ faculty: id, pageSize: 4 }).catch(() => ({ total: 0, results: [] })),
+  ]);
   if (!c) notFound();
 
   const place = [c.city, c.governorate].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i);
@@ -129,6 +135,35 @@ export default async function CollegePage({ params }: PageProps<'/college/[id]'>
                 <Icon name="arrow" />
               </span>
             </Link>
+          </article>
+
+          <article className="sb-card col-sec">
+            <h2 className="sb-h3">مرشدين درسوا هنا</h2>
+            {mentors.results.length ? (
+              <>
+                <div className="col-mentors">
+                  {mentors.results.map((m) => (
+                    <MentorCard key={m.slug} mentor={toMentorView(m)} compact />
+                  ))}
+                </div>
+                {mentors.total > mentors.results.length ? (
+                  <Link
+                    className="sb-btn sb-btn--ghost sb-btn--sm"
+                    href={`/mentors/${c.kind.slug}`}
+                  >
+                    كل مرشدين {c.kind.name} ({mentors.total})
+                  </Link>
+                ) : null}
+              </>
+            ) : (
+              <p className="sb-small">
+                لسه مفيش مرشد موثق من {c.name} في {c.university.name}.{' '}
+                <Link href={`/mentors/${c.kind.slug}`}>
+                  شوف مرشدين {c.kind.name} من جامعات تانية
+                </Link>
+                ، أو <Link href="/become-mentor">انضم كمرشد</Link> لو درست هنا.
+              </p>
+            )}
           </article>
 
           <article className="sb-card col-sec">

@@ -23,13 +23,15 @@ export interface Faculty {
 }
 
 export interface Mentor {
-  id: number;
+  /** Mock: a number. Real mentors (Phase 12): the profile slug. */
+  id: number | string;
   name: string;
   facId: string;
   faculty: string;
   uni: string;
   major: string;
-  year: number;
+  year: number | null;
+  /** Average as text («4.9»), or «جديد» before the first review. */
   rating: string;
   sessions: number;
   /** EGP per 45-minute session (display units for the mock; the API returns piasters). */
@@ -40,6 +42,8 @@ export interface Mentor {
   next: string | null;
   bio: string;
   topics: readonly string[];
+  /** Profile photo URL (real mentors only). */
+  photo?: string | null;
 }
 
 export interface Review {

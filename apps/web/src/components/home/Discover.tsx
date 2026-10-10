@@ -5,24 +5,16 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Fragment, useEffect, useRef, useState, type ReactNode } from 'react';
 import { FacultyCard, MentorCard } from '@/components/cards';
-import { FACULTIES, HOME_FACULTIES, HOME_MENTORS, MENTORS } from '@/lib/mock/data';
+import type { ExploreFaculty } from '@/lib/catalog';
+import { HOME_MENTORS, type Mentor } from '@/lib/mock/data';
+import { useHomeMentors } from './HomeMentors';
 import { prefersReducedMotion } from '@/lib/motion';
 
 /* ---------------- search ---------------- */
 
-const INDEX: [IconName, string, string][] = [
-  ['building', 'كلية الهندسة', '214 مرشد'],
-  ['gear', 'هندسة الحاسبات', '62 مرشد'],
-  ['gear', 'هندسة الاتصالات', '40 مرشد'],
-  ['pulse', 'كلية الطب', '168 مرشد'],
-  ['pill', 'كلية الصيدلة', '96 مرشد'],
-  ['code', 'حاسبات ومعلومات', '132 مرشد'],
-  ['chart', 'كلية التجارة', '143 مرشد'],
-  ['mic', 'كلية الإعلام', '58 مرشد'],
-  ['scale', 'كلية الحقوق', '64 مرشد'],
-  ['building', 'جامعة القاهرة', '412 مرشد'],
-  ['building', 'جامعة عين شمس', '318 مرشد'],
-];
+/** Suggestions: every field with its real count of verified mentors. */
+const indexOf = (kinds: readonly ExploreFaculty[]): [IconName, string, string][] =>
+  kinds.map((f) => [f.icon, f.full, f.mentors ? `${f.mentors} مرشد موثق` : 'استكشفها']);
 const RECENT = ['هندسة الحاسبات', 'طب عين شمس'];
 const POPULAR = [
   'هندسة ولا حاسبات؟',
@@ -44,10 +36,14 @@ function highlight(text: string, q: string): ReactNode {
 }
 
 /** Where a suggestion leads (prototype: mentor name → profile, faculty or department → faculty, else explore). */
-function targetFor(text: string): string {
-  const mentor = MENTORS.find((m) => text.includes(m.name));
+function targetFor(
+  text: string,
+  mentors: readonly Mentor[],
+  kinds: readonly ExploreFaculty[],
+): string {
+  const mentor = mentors.find((m) => text.includes(m.name));
   if (mentor) return `/mentor/${mentor.id}`;
-  const fac = FACULTIES.find(
+  const fac = kinds.find(
     (f) => text.includes(f.name) || f.depts.some(([d]) => text.includes(d.replace('هندسة ', ''))),
   );
   return fac ? `/faculty/${fac.id}` : '/explore';
@@ -55,15 +51,17 @@ function targetFor(text: string): string {
 
 function SearchSuggest() {
   const router = useRouter();
+  const { mentors, kinds } = useHomeMentors();
+  const index = indexOf(kinds);
   const [q, setQ] = useState('');
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const s = q.trim();
-  const facHits = s ? INDEX.filter(([, t]) => t.includes(s)).slice(0, 4) : [];
+  const facHits = s ? index.filter(([, t]) => t.includes(s)).slice(0, 4) : [];
   const mentorHits = s
-    ? HOME_MENTORS.filter((m) => (m.name + m.faculty + m.major + m.uni).includes(s)).slice(0, 2)
+    ? mentors.filter((m) => (m.name + m.faculty + m.major + m.uni).includes(s)).slice(0, 2)
     : [];
   const firstTarget = facHits[0]?.[1] ?? mentorHits[0]?.name;
 
@@ -87,7 +85,7 @@ function SearchSuggest() {
     };
   }, []);
 
-  const go = (text: string) => router.push(targetFor(text));
+  const go = (text: string) => router.push(targetFor(text, mentors, kinds));
 
   return (
     <div className="sb-search sb-reveal" ref={wrapRef} style={{ zIndex: 5 }}>
@@ -214,16 +212,17 @@ function SearchSuggest() {
 
 /* ---------------- 8 · EXPLORE FACULTIES ---------------- */
 
+/** [label, university slug] — the fields offered at that university. */
 const UNI_CHIPS = [
-  'الكل',
-  'القاهرة',
-  'عين شمس',
-  'الإسكندرية',
-  'المنصورة',
-  'أسيوط',
-  'حلوان',
-  'جامعات خاصة',
-];
+  ['الكل', ''],
+  ['القاهرة', 'cairo'],
+  ['عين شمس', 'ain-shams'],
+  ['الإسكندرية', 'alexandria'],
+  ['المنصورة', 'mansoura'],
+  ['أسيوط', 'assiut'],
+  ['العاصمة', 'capital'],
+  ['الأزهر', 'azhar'],
+] as const;
 
 /** Re-plays the small «flip» entrance on each card without touching React-managed classes. */
 function replayFlip(container: HTMLElement | null, selector: string, stagger: number) {
@@ -245,7 +244,9 @@ function replayFlip(container: HTMLElement | null, selector: string, stagger: nu
 }
 
 export function ExploreSection() {
-  const [uni, setUni] = useState('الكل');
+  const { kinds } = useHomeMentors();
+  const [uni, setUni] = useState('');
+  const shown = kinds.filter((f) => !uni || f.universities.includes(uni)).slice(0, 8);
   const gridRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -267,29 +268,32 @@ export function ExploreSection() {
           <span className="sb-small" style={{ marginInlineEnd: 4 }}>
             الجامعة:
           </span>
-          {UNI_CHIPS.map((u) => (
+          {UNI_CHIPS.map(([label, slug]) => (
             <button
-              key={u}
+              key={label}
               type="button"
               className="sb-chip sb-chip--sm"
-              aria-pressed={u === uni}
+              aria-pressed={slug === uni}
               onClick={() => {
-                setUni(u);
+                setUni(slug);
                 replayFlip(gridRef.current, '.sb-faculty', 30);
               }}
             >
-              {u}
+              {label}
             </button>
           ))}
         </div>
         <div className="fgrid" ref={gridRef}>
-          {HOME_FACULTIES.map((f, i) => (
+          {shown.map((f, i) => (
             <FacultyCard key={f.id} faculty={f} className="sb-reveal" delay={(i % 4) * 70} />
           ))}
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32 }}>
-          <Link href="/explore" className="sb-btn sb-btn--secondary">
-            كل الكليات والأقسام (42){' '}
+          <Link
+            href={uni ? `/explore?university=${uni}` : '/explore'}
+            className="sb-btn sb-btn--secondary"
+          >
+            كل الكليات ({kinds.length}){' '}
             <span className="sb-arrow" style={{ display: 'inline-flex' }}>
               <Icon name="arrow" />
             </span>
@@ -305,14 +309,13 @@ export function ExploreSection() {
 const MENTOR_FILTERS = ['الكل', 'هندسة', 'طب', 'صيدلة', 'حاسبات', 'تجارة', 'إعلام'];
 
 export function MentorsSection() {
+  const { mentors, total } = useHomeMentors();
   const [filter, setFilter] = useState('الكل');
   const [loading, setLoading] = useState(0);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const list =
-    filter === 'الكل'
-      ? HOME_MENTORS
-      : HOME_MENTORS.filter((m) => (m.faculty + m.major).includes(filter));
+    filter === 'الكل' ? mentors : mentors.filter((m) => (m.faculty + m.major).includes(filter));
 
   useEffect(
     () => () => {
@@ -324,8 +327,7 @@ export function MentorsSection() {
   function pick(f: string) {
     setFilter(f);
     if (timer.current) clearTimeout(timer.current);
-    const next =
-      f === 'الكل' ? HOME_MENTORS : HOME_MENTORS.filter((m) => (m.faculty + m.major).includes(f));
+    const next = f === 'الكل' ? mentors : mentors.filter((m) => (m.faculty + m.major).includes(f));
     if (f === 'الكل' || !next.length) {
       setLoading(0);
       return;
@@ -360,7 +362,11 @@ export function MentorsSection() {
             ))}
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <span className="sb-caption">1,240 مرشد</span>
+            {total ? (
+              <span className="sb-caption">
+                <span className="sb-num">{total.toLocaleString('en-US')}</span> مرشد موثق
+              </span>
+            ) : null}
             <Link href="/mentors" className="sb-btn sb-btn--secondary sb-btn--sm">
               <Icon name="filter" />
               كل الفلاتر
@@ -382,15 +388,17 @@ export function MentorsSection() {
           ) : (
             <div className="sb-card" style={{ gridColumn: '1/-1' }}>
               <EmptyState
-                title={`مفيش مرشدين في «${filter}» بالعرض ده`}
-                description="بنضيف مرشدين جداد كل أسبوع. تقدر تسيب إيميلك ونبلغك أول ما حد ينضم."
+                title={
+                  filter === 'الكل' ? 'أول المرشدين في الطريق' : `مفيش مرشدين في «${filter}» لسه`
+                }
+                description="كل مرشد بيتراجع بمستنداته قبل ما يظهر هنا. لو درست الكلية دي، انضم وساعد اللي جايين."
                 actions={
                   <>
-                    <button type="button" className="sb-btn sb-btn--primary sb-btn--sm">
-                      بلّغني
-                    </button>
-                    <Link href="/mentors" className="sb-btn sb-btn--secondary sb-btn--sm">
-                      شوف كل المرشدين
+                    <Link href="/become-mentor" className="sb-btn sb-btn--primary sb-btn--sm">
+                      انضم كمرشد
+                    </Link>
+                    <Link href="/explore" className="sb-btn sb-btn--secondary sb-btn--sm">
+                      استكشف الكليات
                     </Link>
                   </>
                 }

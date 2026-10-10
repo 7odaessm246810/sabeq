@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { connection } from 'next/server';
+import { fieldsOf, listMentors, toMentorView } from '@/lib/mentors';
 import { MentorsClient } from './MentorsClient';
 
 export const metadata: Metadata = {
@@ -7,6 +9,8 @@ export const metadata: Metadata = {
   alternates: { canonical: '/mentors' },
 };
 
-export default function MentorsPage() {
-  return <MentorsClient />;
+export default async function MentorsPage() {
+  await connection();
+  const { results } = await listMentors({ pageSize: 24 });
+  return <MentorsClient mentors={results.map(toMentorView)} fields={fieldsOf(results)} />;
 }

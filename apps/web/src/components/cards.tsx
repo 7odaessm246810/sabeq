@@ -29,7 +29,13 @@ export function MentorCard({
       style={style}
     >
       <div className="sb-mentor-head">
-        <Avatar name={m.name} size={compact ? undefined : 'lg'} tone={m.tone} verified={compact} />
+        <Avatar
+          name={m.name}
+          size={compact ? undefined : 'lg'}
+          tone={m.tone}
+          verified={compact}
+          {...(m.photo ? { src: m.photo } : {})}
+        />
         <div className="sb-mentor-id">
           <h3 className="sb-mentor-name">
             <Link href={`/mentor/${m.id}`} className="mlink">
@@ -56,7 +62,7 @@ export function MentorCard({
           <dd>{m.major}</dd>
           <dt>التخرج</dt>
           <dd>
-            <span className="sb-num">{m.year}</span>
+            <span className="sb-num">{m.year ?? '—'}</span>
           </dd>
         </dl>
       )}
@@ -69,8 +75,12 @@ export function MentorCard({
         <span>
           <span className="sb-num">{m.sessions}</span> جلسة
         </span>
-        <span className="sep" />
-        <span>{m.city}</span>
+        {m.city ? (
+          <>
+            <span className="sep" />
+            <span>{m.city}</span>
+          </>
+        ) : null}
       </div>
       {compact ? null : m.available ? (
         <span className="sb-status sb-status--on">
@@ -93,7 +103,11 @@ export function MentorCard({
         <Link href={`/mentor/${m.id}`} className="sb-btn sb-btn--ghost sb-btn--sm">
           الملف
         </Link>
-        <Link href={`/book/${m.id}`} className="sb-btn sb-btn--primary sb-btn--sm">
+        {/* Real mentors (slug ids) book from their profile until booking opens (Phase 15). */}
+        <Link
+          href={typeof m.id === 'string' ? `/mentor/${m.id}` : `/book/${m.id}`}
+          className="sb-btn sb-btn--primary sb-btn--sm"
+        >
           احجز جلسة
         </Link>
       </div>

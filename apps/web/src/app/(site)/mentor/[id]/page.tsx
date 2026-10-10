@@ -1,24 +1,24 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { MENTORS, getMentor } from '@/lib/mock/data';
+import { connection } from 'next/server';
+import { getMentorProfile } from '@/lib/mentors';
 import { MentorProfile } from './MentorProfile';
 
-export function generateStaticParams() {
-  return MENTORS.map((m) => ({ id: String(m.id) }));
-}
-
 export async function generateMetadata({ params }: PageProps<'/mentor/[id]'>): Promise<Metadata> {
-  const m = getMentor((await params).id);
+  await connection();
+  const m = await getMentorProfile((await params).id);
   if (!m) return {};
   return {
     title: `${m.name} — ${m.major}`,
-    description: `${m.name}، ${m.major} · ${m.uni}. مرشد موثق على سابق. ${m.bio}`,
-    alternates: { canonical: `/mentor/${m.id}` },
+    description: `${m.name}، ${m.major} · ${m.university.name}. مرشد موثق على سابق.${m.bio ? ` ${m.bio.slice(0, 120)}` : ''}`,
+    alternates: { canonical: `/mentor/${m.slug}` },
   };
 }
 
+/** Public and SEO-critical: rendered on request from the mentors API (1-minute data cache). */
 export default async function MentorPage({ params }: PageProps<'/mentor/[id]'>) {
-  const m = getMentor((await params).id);
+  await connection();
+  const m = await getMentorProfile((await params).id);
   if (!m) notFound();
   return <MentorProfile mentor={m} />;
 }
