@@ -65,7 +65,8 @@ export function createSchedulingService({
       db.booking.findMany({
         where: {
           mentorId: { in: mentorIds },
-          status: { in: ['pending', 'confirmed'] },
+          // Unpaid holds count only until they expire.
+          OR: [{ status: 'confirmed' }, { status: 'pending', holdExpiresAt: { gt: now() } }],
           endsAt: { gt: now() },
           startsAt: { lt: end },
         },

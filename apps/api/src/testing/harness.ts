@@ -14,6 +14,7 @@ import { createObjectStore } from '../infra/storage.js';
 import { createAccountModule } from '../modules/account/index.js';
 import { createAuthModule } from '../modules/auth/index.js';
 import type { SmsSender } from '../modules/auth/sms.js';
+import { createBookingsModule } from '../modules/bookings/index.js';
 import { createCatalogModule } from '../modules/catalog/index.js';
 import { createMediaModule } from '../modules/media/index.js';
 import { createSchedulingModule } from '../modules/scheduling/index.js';
@@ -56,6 +57,12 @@ export function createHarness() {
     nextSlots: scheduling.scheduling.nextSlots,
     indexTtlMs: 0,
   });
+  const bookings = createBookingsModule({
+    db,
+    auth,
+    scheduling: scheduling.scheduling,
+    appEnv: 'local' as const,
+  });
   const search = createSearchModule({ catalog: catalog.catalog, mentors: mentors.mentors, redis });
   const mentorApplication = createMentorApplicationModule({ db, store, crypto, auth });
   const verification = createVerificationModule({ db, store, crypto, auth });
@@ -70,6 +77,7 @@ export function createHarness() {
       scheduling.mount(v1);
       mentors.mount(v1);
       search.mount(v1);
+      bookings.mount(v1);
       mentorApplication.mount(v1);
       verification.mount(v1);
     },
@@ -102,6 +110,8 @@ export function createHarness() {
     store,
     /** Search service (popular terms are tested directly with chosen IPs). */
     searchService: search.search,
+    /** Bookings service (the sweeper is tested directly). */
+    bookingsService: bookings.bookings,
     crypto,
     newPhone,
     /** A website account (new number unless one is given). */

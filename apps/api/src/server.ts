@@ -11,6 +11,7 @@ import { createRedis, redisReadiness } from './infra/redis.js';
 import { createObjectStore } from './infra/storage.js';
 import { createAccountModule } from './modules/account/index.js';
 import { createAuthModule } from './modules/auth/index.js';
+import { createBookingsModule } from './modules/bookings/index.js';
 import { createCatalogModule } from './modules/catalog/index.js';
 import { createMediaModule } from './modules/media/index.js';
 import { createSchedulingModule } from './modules/scheduling/index.js';
@@ -57,6 +58,12 @@ function main() {
     avatars: media.avatars,
     nextSlots: scheduling.scheduling.nextSlots,
   });
+  const bookings = createBookingsModule({
+    db,
+    auth,
+    scheduling: scheduling.scheduling,
+    appEnv: config.appEnv,
+  });
   const search = createSearchModule({ catalog: catalog.catalog, mentors: mentors.mentors, redis });
   const mentorApplication = createMentorApplicationModule({ db, store, crypto, auth });
   const verification = createVerificationModule({ db, store, crypto, auth });
@@ -73,10 +80,20 @@ function main() {
       scheduling.mount(v1);
       mentors.mount(v1);
       search.mount(v1);
+      bookings.mount(v1);
       mentorApplication.mount(v1);
       verification.mount(v1);
     },
   });
+  // Every minute: free unpaid holds and complete sessions nobody marked (bookings, Phase 15).
+  // Idempotent, so running it on every API instance is safe.
+  const sweeper = setInterval(() => {
+    bookings.bookings
+      .sweep()
+      .catch((err: unknown) => logger.error({ err }, 'booking sweep failed'));
+  }, 60_000);
+  sweeper.unref();
+
   const server = app.listen(config.port, () => {
     logger.info({ port: config.port }, 'sabeq-api listening');
   });
