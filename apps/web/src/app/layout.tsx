@@ -6,6 +6,7 @@ import '@/styles/pages.css';
 
 import { ToastProvider } from '@sabeq/ui';
 import type { Metadata, Viewport } from 'next';
+import { connection } from 'next/server';
 import type { ReactNode } from 'react';
 import { Footer } from '@/components/layout/Footer';
 import { Navbar } from '@/components/layout/Navbar';
@@ -36,7 +37,12 @@ export const viewport: Viewport = {
   colorScheme: 'light',
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+/**
+ * Rendered per request: the Content-Security-Policy nonce (proxy.ts, Phase 21) is new each time, and
+ * Next.js puts it on its scripts only while rendering.
+ */
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  await connection();
   return (
     <html lang="ar" dir="rtl" className={fontVariables}>
       <body className="sb">
