@@ -67,6 +67,10 @@ export function MentorProfileEditor() {
             <h1 className="sb-h1">ملفي كمرشد</h1>
             <p className="sb-lead">ده اللي الطلبة بيشوفوه قبل ما يحجزوا معاك.</p>
           </div>
+          <Link className="sb-btn sb-btn--secondary" href="/account/availability">
+            <Icon name="calendar" />
+            مواعيدي
+          </Link>
           {mentor?.isListed ? (
             <Link className="sb-btn sb-btn--secondary" href={`/mentor/${mentor.slug}`}>
               <Icon name="user" />

@@ -5,7 +5,16 @@
  */
 import type { MentorKind, SessionKind } from '@sabeq/types';
 import { api } from './api';
+import { formatCairoDay, formatCairoTime } from '@sabeq/utils';
 import type { Mentor } from './mock/data';
+
+const WEEK_MS = 7 * 86_400_000;
+
+/** «أقرب موعد: بكرة 7:00 م». */
+export function nextSlotLabel(iso: string, now = new Date()): string {
+  const at = new Date(iso);
+  return `أقرب موعد: ${formatCairoDay(at, now)} ${formatCairoTime(at)}`;
+}
 
 const API = process.env.API_INTERNAL_URL ?? 'http://localhost:4000/api/v1';
 
@@ -28,6 +37,8 @@ export interface MentorCardData {
   priceEgp: number | null;
   acceptsBookings: boolean;
   topics: string[];
+  /** First bookable 45-minute consultation (ISO), null when none in the next three weeks. */
+  nextSlot: string | null;
 }
 
 export interface MentorProfileData extends MentorCardData {
@@ -155,9 +166,9 @@ export function toMentorView(m: MentorCardData): Mentor {
     price: m.priceEgp ?? 0,
     city: m.city ?? '',
     tone: m.tone,
-    available: m.acceptsBookings,
-    // Real open slots arrive with scheduling (Phase 14).
-    next: null,
+    // «متاح الأسبوع ده» (design): a bookable slot within the next 7 days.
+    available: m.nextSlot !== null && Date.parse(m.nextSlot) < Date.now() + WEEK_MS,
+    next: m.nextSlot ? nextSlotLabel(m.nextSlot) : null,
     bio: '',
     topics: m.topics,
     photo: m.photo,

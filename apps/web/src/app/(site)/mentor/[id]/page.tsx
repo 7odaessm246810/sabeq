@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
+import { getAvailabilityServer } from '@/lib/availability';
 import { getMentorProfile } from '@/lib/mentors';
 import { MentorProfile } from './MentorProfile';
 
@@ -18,7 +19,11 @@ export async function generateMetadata({ params }: PageProps<'/mentor/[id]'>): P
 /** Public and SEO-critical: rendered on request from the mentors API (1-minute data cache). */
 export default async function MentorPage({ params }: PageProps<'/mentor/[id]'>) {
   await connection();
-  const m = await getMentorProfile((await params).id);
+  const slug = (await params).id;
+  const [m, availability] = await Promise.all([
+    getMentorProfile(slug),
+    getAvailabilityServer(slug).catch(() => null),
+  ]);
   if (!m) notFound();
-  return <MentorProfile mentor={m} />;
+  return <MentorProfile mentor={m} availability={availability} />;
 }

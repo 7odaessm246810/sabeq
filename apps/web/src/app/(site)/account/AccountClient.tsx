@@ -90,6 +90,12 @@ export function AccountClient() {
             <Icon name={user.role === 'mentor' ? 'user' : 'calendar'} />
             {user.role === 'mentor' ? 'ملفي كمرشد' : 'جلساتي'}
           </Link>
+          {user.role === 'mentor' ? (
+            <Link className="sb-btn sb-btn--secondary" href="/account/availability">
+              <Icon name="calendar" />
+              مواعيدي
+            </Link>
+          ) : null}
         </div>
       </PageHead>
 

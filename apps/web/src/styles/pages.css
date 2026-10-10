@@ -1458,3 +1458,105 @@
   font-size: 14px;
   margin-top: 4px;
 }
+/* «كل المواعيد» (Phase 14) */
+.all-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+.all-slots > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ===== «مواعيدي» (Phase 14 — not in the handoff; account cards + design-system controls) ===== */
+.av-week {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.av-week > li {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+.av-week > li:first-child {
+  border-top: 0;
+}
+.av-day {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.av-day input,
+.mp-check input {
+  accent-color: var(--primary);
+  width: 18px;
+  height: 18px;
+}
+.av-off {
+  align-self: center;
+  color: var(--muted);
+}
+.av-ranges {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.av-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.av-range .sb-select-wrap {
+  width: 150px;
+}
+.av-add {
+  align-self: flex-start;
+  font-size: 14px;
+  gap: 4px;
+}
+.av-actions {
+  display: flex;
+  gap: 8px;
+}
+.av-exc-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.av-exc-form .sb-field {
+  min-width: 180px;
+}
+.av-exc {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.av-exc li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+.av-exc li > span:nth-child(2) {
+  flex: 1;
+}
+@media (max-width: 640px) {
+  .av-week > li {
+    grid-template-columns: 1fr;
+  }
+}

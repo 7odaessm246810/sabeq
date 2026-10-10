@@ -1,10 +1,11 @@
 'use client';
 
 import { Avatar, Icon, Modal, Stars, VerifiedBadge, useToast } from '@sabeq/ui';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Crumb } from '@/components/Crumb';
+import { BookingBox } from '@/components/mentor/BookingBox';
+import type { Availability } from '@/lib/availability';
 import { ApiError } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import { useDemo } from '@/lib/demo-store';
@@ -59,11 +60,16 @@ function useSaved(slug: string) {
   return { saved, busy, toggle };
 }
 
-export function MentorProfile({ mentor: m }: { mentor: MentorProfileData }) {
+export function MentorProfile({
+  mentor: m,
+  availability,
+}: {
+  mentor: MentorProfileData;
+  availability: Availability | null;
+}) {
   const [why, setWhy] = useState(false);
   const save = useSaved(m.slug);
   const first = m.name.split(' ')[0] ?? m.name;
-  const base = m.offerings.find((o) => o.kind === 'consultation');
 
   return (
     <section className="sb-container page-body" style={{ paddingTop: 28 }}>
@@ -221,58 +227,12 @@ export function MentorProfile({ mentor: m }: { mentor: MentorProfileData }) {
         </div>
 
         <aside className="prof-side">
-          <div className="sb-card book-box">
-            {base ? (
-              <div className="sb-price" style={{ margin: 0 }}>
-                <b>
-                  <span className="sb-num">{base.priceEgp}</span> ج.م
-                </b>
-                <span>
-                  جلسة {base.durationMin} دقيقة · {base.medium === 'video' ? 'فيديو' : 'صوت'}
-                </span>
-              </div>
-            ) : null}
-            {m.offerings.length > 1 ? (
-              <ul className="prof-offers">
-                {m.offerings
-                  .filter((o) => o.kind !== 'consultation')
-                  .map((o) => (
-                    <li key={o.kind}>
-                      <span>
-                        {o.label} · {o.durationMin} دقيقة
-                      </span>
-                      <b>
-                        <span className="sb-num">{o.priceEgp}</span> ج.م
-                      </b>
-                    </li>
-                  ))}
-              </ul>
-            ) : null}
-            <span className="sb-status sb-status--off">
-              <span className="sb-dot" />
-              {m.acceptsBookings ? 'لا توجد مواعيد هذا الأسبوع' : `${first} مش بياخد حجوزات دلوقتي`}
-            </span>
-            <button
-              type="button"
-              className="sb-btn sb-btn--secondary sb-btn--block"
-              aria-pressed={save.saved}
-              disabled={save.busy}
-              onClick={() => void (save.saved ? undefined : save.toggle())}
-            >
-              {save.saved ? 'محفوظ — هتلاقيه في جلساتي' : 'احفظه وارجعله بعدين'}
-            </button>
-            <Link
-              className="sb-btn sb-btn--link"
-              href={`/mentors/${m.field.slug}`}
-              style={{ alignSelf: 'center', fontSize: 14 }}
-            >
-              مرشدين مشابهين
-            </Link>
-            <div className="sb-secure">
-              <Icon name="lock" />
-              إلغاء مجاني قبل الجلسة بـ 24 ساعة.
-            </div>
-          </div>
+          <BookingBox
+            mentor={m}
+            availability={availability}
+            saved={save.saved}
+            onSave={() => void (save.saved ? undefined : save.toggle())}
+          />
         </aside>
       </div>
 

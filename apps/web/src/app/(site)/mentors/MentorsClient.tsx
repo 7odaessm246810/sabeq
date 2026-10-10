@@ -163,12 +163,12 @@ function FilterPanel({
         </div>
       </div>
       <div className="fg">
-        {/* «متاح الأسبوع ده» in the design; real open slots arrive with scheduling (Phase 14). */}
+        {/* A bookable slot within the next 7 days (Phase 14). */}
         <Checkbox
           checked={Boolean(f.available)}
           onToggle={() => set({ available: !f.available || undefined })}
         >
-          بياخد حجوزات دلوقتي
+          متاح الأسبوع ده
         </Checkbox>
       </div>
       <button
