@@ -81,10 +81,9 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # Inside the API container: it has the generated Prisma client and the database address.
       - name: Reference data (universities, faculties)
-        run: pnpm turbo run build --filter=@sabeq/api^... && pnpm --filter @sabeq/api db:seed
-        env:
-          DATABASE_URL: postgresql://sabeq:sabeq@localhost:5432/sabeq
+        run: docker compose exec -T api pnpm --filter @sabeq/api db:seed
       - run: pnpm --filter @sabeq/e2e exec playwright install --with-deps chromium
       - name: Journeys
         run: pnpm --filter @sabeq/e2e test:e2e
