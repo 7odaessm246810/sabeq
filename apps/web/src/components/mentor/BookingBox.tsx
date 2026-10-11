@@ -74,7 +74,6 @@ export function BookingBox({
                 className="sb-slot"
                 role="radio"
                 aria-checked={s === picked}
-                aria-pressed={s === picked}
                 onClick={() => setPicked(s)}
               >
                 <span>{formatCairoDay(new Date(s))}</span> · {formatCairoTime(new Date(s))}

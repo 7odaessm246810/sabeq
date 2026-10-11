@@ -196,6 +196,7 @@ function WeeklyHours({
                     <div key={i} className="av-range">
                       <Select
                         id={`r-${d}-${i}-s`}
+                        label={`${WEEKDAY_NAMES[d]}: من الساعة`}
                         value={String(r.startMinute)}
                         error={undefined}
                         options={timeOptions(TIMES.slice(0, -1))}
@@ -209,6 +210,7 @@ function WeeklyHours({
                       <span className="sb-small">لـ</span>
                       <Select
                         id={`r-${d}-${i}-e`}
+                        label={`${WEEKDAY_NAMES[d]}: لحد الساعة`}
                         value={String(r.endMinute)}
                         error={undefined}
                         options={timeOptions(TIMES.slice(1))}

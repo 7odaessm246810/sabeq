@@ -11,6 +11,7 @@ import {
 import { formatCairoDay, formatCairoTime } from '@sabeq/utils';
 import { Avatar, EmptyState, Icon, Modal, Tabs, useToast, type IconName } from '@sabeq/ui';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { SavedMentors } from '@/components/mentor/SavedMentors';
 import { PageHead } from '@/components/PageHead';
@@ -65,7 +66,9 @@ export function SessionsClient() {
   const toast = useToast();
   const user = useSignedIn('/sessions');
   const role = user?.role === 'mentor' ? 'mentor' : 'student';
-  const [tab, setTab] = useState<Tab>('up');
+  // ?tab=past|saved (links from notifications) opens that tab.
+  const asked = useSearchParams().get('tab');
+  const [tab, setTab] = useState<Tab>(asked === 'past' || asked === 'saved' ? asked : 'up');
   const [list, setList] = useState<Booking[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [cancelling, setCancelling] = useState<Booking | null>(null);

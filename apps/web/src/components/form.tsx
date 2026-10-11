@@ -41,9 +41,12 @@ export function Select({
   options,
   error,
   placeholder = 'اختار',
+  label,
   onChange,
 }: {
   id: string;
+  /** For a select without a visible <label> (e.g. a row of time pickers). */
+  label?: string | undefined;
   value: string;
   options: readonly SelectOption[];
   error: string | undefined;
@@ -56,6 +59,7 @@ export function Select({
         className="sb-input sb-select"
         id={id}
         value={value}
+        aria-label={label}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? `${id}-err` : undefined}
         onChange={(e) => onChange(e.target.value)}

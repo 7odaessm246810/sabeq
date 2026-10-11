@@ -187,7 +187,14 @@ export function SearchSuggest() {
         />
         <span className="sb-kbd">/</span>
       </div>
-      <div className={`sb-suggest${open ? ' is-open' : ''}`} id="home-suggest" role="listbox">
+      <div
+        className={`sb-suggest${open ? ' is-open' : ''}`}
+        id="home-suggest"
+        // A listbox only while it is shown: closed (and empty) it is out of the accessibility tree.
+        role={open ? 'listbox' : undefined}
+        aria-hidden={!open}
+        aria-label="اقتراحات البحث"
+      >
         {!s ? (
           recent.length || popular?.length ? (
             <>
@@ -231,6 +238,8 @@ export function SearchSuggest() {
                         key={t}
                         type="button"
                         className="sb-chip sb-chip--sm"
+                        role="option"
+                        aria-selected={false}
                         onClick={() => searchAll(t)}
                       >
                         {t}

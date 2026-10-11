@@ -168,13 +168,15 @@ export function Hero() {
           </div>
         </div>
 
-        <div
-          className="viz"
-          ref={vizRef}
-          role="img"
-          aria-label="رسم توضيحي: أنت، ثلاث كليات، وثلاثة أشخاص سبقوك في كل طريق"
-        >
-          <svg className="paths layer" viewBox="0 0 600 600" aria-hidden="true" ref={pathsLayer}>
+        <div className="viz" ref={vizRef}>
+          {/* The drawing is the image; the cards beside it hold real links, so not the whole box. */}
+          <svg
+            className="paths layer"
+            viewBox="0 0 600 600"
+            role="img"
+            aria-label="رسم توضيحي: أنت، ثلاث كليات، وثلاثة أشخاص سبقوك في كل طريق"
+            ref={pathsLayer}
+          >
             {PATHS.map((d, i) => (
               <path
                 key={d}
@@ -235,10 +237,7 @@ export function Hero() {
                 key={c.name}
                 className={cx('sb-card mcard in', i === active && 'on')}
                 style={{ top: c.top, transitionDelay: `${700 + i * 120}ms` }}
-                tabIndex={0}
-                role="button"
-                aria-label={c.name}
-                aria-pressed={i === active}
+                // Not a button: it holds a link. Hover, or focusing that link, highlights it.
                 onMouseEnter={() => activate(i)}
                 onFocus={() => activate(i)}
                 onClick={() => activate(i)}

@@ -262,7 +262,7 @@ export function HowItWorks() {
         </div>
         <div className="how">
           <ol className="steps">
-            <span className="bar" style={{ height: barHeight }} />
+            <li className="bar" aria-hidden="true" style={{ height: barHeight }} />
             {STEPS.map(([title, text], i) => (
               <li
                 key={title}
