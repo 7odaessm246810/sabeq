@@ -2,6 +2,7 @@
 
 import { Banner, Icon, useToast } from '@sabeq/ui';
 import { useEffect, useState } from 'react';
+import { useProviders } from '@/components/auth/AuthParts';
 import { ApiError } from '@/lib/api';
 import { getEmail, resendEmail, setEmail, type EmailState } from '@/lib/notifications';
 
@@ -14,6 +15,8 @@ const errorText = (err: unknown) =>
  */
 export function EmailSettings({ onChanged }: { onChanged?: () => void | Promise<void> }) {
   const toast = useToast();
+  // Until emails really go out (Resend), there is nothing to confirm: no badge, link or resend.
+  const confirmable = useProviders()?.emailLinks ?? false;
   const [state, setState] = useState<EmailState | null>(null);
   const [draft, setDraft] = useState('');
   const [editing, setEditing] = useState(false);
@@ -54,7 +57,7 @@ export function EmailSettings({ onChanged }: { onChanged?: () => void | Promise<
         className="email-form"
         onSubmit={(e) => {
           e.preventDefault();
-          void run(() => setEmail(draft), 'بعتنالك رابط التأكيد');
+          void run(() => setEmail(draft), confirmable ? 'بعتنالك رابط التأكيد' : 'اتغيّر الإيميل');
         }}
       >
         <div className={error ? 'sb-field sb-field--error' : 'sb-field'}>
@@ -87,7 +90,7 @@ export function EmailSettings({ onChanged }: { onChanged?: () => void | Promise<
             disabled={busy || !draft.trim()}
             aria-busy={busy}
           >
-            ابعت رابط التأكيد
+            {confirmable ? 'ابعت رابط التأكيد' : 'احفظ الإيميل'}
           </button>
           {editing ? (
             <button
@@ -109,7 +112,7 @@ export function EmailSettings({ onChanged }: { onChanged?: () => void | Promise<
     <div className="email-form">
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
         <b dir="ltr">{state.email}</b>
-        {state.verified ? (
+        {!confirmable ? null : state.verified ? (
           <span className="sb-badge sb-badge--success">
             <Icon name="check" />
             متأكد
@@ -121,7 +124,7 @@ export function EmailSettings({ onChanged }: { onChanged?: () => void | Promise<
           </span>
         )}
       </div>
-      {!state.verified ? (
+      {confirmable && !state.verified ? (
         <Banner kind="info" title="افتح الرابط اللي بعتناه على الإيميل ده.">
           الحجز والإيميلات بيبدأوا بعد التأكيد. الرابط شغال 24 ساعة.
         </Banner>
@@ -139,7 +142,7 @@ export function EmailSettings({ onChanged }: { onChanged?: () => void | Promise<
         </p>
       ) : null}
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        {!state.verified ? (
+        {confirmable && !state.verified ? (
           <button
             type="button"
             className="sb-btn sb-btn--secondary sb-btn--sm"

@@ -60,9 +60,10 @@ test('signed-out pages send you to sign in and back', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'اعمل الحساب' })).toBeVisible();
   await a11y(page, 'register');
 
+  // Without a real email sender (local, CI, staging for now) password links are not offered.
   await page.goto('/forgot-password');
-  await page.locator('#em').fill('nobody@test.sabeq');
-  await page.getByRole('button', { name: 'ابعتلي الرابط' }).click();
-  await expect(page.getByRole('heading', { name: 'شوف إيميلك' })).toBeVisible();
+  await expect(
+    page.getByText('تغيير الباسورد بالإيميل مش متاح دلوقتي.', { exact: false }),
+  ).toBeVisible();
   await a11y(page, 'forgot password');
 });

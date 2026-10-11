@@ -3,7 +3,7 @@
 import { Banner, FieldError, cx } from '@sabeq/ui';
 import Link from 'next/link';
 import { useState, type FormEvent } from 'react';
-import { AuthCard, messageOf } from '@/components/auth/AuthParts';
+import { AuthCard, messageOf, useProviders } from '@/components/auth/AuthParts';
 import { forgotPassword } from '@/lib/auth';
 
 /** Asks for a password link. Same answer whether or not the email has an account. */
@@ -12,6 +12,7 @@ export function ForgotForm() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState<{ devLink?: string } | null>(null);
+  const providers = useProviders();
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -28,6 +29,22 @@ export function ForgotForm() {
     } finally {
       setBusy(false);
     }
+  }
+
+  if (providers && !providers.emailLinks) {
+    return (
+      <AuthCard title="نسيت الباسورد؟" footer={null}>
+        <p className="sb-small" style={{ textAlign: 'center' }}>
+          تغيير الباسورد بالإيميل مش متاح دلوقتي. كلّمنا من صفحة التواصل وهنساعدك ترجع لحسابك.
+        </p>
+        <Link className="sb-btn sb-btn--primary sb-btn--lg sb-btn--block" href="/contact">
+          كلّمنا
+        </Link>
+        <Link className="sb-btn sb-btn--secondary sb-btn--lg sb-btn--block" href="/login">
+          رجوع لتسجيل الدخول
+        </Link>
+      </AuthCard>
+    );
   }
 
   if (sent) {

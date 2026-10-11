@@ -39,7 +39,10 @@ export function createBookingsModule(deps: {
   onRefundDue?: (bookingId: string) => Promise<void>;
   now?: () => Date;
 }) {
-  const bookings = createBookingsService(deps);
+  const bookings = createBookingsService({
+    ...deps,
+    requireConfirmedEmail: deps.auth.requireConfirmedEmail,
+  });
   const authenticate: RequestHandler = deps.auth.authenticate('web');
   const who = (req: Express.Request) => {
     if (!req.auth) throw Errors.unauthenticated();

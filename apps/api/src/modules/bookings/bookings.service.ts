@@ -180,9 +180,11 @@ export function createBookingsService(deps: {
   scheduling: SchedulingService;
   /** A paid booking was cancelled with money to return (payments module). */
   onRefundDue?: (bookingId: string) => Promise<void>;
+  /** ADR-0017: off while no confirmation email can be sent (see config `auth.emailConfirmation`). */
+  requireConfirmedEmail?: boolean;
   now?: () => Date;
 }) {
-  const { db, scheduling, now = () => new Date() } = deps;
+  const { db, scheduling, requireConfirmedEmail = true, now = () => new Date() } = deps;
 
   async function expireHolds(where: Prisma.BookingWhereInput = {}) {
     const at = now();
@@ -297,7 +299,7 @@ export function createBookingsService(deps: {
       });
       if (!me?.fullName) throw new AppError('CONFLICT', MESSAGES.needsName);
       // ADR-0017: a booking is money and a mentor's time — only for a confirmed email.
-      if (!me.emailVerifiedAt) throw Errors.emailUnverified();
+      if (requireConfirmedEmail && !me.emailVerifiedAt) throw Errors.emailUnverified();
       if (!m.acceptsBookings || !m.basePricePiasters)
         throw new AppError('CONFLICT', MESSAGES.notTaking);
       const offering = m.offerings[0];

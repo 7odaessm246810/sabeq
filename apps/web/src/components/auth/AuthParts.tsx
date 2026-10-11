@@ -9,7 +9,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { ApiError } from '@/lib/api';
-import { getProviders, googleSignInUrl, type AuthUser, type SignupRole } from '@/lib/auth';
+import {
+  getProviders,
+  googleSignInUrl,
+  type AuthUser,
+  type Providers,
+  type SignupRole,
+} from '@/lib/auth';
 import { useDemo } from '@/lib/demo-store';
 import { getOwnMentor } from '@/lib/mentors';
 
@@ -67,19 +73,19 @@ export function AuthCard({
   );
 }
 
-/** Whether "Sign in with Google" is configured (asked once per page). */
-export function useGoogleEnabled(): boolean {
-  const [on, setOn] = useState(false);
+/** What sign-in offers here (asked once per page); null until known. */
+export function useProviders(): Providers | null {
+  const [p, setP] = useState<Providers | null>(null);
   useEffect(() => {
     let live = true;
     getProviders()
-      .then((p) => live && setOn(p.google))
-      .catch(() => undefined);
+      .then((x) => live && setP(x))
+      .catch(() => live && setP({ google: false, emailLinks: false }));
     return () => {
       live = false;
     };
   }, []);
-  return on;
+  return p;
 }
 
 /** The colored "G" — Google's sign-in branding asks for its own mark on this button. */

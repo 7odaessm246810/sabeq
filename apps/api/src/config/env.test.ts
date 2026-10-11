@@ -55,6 +55,17 @@ describe('loadConfig', () => {
     ).toThrow(/https[\s\S]*NODE_ENV|NODE_ENV[\s\S]*https/);
   });
 
+  it('asks for a confirmed email only when emails really go out, unless set', () => {
+    expect(loadConfig(BASE).auth.emailConfirmation).toBe(false);
+    expect(
+      loadConfig({ ...BASE, EMAIL_PROVIDER: 'resend', EMAIL_API_KEY: 're_x' }).auth
+        .emailConfirmation,
+    ).toBe(true);
+    expect(loadConfig({ ...BASE, AUTH_EMAIL_CONFIRMATION: 'true' }).auth.emailConfirmation).toBe(
+      true,
+    );
+  });
+
   it('Google sign-in needs both its id and secret', () => {
     expect(loadConfig(BASE).auth.google).toBeUndefined();
     expect(() =>

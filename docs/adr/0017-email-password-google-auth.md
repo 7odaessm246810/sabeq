@@ -13,4 +13,6 @@ Supersedes [0005](0005-phone-otp-authentication.md) and [0011](0011-sms-provider
 - **Admins.** Email + password, then a 6-digit TOTP code (RFC 6238) from an authenticator app — set up from a QR code on the first sign-in. The secret is encrypted with the document keys; a code is never accepted twice. Accounts come only from `pnpm admin:create`, which emails a link to choose the password; running it again for an existing admin resets the password and the app (lost phone).
 - **Phone.** An optional profile field (mentors give it in the application, for the review call); no longer an identity.
 
+**Until a domain is bought (2026-10-11).** No Resend yet, so `AUTH_EMAIL_CONFIRMATION` defaults to off whenever `EMAIL_PROVIDER` is not `resend`: sign-up sends no link, booking does not wait for confirmation, and the site hides "forgot password" (`/auth/providers` → `emailLinks: false`). Turning on Resend turns all of it back on.
+
 **Consequences.** No SMS provider is needed for launch. Resend with a verified domain becomes required before real users (staging can use Resend's test sender). `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` are optional; without them the Google button is hidden. Sessions are unchanged (ADR-0015).

@@ -142,7 +142,15 @@ export function useAuth(): AuthApi {
 /** Starts "Sign in with Google": a full-page trip through the API (it sets the state cookie). */
 export const googleSignInUrl = (role: SignupRole) => `/api/v1/auth/google?role=${role}`;
 
-export const getProviders = () => api<{ google: boolean }>('/auth/providers');
+/**
+ * `google`: the Google button is configured. `emailLinks`: emails really go out — confirmation
+ * and forgot-password exist (off until Resend has a domain).
+ */
+export interface Providers {
+  google: boolean;
+  emailLinks: boolean;
+}
+export const getProviders = () => api<Providers>('/auth/providers');
 
 export const forgotPassword = (email: string) =>
   api<{ sent: true; devLink?: string }>('/auth/password/forgot', {

@@ -156,6 +156,11 @@ const schema = z
     EMAIL_PROVIDER: z.preprocess(unsetIfEmpty, z.enum(['console', 'resend']).default('console')),
     EMAIL_FROM: z.string().min(3).default('سابق <no-reply@localhost>'),
     EMAIL_API_KEY: z.preprocess(unsetIfEmpty, z.string().min(1).optional()),
+    /**
+     * Booking waits for a confirmed email (ADR-0017). Default: on when emails are really sent
+     * (EMAIL_PROVIDER=resend), off otherwise — without a sender nobody could confirm.
+     */
+    AUTH_EMAIL_CONFIRMATION: z.preprocess(unsetIfEmpty, z.enum(['true', 'false']).optional()),
     /** "fake": a local test room (never in production). "daily": Daily.co video rooms. */
     VIDEO_PROVIDER: z.preprocess(unsetIfEmpty, z.enum(['fake', 'daily']).default('fake')),
     DAILY_API_BASE: z.url().default('https://api.daily.co/v1'),
@@ -279,6 +284,8 @@ export interface Config {
     google: { clientId: string; clientSecret: string } | undefined;
     /** Secure + `__Host-` cookies everywhere except plain-http local development. */
     secureCookies: boolean;
+    /** Booking needs a confirmed email, and the site offers email links (confirm, forgot password). */
+    emailConfirmation: boolean;
   };
   publicWebUrl: string;
   payments: {
@@ -344,6 +351,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
           ? { clientId: e.GOOGLE_CLIENT_ID, clientSecret: e.GOOGLE_CLIENT_SECRET }
           : undefined,
       secureCookies: e.APP_ENV !== 'local',
+      emailConfirmation: e.AUTH_EMAIL_CONFIRMATION
+        ? e.AUTH_EMAIL_CONFIRMATION === 'true'
+        : e.EMAIL_PROVIDER === 'resend',
     },
     publicWebUrl: e.API_PUBLIC_WEB_URL.replace(/\/$/, ''),
     payments: {

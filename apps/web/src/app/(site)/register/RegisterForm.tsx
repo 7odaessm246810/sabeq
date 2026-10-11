@@ -9,7 +9,7 @@ import {
   PasswordField,
   messageOf,
   useAfterLogin,
-  useGoogleEnabled,
+  useProviders,
 } from '@/components/auth/AuthParts';
 import { ApiError } from '@/lib/api';
 import { useAuth, type SignupRole } from '@/lib/auth';
@@ -27,7 +27,7 @@ export function RegisterForm() {
   const toast = useToast();
   const demo = useDemo();
   const afterLogin = useAfterLogin();
-  const google = useGoogleEnabled();
+  const providers = useProviders();
   // Coming from "become a mentor" pre-selects the mentor account type.
   const [role, setRole] = useState<SignupRole>(() =>
     demo.after?.startsWith('/become-mentor') ? 'mentor' : 'student',
@@ -62,7 +62,11 @@ export function RegisterForm() {
       toast({
         kind: 'success',
         title: 'اتعمل حسابك',
-        description: `بعتنالك رابط تأكيد على ${user.email ?? 'إيميلك'}. أكّده عشان تقدر تحجز.`,
+        ...(providers?.emailLinks
+          ? {
+              description: `بعتنالك رابط تأكيد على ${user.email ?? 'إيميلك'}. أكّده عشان تقدر تحجز.`,
+            }
+          : {}),
       });
       await afterLogin(user, true);
     } catch (err) {
@@ -88,7 +92,7 @@ export function RegisterForm() {
           ['mentor', 'أنا مرشد'],
         ]}
       />
-      {google ? <GoogleButton role={role} label="كمّل بحساب جوجل" /> : null}
+      {providers?.google ? <GoogleButton role={role} label="كمّل بحساب جوجل" /> : null}
       <form className="auth-body" onSubmit={(e) => void submit(e)} noValidate>
         {errors.form ? (
           <Banner kind="error" title="ما اتعملش الحساب">
@@ -132,7 +136,7 @@ export function RegisterForm() {
             <FieldError id="em-err">{errors.email}</FieldError>
           ) : (
             <span className="sb-hint" id="em-hint">
-              هتدخل بيه، وهنبعتلك عليه رابط تأكيد.
+              {providers?.emailLinks ? 'هتدخل بيه، وهنبعتلك عليه رابط تأكيد.' : 'هتدخل بيه.'}
             </span>
           )}
         </div>

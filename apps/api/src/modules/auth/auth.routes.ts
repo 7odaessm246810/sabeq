@@ -1,7 +1,7 @@
 /**
  * /api/v1/auth/*  — website (students, mentors)
  *
- *   GET  providers                                       → { google }
+ *   GET  providers                                       → { google, emailLinks }
  *   POST register   { fullName, email, password, role }  → 201 { user, isNew, devLink? } + cookie
  *   POST login      { email, password }                  → 200 { user } + cookie
  *   GET  google     ?role=student|mentor                 → 302 to Google
@@ -96,6 +96,7 @@ interface Deps {
   sessions: SessionService;
   secureCookies: boolean;
   logger: Logger;
+  emailLinks: boolean;
 }
 
 /** me / logout / logout-all — the same for both apps. */
@@ -136,12 +137,13 @@ async function signIn(
 const googleCookie = (secure: boolean) => (secure ? '__Host-sb_google' : 'sb_google');
 
 export function webAuthRouter(deps: Deps): Router {
-  const { auth, secureCookies, logger } = deps;
+  const { auth, secureCookies, logger, emailLinks } = deps;
   const r = Router();
   r.use(authenticate(deps.sessions, 'web', secureCookies));
 
   r.get('/providers', (_req, res) => {
-    sendData(res, { google: auth.googleEnabled() });
+    // `emailLinks`: whether confirmation / forgot-password emails really go out.
+    sendData(res, { google: auth.googleEnabled(), emailLinks });
   });
 
   r.post('/register', async (req, res) => {

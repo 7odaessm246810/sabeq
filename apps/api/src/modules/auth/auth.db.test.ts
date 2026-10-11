@@ -33,6 +33,7 @@ const redis = new Redis(redisUrl.toString(), { maxRetriesPerRequest: 2 });
 const config = loadConfig({
   ...TEST_ENV,
   APP_ENV: 'local',
+  AUTH_EMAIL_CONFIRMATION: 'true',
   DATABASE_URL: dbUrl,
   REDIS_URL: redisUrl.toString(),
 });

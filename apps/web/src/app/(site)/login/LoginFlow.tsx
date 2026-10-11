@@ -10,7 +10,7 @@ import {
   PasswordField,
   messageOf,
   useAfterLogin,
-  useGoogleEnabled,
+  useProviders,
 } from '@/components/auth/AuthParts';
 import { api } from '@/lib/api';
 import { useAuth, type AuthUser } from '@/lib/auth';
@@ -33,7 +33,7 @@ export function LoginFlow() {
   const demo = useDemo();
   const params = useSearchParams();
   const afterLogin = useAfterLogin();
-  const google = useGoogleEnabled();
+  const providers = useProviders();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{ email?: string; password?: string; form?: string }>({});
@@ -92,7 +92,7 @@ export function LoginFlow() {
           {problem}
         </Banner>
       ) : null}
-      {google ? (
+      {providers?.google ? (
         <GoogleButton role={mentorFirst ? 'mentor' : 'student'} label="ادخل بحساب جوجل" />
       ) : null}
       <form className="auth-body" onSubmit={(e) => void submit(e)} noValidate>
@@ -142,9 +142,13 @@ export function LoginFlow() {
           دخول
         </button>
         <div className="auth-links">
-          <Link href="/forgot-password" className="ul">
-            نسيت الباسورد؟
-          </Link>
+          {providers?.emailLinks ? (
+            <Link href="/forgot-password" className="ul">
+              نسيت الباسورد؟
+            </Link>
+          ) : (
+            <span />
+          )}
           <span>
             معندكش حساب؟{' '}
             <Link href="/register" className="ul">

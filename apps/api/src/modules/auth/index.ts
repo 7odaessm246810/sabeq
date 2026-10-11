@@ -50,14 +50,23 @@ export function createAuthModule(deps: AuthModuleDeps) {
     secret: config.auth.secret,
     publicWebUrl: config.publicWebUrl,
     google,
+    emailConfirmation: config.auth.emailConfirmation,
     sendVerification: deps.sendVerification,
   });
   const secureCookies = config.auth.secureCookies;
-  const routerDeps = { auth, sessions, secureCookies, logger };
+  const routerDeps = {
+    auth,
+    sessions,
+    secureCookies,
+    logger,
+    emailLinks: config.auth.emailConfirmation,
+  };
 
   return {
     sessions,
     service: auth,
+    /** Booking and paying wait for a confirmed email (bookings, payments). */
+    requireConfirmedEmail: config.auth.emailConfirmation,
     authenticate: (app: ClientApp) => authenticate(sessions, app, secureCookies),
     mount(v1: Router) {
       v1.use('/auth', webAuthRouter(routerDeps));

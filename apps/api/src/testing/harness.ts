@@ -40,7 +40,13 @@ export function createHarness() {
   redisUrl.pathname = '/15';
 
   const logger = pino({ level: 'silent' });
-  const config = loadConfig({ ...TEST_ENV, DATABASE_URL: dbUrl, REDIS_URL: redisUrl.toString() });
+  const config = loadConfig({
+    ...TEST_ENV,
+    // As in production: booking waits for a confirmed email (loginWeb confirms it).
+    AUTH_EMAIL_CONFIRMATION: 'true',
+    DATABASE_URL: dbUrl,
+    REDIS_URL: redisUrl.toString(),
+  });
   const db = createDb({ url: dbUrl, poolMax: 4, logger });
   const redis = new Redis(redisUrl.toString(), { maxRetriesPerRequest: 2 });
   const store = createObjectStore(config.storage);

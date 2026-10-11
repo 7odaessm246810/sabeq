@@ -68,6 +68,18 @@ const slots = async (slug: string) =>
 const HOUR = 3_600_000;
 
 describe('booking a slot', () => {
+  it('waits for a confirmed email (ADR-0017)', async () => {
+    const m = await mentor();
+    const s = await student();
+    await h.db.user.update({ where: { id: s.userId }, data: { emailVerifiedAt: null } });
+    const at = (await slots(m.slug))[0] ?? '';
+    const res = await s.agent
+      .post('/api/v1/bookings')
+      .send({ mentorSlug: m.slug, kind: 'consultation', startsAt: at })
+      .expect(403);
+    expect(res.body.error.code).toBe('EMAIL_UNVERIFIED');
+  });
+
   it('holds the slot while the student pays, with the price snapshot', async () => {
     const m = await mentor();
     const s = await student();

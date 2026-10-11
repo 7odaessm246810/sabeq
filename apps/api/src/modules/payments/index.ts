@@ -50,6 +50,7 @@ export function createPaymentsModule(deps: {
     bookings: deps.bookings,
     publicWebUrl: deps.config.publicWebUrl,
     logger: deps.logger,
+    requireConfirmedEmail: deps.auth.requireConfirmedEmail,
   });
   const authenticate: RequestHandler = deps.auth.authenticate('web');
 

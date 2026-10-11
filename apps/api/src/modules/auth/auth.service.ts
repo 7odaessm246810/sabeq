@@ -148,6 +148,8 @@ export interface AuthServiceDeps {
   secret: string;
   publicWebUrl: string;
   google: { client: GoogleClient; clientId: string } | null;
+  /** Off while no email is really sent: sign-up sends no link and booking does not wait. */
+  emailConfirmation: boolean;
   /** Late-bound to the notifications module: sends the "confirm your email" link. */
   sendVerification: (userId: string, email: string) => Promise<{ devLink?: string }>;
   now?: () => Date;
@@ -269,10 +271,12 @@ export function createAuthService(deps: AuthServiceDeps) {
         throw err;
       }
       // The account exists either way; a failed send is retried from «حسابي».
-      const sent = await deps.sendVerification(user.id, input.email).catch((err: unknown) => {
-        logger.warn({ err, userId: user.id }, 'confirmation email failed at sign-up');
-        return {};
-      });
+      const sent = deps.emailConfirmation
+        ? await deps.sendVerification(user.id, input.email).catch((err: unknown) => {
+            logger.warn({ err, userId: user.id }, 'confirmation email failed at sign-up');
+            return {};
+          })
+        : {};
       return { ...(await startSession(user, 'web', input.meta, true)), ...sent };
     },
 

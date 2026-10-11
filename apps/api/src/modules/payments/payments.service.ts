@@ -36,9 +36,12 @@ export function createPaymentsService(deps: {
   bookings: Pick<BookingsService, 'confirmPaid' | 'holdFor'>;
   publicWebUrl: string;
   logger: Logger;
+  /** ADR-0017: off while no confirmation email can be sent. */
+  requireConfirmedEmail?: boolean;
   now?: () => Date;
 }) {
   const { db, gateway, bookings, publicWebUrl, logger, now = () => new Date() } = deps;
+  const requireConfirmedEmail = deps.requireConfirmedEmail ?? true;
 
   async function runRefund(refundId: string) {
     const r = await db.refund.findUniqueOrThrow({
@@ -98,7 +101,7 @@ export function createPaymentsService(deps: {
         select: { fullName: true, phone: true, email: true, emailVerifiedAt: true },
       });
       // Holds made before the email rule (or an email changed since) still need a confirmed one.
-      if (!user.emailVerifiedAt) throw Errors.emailUnverified();
+      if (requireConfirmedEmail && !user.emailVerifiedAt) throw Errors.emailUnverified();
       let holdUntil = b.holdExpiresAt ?? new Date(now().getTime() + BOOKING_HOLD_MINUTES * 60_000);
       if (method === 'kiosk') {
         if (b.startsAt.getTime() - now().getTime() < KIOSK_MIN_LEAD_HOURS * HOUR)
