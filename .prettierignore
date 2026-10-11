@@ -16,3 +16,7 @@ skills-lock.json
 
 # Research snapshots, kept byte-for-byte as generated
 apps/api/prisma/catalog/*.json
+
+# Playwright output (Phase 22)
+e2e/test-results/
+e2e/playwright-report/

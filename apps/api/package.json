@@ -26,7 +26,8 @@
     "test:db": "prisma generate && tsx scripts/test-db.ts",
     "db:remote": "prisma generate && tsx scripts/remote-db.ts",
     "admin:create": "prisma generate && tsx scripts/create-admin.ts",
-    "storage:check": "tsx scripts/storage-check.ts"
+    "storage:check": "tsx scripts/storage-check.ts",
+    "test:coverage": "pnpm test:db --coverage"
   },
   "dependencies": {
     "@sabeq/types": "workspace:*",
@@ -57,6 +58,7 @@
     "supertest": "catalog:",
     "vitest": "catalog:",
     "prisma": "catalog:",
-    "@types/pg": "catalog:"
+    "@types/pg": "catalog:",
+    "@vitest/coverage-v8": "catalog:"
   }
 }

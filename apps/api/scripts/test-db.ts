@@ -51,4 +51,6 @@ run(path.join(path.dirname(require.resolve('vitest/package.json')), 'vitest.mjs'
   'run',
   '--config',
   'vitest.db.config.ts',
+  // e.g. `pnpm test:db -- --coverage` or a file filter
+  ...process.argv.slice(2).filter((a) => a !== '--'),
 ]);

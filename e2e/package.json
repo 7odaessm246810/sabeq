@@ -1,0 +1,25 @@
+{
+  "name": "@sabeq/e2e",
+  "version": "0.0.0",
+  "private": true,
+  "description": "End-to-end journeys in a real browser against the running stack (Phase 22).",
+  "type": "module",
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "catalog:",
+    "@playwright/test": "catalog:",
+    "@sabeq/config": "workspace:*",
+    "@types/node": "catalog:",
+    "@types/pg": "catalog:",
+    "eslint": "catalog:",
+    "ioredis": "catalog:",
+    "pg": "catalog:",
+    "typescript": "catalog:"
+  }
+}

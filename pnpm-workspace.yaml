@@ -1,6 +1,7 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+  - 'e2e'
 
 # One version of every shared dependency across the monorepo.
 # Apps reference these with "catalog:" instead of a version range.
@@ -48,6 +49,12 @@ catalog:
   '@types/pg': 8.23.1
   ioredis: 6.0.0
   '@aws-sdk/client-s3': 3.1146.0 # private document storage (S3 / R2 / local S3 gateway)
+  # testing (Phase 22)
+  '@playwright/test': 1.64.0
+  '@axe-core/playwright': 4.13.0
+  '@vitest/coverage-v8': 5.0.3
+  jsdom: 30.1.2
+  '@testing-library/react': 16.3.3
 
 # Exact versions only — no surprise upgrades in production.
 savePrefix: ''

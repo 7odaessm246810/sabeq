@@ -1,0 +1,95 @@
+# Every push and pull request (Phase 22):
+#   checks       formatting, lint, types, unit tests (all packages)
+#   integration  API tests against PostgreSQL + Redis + S3 (compose), with coverage thresholds
+#   e2e          the whole stack in Docker, then the Playwright journeys (desktop + phone, axe)
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  TURBO_TELEMETRY_DISABLED: 1
+  HUSKY: 0
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      DATABASE_URL: postgresql://sabeq:sabeq@localhost:5432/sabeq
+      REDIS_URL: redis://localhost:6379
+    steps:
+      - uses: actions/checkout@v4
+      - name: PostgreSQL, Redis and local S3
+        run: docker compose up -d --wait postgres redis storage
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm turbo run build --filter=@sabeq/api^...
+      - name: API tests with coverage
+        run: pnpm --filter @sabeq/api test:coverage
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-coverage
+          path: apps/api/coverage/
+          retention-days: 14
+
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start the stack
+        run: docker compose up -d --build --wait
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Reference data (universities, faculties)
+        run: pnpm turbo run build --filter=@sabeq/api^... && pnpm --filter @sabeq/api db:seed
+        env:
+          DATABASE_URL: postgresql://sabeq:sabeq@localhost:5432/sabeq
+      - run: pnpm --filter @sabeq/e2e exec playwright install --with-deps chromium
+      - name: Journeys
+        run: pnpm --filter @sabeq/e2e test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            e2e/playwright-report/
+            e2e/test-results/
+          retention-days: 14
+      - name: Stack logs on failure
+        if: failure()
+        run: docker compose logs --no-color --tail 300 api web admin

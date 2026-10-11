@@ -1,0 +1,5 @@
+{
+  "extends": "@sabeq/config/tsconfig/base.json",
+  "compilerOptions": { "types": ["node"], "lib": ["ES2024", "DOM"], "noEmit": true },
+  "include": ["playwright.config.ts", "tests", "support"]
+}
