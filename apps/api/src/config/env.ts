@@ -18,6 +18,22 @@ const csv = z
 /** Empty variables (`KEY=` in .env) count as unset. */
 const unsetIfEmpty = (v: unknown) => (v === '' ? undefined : v);
 
+/**
+ * Connection URLs pasted from a provider's dashboard: trims spaces and surrounding quotes, and takes
+ * the URL out of a pasted command (`redis-cli --tls -u rediss://…`).
+ */
+const pastedUrl = (v: unknown) => {
+  if (typeof v !== 'string') return v;
+  const s = v.trim().replace(/^["']|["']$/g, '');
+  return /\s/.test(s) ? (/[a-z]+:\/\/\S+/i.exec(s)?.[0] ?? s) : s;
+};
+/** What a bad URL starts with — the scheme only, never the credentials. */
+const schemeOf = (v: unknown) => {
+  if (typeof v !== 'string' || !v) return 'it is empty';
+  const scheme = /^[a-z+]+:\/\//i.exec(v)?.[0];
+  return scheme ? `it starts with "${scheme}"` : `it starts with "${v.slice(0, 4)}…"`;
+};
+
 const schema = z
   .object({
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
@@ -41,10 +57,23 @@ const schema = z
     API_RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
     /** Requests per client IP per window on /api/v1. */
     API_RATE_LIMIT_MAX: z.coerce.number().int().positive().default(300),
-    DATABASE_URL: z.url({ protocol: /^postgres(ql)?$/, message: 'must be a postgresql:// URL' }),
+    DATABASE_URL: z.preprocess(
+      pastedUrl,
+      z.url({
+        protocol: /^postgres(ql)?$/,
+        error: (i) => `must be a postgresql:// URL (${schemeOf(i.input)})`,
+      }),
+    ),
     /** Connections per API container (N containers × this ≤ what the database / pooler allows). */
     DATABASE_POOL_MAX: z.coerce.number().int().min(1).max(100).default(10),
-    REDIS_URL: z.url({ protocol: /^rediss?$/, message: 'must be a redis:// or rediss:// URL' }),
+    REDIS_URL: z.preprocess(
+      pastedUrl,
+      z.url({
+        protocol: /^rediss?$/,
+        error: (i) =>
+          `must be a redis:// or rediss:// URL (${schemeOf(i.input)}) — on Upstash: the TCP / ioredis URL, not the REST one`,
+      }),
+    ),
     /** HMAC key for OTP codes at rest (Redis). One per environment, never shared. */
     AUTH_OTP_SECRET: z.string().min(32, 'must be at least 32 characters'),
     /** Where OTP codes go. `console` logs them — never allowed in production. */

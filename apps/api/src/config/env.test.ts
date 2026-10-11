@@ -92,3 +92,34 @@ describe('loadConfig', () => {
     expect(() => loadConfig({ ...BASE, DATABASE_URL: 'mysql://x@y/z' })).toThrow(/postgresql/);
   });
 });
+
+describe('connection URLs pasted from a dashboard', () => {
+  it('tolerates spaces, quotes and a pasted redis-cli command', () => {
+    for (const REDIS_URL of [
+      '  rediss://default:pw@x.upstash.io:6379  ',
+      '"rediss://default:pw@x.upstash.io:6379"',
+      'redis-cli --tls -u rediss://default:pw@x.upstash.io:6379',
+    ])
+      expect(loadConfig({ ...BASE, REDIS_URL }).redisUrl).toBe(
+        'rediss://default:pw@x.upstash.io:6379',
+      );
+  });
+
+  it('says what the bad URL starts with, never the secret in it', () => {
+    let message = '';
+    try {
+      loadConfig({ ...BASE, REDIS_URL: 'https://x.upstash.io' });
+    } catch (err) {
+      message = String((err as Error).message);
+    }
+    expect(message).toContain('it starts with "https://"');
+    expect(message).toContain('not the REST one');
+    try {
+      loadConfig({ ...BASE, REDIS_URL: 'AXXXsecrettoken123' });
+    } catch (err) {
+      message = String((err as Error).message);
+    }
+    expect(message).toContain('"AXXX…"');
+    expect(message).not.toContain('secrettoken');
+  });
+});
