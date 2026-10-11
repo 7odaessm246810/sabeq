@@ -33,6 +33,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
+      - name: Railway Dockerfile is in sync with api.Dockerfile
+        run: node docker/railway-dockerfile.mjs && git diff --exit-code docker/api.railway.Dockerfile
 
   integration:
     runs-on: ubuntu-latest
