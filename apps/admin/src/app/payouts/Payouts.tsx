@@ -188,7 +188,7 @@ function Body() {
                       {b.account ? (
                         b.account.display
                       ) : (
-                        <span className="adm-muted">لسه ما ضافهاش</span>
+                        <span className="sb-caption">لسه ما ضافهاش</span>
                       )}
                     </td>
                     <td>{b.lastPaidAt ? formatDate(b.lastPaidAt) : '—'}</td>

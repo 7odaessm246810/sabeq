@@ -202,6 +202,7 @@
   color: var(--error);
 }
 .adm-btn-danger {
+  color: #fff;
   background: var(--error);
   border-color: var(--error);
 }

@@ -177,7 +177,7 @@ function Body({ id, canRefund }: { id: string; canRefund: boolean }) {
                 </tbody>
               </table>
             ) : (
-              <p className="sb-small adm-muted">مفيش محاولات دفع.</p>
+              <p className="sb-caption">مفيش محاولات دفع.</p>
             )}
           </section>
         </div>
@@ -197,7 +197,7 @@ function Body({ id, canRefund }: { id: string; canRefund: boolean }) {
                 />
               </ul>
             ) : (
-              <p className="sb-small adm-muted">محدش فتح غرفة الجلسة.</p>
+              <p className="sb-caption">محدش فتح غرفة الجلسة.</p>
             )}
           </section>
           {b.review ? (
