@@ -1076,6 +1076,8 @@
     }
     .sb-nav-in {
       padding: 0 16px;
+      /* logo + actions must fit a 360px phone (Phase 22: it scrolled sideways) */
+      gap: 12px;
     }
   }
 

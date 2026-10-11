@@ -956,7 +956,8 @@
     gap: 40px;
   }
   .ex-top {
-    grid-template-columns: 1fr;
+    /* minmax(0, …): the search box must not widen the page on phones */
+    grid-template-columns: minmax(0, 1fr);
   }
   .fgrid,
   .fgrid-site {
