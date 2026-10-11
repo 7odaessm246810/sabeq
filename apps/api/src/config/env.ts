@@ -25,7 +25,20 @@ const unsetIfEmpty = (v: unknown) => (v === '' ? undefined : v);
 const pastedUrl = (v: unknown) => {
   if (typeof v !== 'string') return v;
   const s = v.trim().replace(/^["']|["']$/g, '');
-  return /\s/.test(s) ? (/[a-z]+:\/\/\S+/i.exec(s)?.[0] ?? s) : s;
+  if (!/\s/.test(s)) return s;
+  const url = /[a-z]+:\/\/\S+/i.exec(s)?.[0] ?? s;
+  // `redis-cli --tls -u redis://…` (Upstash's snippet): the TLS is in the flag, not the scheme.
+  return /(^|\s)--tls(\s|$)/.test(s) ? url.replace(/^redis:\/\//i, 'rediss://') : url;
+};
+/** R2 shows the endpoint with the bucket after it; the client wants the origin only. */
+const endpointOrigin = (v: unknown) => {
+  const s = pastedUrl(v);
+  if (typeof s !== 'string' || !s) return unsetIfEmpty(s);
+  try {
+    return new URL(s).origin;
+  } catch {
+    return s;
+  }
 };
 /** What a bad URL starts with — the scheme only, never the credentials. */
 const schemeOf = (v: unknown) => {
@@ -79,7 +92,7 @@ const schema = z
     /** Where OTP codes go. `console` logs them — never allowed in production. */
     SMS_PROVIDER: z.enum(['console']).default('console'),
     /** S3-compatible object storage (AWS S3, Cloudflare R2, or the local gateway in Docker). */
-    STORAGE_ENDPOINT: z.url().optional(),
+    STORAGE_ENDPOINT: z.preprocess(endpointOrigin, z.url().optional()),
     STORAGE_REGION: z.string().min(1).default('auto'),
     STORAGE_BUCKET_PRIVATE: z.string().min(3).max(63),
     STORAGE_ACCESS_KEY_ID: z.string().min(1),

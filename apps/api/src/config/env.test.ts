@@ -99,10 +99,21 @@ describe('connection URLs pasted from a dashboard', () => {
       '  rediss://default:pw@x.upstash.io:6379  ',
       '"rediss://default:pw@x.upstash.io:6379"',
       'redis-cli --tls -u rediss://default:pw@x.upstash.io:6379',
+      // Upstash's snippet: TLS in the flag, redis:// in the URL.
+      'redis-cli --tls -u redis://default:pw@x.upstash.io:6379',
     ])
       expect(loadConfig({ ...BASE, REDIS_URL }).redisUrl).toBe(
         'rediss://default:pw@x.upstash.io:6379',
       );
+  });
+
+  it('takes the R2 endpoint without the bucket after it', () => {
+    expect(
+      loadConfig({
+        ...BASE,
+        STORAGE_ENDPOINT: 'https://abc.r2.cloudflarestorage.com/sabeq-staging/',
+      }).storage.endpoint,
+    ).toBe('https://abc.r2.cloudflarestorage.com');
   });
 
   it('says what the bad URL starts with, never the secret in it', () => {

@@ -34,7 +34,7 @@ describe('redisRateStore', () => {
       retryStrategy: () => null,
     });
     const store = redisRateStore(down, 'unit', 1_000);
-    expect((await store.increment('x')).totalHits).toBe(0);
+    expect((await store.increment('x')).totalHits).toBe(1);
     down.disconnect();
   });
 });

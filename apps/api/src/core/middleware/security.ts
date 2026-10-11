@@ -87,7 +87,8 @@ export function redisRateStore(
       } catch (err) {
         // Redis down: let the request through rather than take the whole site down with it.
         logger?.warn({ err }, 'rate limit store unavailable — allowing');
-        return { totalHits: 0, resetTime: new Date(Date.now() + windowMs) };
+        // One hit (the limiter refuses 0): never enough to block anyone.
+        return { totalHits: 1, resetTime: new Date(Date.now() + windowMs) };
       }
     },
     async decrement(k) {
