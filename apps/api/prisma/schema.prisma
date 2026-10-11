@@ -199,13 +199,19 @@ enum ReportStatus {
 /// One account = one role (ADR-0008). Phone (E.164) is the login (ADR-0005).
 model User {
   id              String        @id @default(uuid(7)) @db.Uuid
-  phone           String        @unique @db.VarChar(16)
+  /// Optional contact number, E.164 when set. Sign-in is by email (ADR-0017).
+  phone           String?       @unique @db.VarChar(16)
   role            UserRole
   status          AccountStatus @default(active)
   /// Null until the person fills their profile after the first login (Phase 08).
   fullName        String?       @map("full_name") @db.VarChar(120)
+  /// The login. Always lowercase (checked by the database).
   email           String?       @unique @db.VarChar(254)
   emailVerifiedAt DateTime?     @map("email_verified_at") @db.Timestamptz
+  /// scrypt hash (`scrypt$N$r$p$salt$hash`). Null for accounts that only sign in with Google.
+  passwordHash    String?       @map("password_hash") @db.VarChar(200)
+  /// Google account id (`sub`) once the person signed in with Google.
+  googleSub       String?       @unique @map("google_sub") @db.VarChar(255)
   avatarKey       String?       @map("avatar_key")
   lastLoginAt     DateTime?     @map("last_login_at") @db.Timestamptz
   createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz
@@ -258,7 +264,7 @@ model Admin {
   @@map("admins")
 }
 
-/// Refresh tokens are stored hashed only. OTP codes live in Redis, never here.
+/// Session tokens are stored hashed only.
 model AuthSession {
   id         String    @id @default(uuid(7)) @db.Uuid
   userId     String    @map("user_id") @db.Uuid

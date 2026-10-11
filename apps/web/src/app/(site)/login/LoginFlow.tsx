@@ -1,308 +1,158 @@
 'use client';
 
-import { FieldError, Logo, Segmented, cx, useToast } from '@sabeq/ui';
-import { normalizeEgyptianMobile } from '@sabeq/utils';
+import { Banner, FieldError, cx, useToast } from '@sabeq/ui';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
-import { ApiError } from '@/lib/api';
-import { useAuth } from '@/lib/auth';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
+import {
+  AuthCard,
+  GoogleButton,
+  PasswordField,
+  messageOf,
+  useAfterLogin,
+  useGoogleEnabled,
+} from '@/components/auth/AuthParts';
+import { api } from '@/lib/api';
+import { useAuth, type AuthUser } from '@/lib/auth';
 import { useDemo } from '@/lib/demo-store';
-import { getOwnMentor } from '@/lib/mentors';
 
-type Role = 'student' | 'mentor';
-const EMPTY = ['', '', '', '', '', ''];
-
-const messageOf = (err: unknown, field?: string) => {
-  const e = err instanceof ApiError ? err : null;
-  return (field && e?.fields[field]) || e?.message || 'حصلت مشكلة. جرّب تاني.';
+/** What the Google callback reports back in `?google=` (see auth.routes). */
+const GOOGLE_PROBLEMS: Record<string, string> = {
+  cancelled: 'الدخول بجوجل اتلغى. جرّب تاني أو ادخل بالإيميل.',
+  failed: 'ما قدرناش نكمّل الدخول بجوجل. جرّب تاني.',
+  admin: 'الحساب ده للوحة الإدارة. سجّل دخولك من هناك.',
+  suspended: 'حسابك موقوف. كلّم الدعم عشان نعرف نساعدك.',
+  off: 'الدخول بجوجل مش متاح دلوقتي. ادخل بالإيميل والباسورد.',
 };
 
-/**
- * Passwordless login: phone → 6-digit OTP (ADR-0005), against the API (Phase 07).
- * The role picked here only matters for a new number; an existing account keeps its role.
- */
+/** Email + password, or Google (ADR-0017). New here → /register. */
 export function LoginFlow() {
-  const router = useRouter();
-  const toast = useToast();
-  const demo = useDemo();
   const auth = useAuth();
-  const [step, setStep] = useState<'phone' | 'otp'>('phone');
-  // Coming from "become a mentor" pre-selects the mentor account type.
-  const [role, setRole] = useState<Role>(() =>
-    demo.after?.startsWith('/become-mentor') ? 'mentor' : 'student',
-  );
-  const [phone, setPhone] = useState('');
-  const [phoneError, setPhoneError] = useState<string | null>(null);
+  const toast = useToast();
+  const router = useRouter();
+  const demo = useDemo();
+  const params = useSearchParams();
+  const afterLogin = useAfterLogin();
+  const google = useGoogleEnabled();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState<{ email?: string; password?: string; form?: string }>({});
   const [busy, setBusy] = useState(false);
-  const [digits, setDigits] = useState<string[]>(EMPTY);
-  const [codeError, setCodeError] = useState<string | null>(null);
-  /** Shown on the page in local development only (the API returns it there). */
-  const [devCode, setDevCode] = useState<string | null>(null);
-  const [seconds, setSeconds] = useState(0);
-  const inputs = useRef<(HTMLInputElement | null)[]>([]);
+  const googleResult = params.get('google');
+  const handled = useRef(false);
 
-  // Resend countdown on the OTP step.
+  // Back from Google: the API set the session cookie; read who we are and continue.
   useEffect(() => {
-    if (step !== 'otp' || seconds <= 0) return;
-    const t = setTimeout(() => setSeconds((s) => s - 1), 1000);
-    return () => clearTimeout(t);
-  }, [step, seconds]);
+    if (handled.current || (googleResult !== 'ok' && googleResult !== 'new')) return;
+    handled.current = true;
+    api<{ user: AuthUser }>('/auth/me')
+      .then(async ({ user }) => {
+        await auth.refresh();
+        const first = user.fullName?.split(' ')[0];
+        toast({ kind: 'success', title: first ? `أهلًا ${first}` : 'أهلًا بيك في سابق' });
+        await afterLogin(user, googleResult === 'new');
+      })
+      .catch(() => router.replace('/login?google=failed'));
+  }, [googleResult, auth, router, toast, afterLogin]);
 
-  useEffect(() => {
-    if (step === 'otp') inputs.current[0]?.focus();
-  }, [step]);
-
-  // People type «01012345678», «1012345678» or «+20 101…» — all are the same number.
-  const fullPhone = () => normalizeEgyptianMobile(phone) ?? `+20${phone.replace(/\D/g, '')}`;
-
-  async function sendCode() {
+  async function submit(e?: FormEvent) {
+    e?.preventDefault();
     if (busy) return;
-    if (phone.replace(/\D/g, '').replace(/^(20|0)/, '').length < 10) {
-      setPhoneError('الرقم ناقص. اكتب 10 أرقام بعد +20.');
-      return;
-    }
+    const next: typeof errors = {};
+    if (!email.trim()) next.email = 'اكتب الإيميل.';
+    if (!password) next.password = 'اكتب الباسورد.';
+    setErrors(next);
+    if (Object.keys(next).length) return;
     setBusy(true);
     try {
-      const sent = await auth.requestCode(fullPhone());
-      setDevCode(sent.devCode ?? null);
-      setDigits(EMPTY);
-      setCodeError(null);
-      setSeconds(sent.resendAfterSeconds);
-      setStep('otp');
-    } catch (err) {
-      setPhoneError(messageOf(err, 'phone'));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function resend() {
-    try {
-      const sent = await auth.requestCode(fullPhone());
-      setDevCode(sent.devCode ?? null);
-      setSeconds(sent.resendAfterSeconds);
-      setDigits(EMPTY);
-      setCodeError(null);
-      inputs.current[0]?.focus();
-      toast({ kind: 'info', title: 'بعتنالك كود جديد' });
-    } catch (err) {
-      if (err instanceof ApiError && err.retryAfter) setSeconds(err.retryAfter);
-      toast({ kind: 'error', title: messageOf(err) });
-    }
-  }
-
-  async function verify(code: string[]) {
-    if (code.some((d) => !d) || busy) return;
-    setBusy(true);
-    setCodeError(null);
-    try {
-      const { user } = await auth.verifyCode(fullPhone(), code.join(''), role);
+      const user = await auth.login(email.trim(), password);
       const first = user.fullName?.split(' ')[0];
       toast({
         kind: 'success',
-        title: first ? `أهلًا ${first}` : 'أهلًا بيك في سابق',
+        title: first ? `أهلًا ${first}` : 'أهلًا بيك',
         description: 'سجلت دخولك.',
       });
-      // First login: name (and student details) first; /welcome then continues to `after`.
-      // Mentor applicants give their name in the application's first step instead.
-      if (user.needsProfile && user.role === 'student') {
-        router.push('/welcome');
-        return;
-      }
-      // Approved mentors go to their profile; applicants continue their application.
-      const mentorHome = () =>
-        getOwnMentor().then(
-          () => '/account/mentor',
-          () => '/become-mentor',
-        );
-      const target = demo.after ?? (user.role === 'mentor' ? await mentorHome() : '/sessions');
-      demo.setAfter(null);
-      router.push(target);
+      await afterLogin(user, false);
     } catch (err) {
-      setCodeError(messageOf(err, 'code'));
-      setDigits(EMPTY);
-      inputs.current[0]?.focus();
+      setErrors({ form: messageOf(err) });
       setBusy(false);
     }
   }
 
-  function setDigit(i: number, raw: string) {
-    const v = raw.replace(/\D/g, '');
-    // Pasting the whole code fills every box.
-    if (v.length > 1) {
-      const next = v.slice(0, 6).split('');
-      const filled = [...next, ...Array<string>(6 - next.length).fill('')];
-      setDigits(filled);
-      inputs.current[Math.min(next.length, 5)]?.focus();
-      void verify(filled);
-      return;
-    }
-    const next = [...digits];
-    next[i] = v;
-    setDigits(next);
-    if (v) setCodeError(null);
-    if (v && i < 5) inputs.current[i + 1]?.focus();
-    void verify(next);
-  }
+  if (googleResult === 'ok' || googleResult === 'new')
+    return <section className="auth" aria-busy="true" />;
+
+  const problem = googleResult ? GOOGLE_PROBLEMS[googleResult] : undefined;
+  const mentorFirst = demo.after?.startsWith('/become-mentor');
 
   return (
-    <section className="auth">
-      <div className="sb-card auth-card">
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Logo size={36} />
+    <AuthCard title="سجّل دخولك" lead="أهلًا بيك تاني في سابق.">
+      {problem ? (
+        <Banner kind="error" title="ما دخلناش">
+          {problem}
+        </Banner>
+      ) : null}
+      {google ? (
+        <GoogleButton role={mentorFirst ? 'mentor' : 'student'} label="ادخل بحساب جوجل" />
+      ) : null}
+      <form className="auth-body" onSubmit={(e) => void submit(e)} noValidate>
+        {errors.form ? (
+          <Banner kind="error" title="ما دخلناش">
+            {errors.form}
+          </Banner>
+        ) : null}
+        <div className={cx('sb-field', errors.email && 'sb-field--error')}>
+          <label className="sb-label" htmlFor="em">
+            الإيميل
+          </label>
+          <input
+            className="sb-input"
+            id="em"
+            type="email"
+            dir="ltr"
+            inputMode="email"
+            autoComplete="email"
+            placeholder="name@example.com"
+            value={email}
+            aria-invalid={Boolean(errors.email)}
+            aria-describedby={errors.email ? 'em-err' : undefined}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setErrors({});
+            }}
+          />
+          {errors.email ? <FieldError id="em-err">{errors.email}</FieldError> : null}
         </div>
-        <div className="auth-body">
-          {step === 'phone' ? (
-            <>
-              <h1 className="sb-h2" style={{ fontSize: 26, textAlign: 'center' }}>
-                أهلًا بيك في سابق
-              </h1>
-              <p className="sb-small" style={{ textAlign: 'center' }}>
-                هنبعتلك كود على الموبايل. مفيش باسورد.
-              </p>
-              <Segmented
-                block
-                label="نوع الحساب"
-                value={role}
-                onChange={setRole}
-                options={[
-                  ['student', 'أنا طالب'],
-                  ['mentor', 'أنا مرشد'],
-                ]}
-              />
-              <div className={cx('sb-field', phoneError && 'sb-field--error')}>
-                <label className="sb-label" htmlFor="ph">
-                  رقم الموبايل
-                </label>
-                <div className="phone">
-                  <span className="cc">+20</span>
-                  <input
-                    className="sb-input"
-                    id="ph"
-                    inputMode="numeric"
-                    autoComplete="tel-national"
-                    dir="ltr"
-                    placeholder="10 1234 5678"
-                    value={phone}
-                    aria-invalid={Boolean(phoneError)}
-                    aria-describedby={phoneError ? 'ph-err' : undefined}
-                    onChange={(e) => {
-                      setPhone(e.target.value);
-                      setPhoneError(null);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') void sendCode();
-                    }}
-                  />
-                </div>
-                {phoneError ? <FieldError id="ph-err">{phoneError}</FieldError> : null}
-              </div>
-              <button
-                type="button"
-                className="sb-btn sb-btn--primary sb-btn--lg sb-btn--block"
-                aria-busy={busy}
-                onClick={() => void sendCode()}
-              >
-                ابعتلي الكود
-              </button>
-            </>
-          ) : (
-            <>
-              <h1 className="sb-h2" style={{ fontSize: 26, textAlign: 'center' }}>
-                اكتب الكود
-              </h1>
-              <p className="sb-small" style={{ textAlign: 'center' }}>
-                بعتنا 6 أرقام على <span className="sb-num">+20 {phone}</span> ·{' '}
-                <button
-                  type="button"
-                  className="sb-btn sb-btn--link"
-                  style={{ fontSize: 14 }}
-                  onClick={() => {
-                    setBusy(false);
-                    setStep('phone');
-                  }}
-                >
-                  غيّر الرقم
-                </button>
-              </p>
-              <div
-                className={cx('otp', codeError && 'sb-field--error')}
-                dir="ltr"
-                role="group"
-                aria-label="كود التحقق"
-                aria-describedby={codeError ? 'otp-err' : undefined}
-              >
-                {digits.map((d, i) => (
-                  <input
-                    key={i}
-                    ref={(el) => {
-                      inputs.current[i] = el;
-                    }}
-                    className="sb-input"
-                    inputMode="numeric"
-                    autoComplete={i === 0 ? 'one-time-code' : 'off'}
-                    maxLength={i === 0 ? 6 : 1}
-                    aria-label={`رقم ${i + 1}`}
-                    aria-invalid={Boolean(codeError)}
-                    value={d}
-                    onChange={(e) => setDigit(i, e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Backspace' && !d && i > 0) inputs.current[i - 1]?.focus();
-                    }}
-                  />
-                ))}
-              </div>
-              {codeError ? (
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <FieldError id="otp-err">{codeError}</FieldError>
-                </div>
-              ) : null}
-              {devCode ? (
-                <p className="sb-caption" style={{ textAlign: 'center' }}>
-                  للتجربة على جهازك: الكود <span className="sb-num">{devCode}</span>
-                </p>
-              ) : null}
-              <button
-                type="button"
-                className="sb-btn sb-btn--primary sb-btn--lg sb-btn--block"
-                disabled={digits.some((x) => !x)}
-                aria-busy={busy}
-                onClick={() => void verify(digits)}
-              >
-                تأكيد
-              </button>
-              <p className="sb-caption" style={{ textAlign: 'center' }} aria-live="polite">
-                {seconds > 0 ? (
-                  <>
-                    تقدر تطلب كود جديد بعد <span className="sb-num">{seconds}</span> ثانية
-                  </>
-                ) : (
-                  <button
-                    type="button"
-                    className="sb-btn sb-btn--link"
-                    style={{ fontSize: 13 }}
-                    onClick={() => void resend()}
-                  >
-                    ابعت كود جديد
-                  </button>
-                )}
-              </p>
-            </>
-          )}
+        <PasswordField
+          id="pw"
+          label="الباسورد"
+          value={password}
+          onChange={(v) => {
+            setPassword(v);
+            setErrors({});
+          }}
+          error={errors.password ?? null}
+          autoComplete="current-password"
+        />
+        <button
+          type="submit"
+          className="sb-btn sb-btn--primary sb-btn--lg sb-btn--block"
+          aria-busy={busy}
+        >
+          دخول
+        </button>
+        <div className="auth-links">
+          <Link href="/forgot-password" className="ul">
+            نسيت الباسورد؟
+          </Link>
+          <span>
+            معندكش حساب؟{' '}
+            <Link href="/register" className="ul">
+              اعمل حساب
+            </Link>
+          </span>
         </div>
-      </div>
-      <p className="sb-caption" style={{ textAlign: 'center', marginTop: 16 }}>
-        بالمتابعة انت موافق على{' '}
-        <Link href="/terms" className="ul">
-          الشروط
-        </Link>{' '}
-        و
-        <Link href="/privacy" className="ul">
-          الخصوصية
-        </Link>
-        .
-      </p>
-    </section>
+      </form>
+    </AuthCard>
   );
 }

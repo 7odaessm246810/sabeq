@@ -16,6 +16,7 @@ import { createCatalogModule } from './modules/catalog/index.js';
 import { createPaymentsModule } from './modules/payments/index.js';
 import { createSessionsModule } from './modules/sessions/index.js';
 import { createReviewsModule } from './modules/reviews/index.js';
+import { createEmailSender } from './modules/notifications/email.js';
 import { createNotificationsModule } from './modules/notifications/index.js';
 import { createPayoutsModule } from './modules/payouts/index.js';
 import { createAdminModule } from './modules/admin/index.js';
@@ -53,7 +54,18 @@ function main() {
     store.ensureBucket().catch((err: unknown) => logger.error({ err }, 'could not create bucket'));
   }
 
-  const auth = createAuthModule({ config, db, redis, logger });
+  const email = createEmailSender(config.email, logger);
+  const auth = createAuthModule({
+    config,
+    db,
+    redis,
+    logger,
+    crypto,
+    email,
+    // Late-bound: notifications is created later and needs auth.
+    sendVerification: (userId, address) =>
+      notifications.notifications.sendVerification(userId, address),
+  });
   const account = createAccountModule({ db, auth });
   const media = createMediaModule({ store });
   const catalog = createCatalogModule({ db, auth, logos: media.logos });
@@ -96,6 +108,7 @@ function main() {
     auth,
     config,
     logger,
+    email,
   });
   const payouts = createPayoutsModule({ db, crypto, auth });
   const admin = createAdminModule({

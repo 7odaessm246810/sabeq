@@ -17,7 +17,7 @@ export default async function globalSetup() {
   }
 
   const redis = new Redis(REDIS_URL, { maxRetriesPerRequest: 2 });
-  for (const pattern of ['otp:*ip:*', 'rl:*'] as const) {
+  for (const pattern of ['auth:*:ip:*', 'auth:login:fail:*', 'rl:*'] as const) {
     const keys = await redis.keys(pattern);
     if (keys.length) await redis.del(...keys);
   }

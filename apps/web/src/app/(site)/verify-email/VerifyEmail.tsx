@@ -5,10 +5,12 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ApiError } from '@/lib/api';
+import { useAuth } from '@/lib/auth';
 import { verifyEmail } from '@/lib/notifications';
 
 export function VerifyEmail() {
   const token = useSearchParams().get('token') ?? '';
+  const { refresh } = useAuth();
   const [result, setResult] = useState<
     { ok: true; email: string } | { ok: false; message: string } | null
   >(null);
@@ -16,7 +18,11 @@ export function VerifyEmail() {
   useEffect(() => {
     let live = true;
     verifyEmail(token)
-      .then((s) => live && setResult({ ok: true, email: s.email ?? '' }))
+      .then(async (s) => {
+        // Signed in on this device: booking unlocks without a reload.
+        await refresh().catch(() => undefined);
+        if (live) setResult({ ok: true, email: s.email ?? '' });
+      })
       .catch(
         (err: unknown) =>
           live &&
@@ -28,6 +34,7 @@ export function VerifyEmail() {
     return () => {
       live = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- confirm once per token
   }, [token]);
 
   return (
@@ -42,7 +49,7 @@ export function VerifyEmail() {
               إيميلك اتأكد
             </h1>
             <p className="sb-lead" dir="auto">
-              هنبعت إشعارات جلساتك على {result.email}.
+              تقدر تحجز دلوقتي، وهنبعت إشعارات جلساتك على {result.email}.
             </p>
             <Link className="sb-btn sb-btn--primary" href="/sessions">
               جلساتي

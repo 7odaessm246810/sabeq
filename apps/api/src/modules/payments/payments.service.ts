@@ -93,6 +93,12 @@ export function createPaymentsService(deps: {
       if (!gateway.methods.includes(method))
         throw Errors.validation({ method: MESSAGES.method }, MESSAGES.method);
       const b = await bookings.holdFor(studentId, bookingId);
+      const user = await db.user.findUniqueOrThrow({
+        where: { id: studentId },
+        select: { fullName: true, phone: true, email: true, emailVerifiedAt: true },
+      });
+      // Holds made before the email rule (or an email changed since) still need a confirmed one.
+      if (!user.emailVerifiedAt) throw Errors.emailUnverified();
       let holdUntil = b.holdExpiresAt ?? new Date(now().getTime() + BOOKING_HOLD_MINUTES * 60_000);
       if (method === 'kiosk') {
         if (b.startsAt.getTime() - now().getTime() < KIOSK_MIN_LEAD_HOURS * HOUR)
@@ -101,10 +107,6 @@ export function createPaymentsService(deps: {
         await db.booking.update({ where: { id: b.id }, data: { holdExpiresAt: holdUntil } });
       }
 
-      const user = await db.user.findUniqueOrThrow({
-        where: { id: studentId },
-        select: { fullName: true, phone: true, email: true },
-      });
       const [firstName = 'طالب', ...rest] = (user.fullName ?? 'طالب سابق').split(' ');
       const payment = await db.payment.create({
         data: { bookingId: b.id, method, amountPiasters: b.totalPiasters },

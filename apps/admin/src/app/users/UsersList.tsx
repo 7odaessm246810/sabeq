@@ -128,7 +128,8 @@ function Body() {
                 <tr key={u.id}>
                   <td>
                     <b>{u.name ?? 'من غير اسم'}</b>
-                    <span className="sb-caption adm-ltr">{u.phone}</span>
+                    <span className="sb-caption adm-ltr">{u.email ?? '—'}</span>
+                    {u.phone ? <span className="sb-caption adm-ltr">{u.phone}</span> : null}
                   </td>
                   <td>
                     {u.role === 'mentor' ? 'مرشد' : 'طالب'}
@@ -168,8 +169,8 @@ function Body() {
         <ReasonModal
           title={
             acting.status === 'active'
-              ? `توقّف حساب ${acting.name ?? acting.phone}؟`
-              : `ترجّع حساب ${acting.name ?? acting.phone}؟`
+              ? `توقّف حساب ${acting.name ?? acting.email ?? ''}؟`
+              : `ترجّع حساب ${acting.name ?? acting.email ?? ''}؟`
           }
           description={
             acting.status === 'active'

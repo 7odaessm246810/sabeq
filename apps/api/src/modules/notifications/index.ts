@@ -4,8 +4,8 @@
  *   POST   /api/v1/me/notifications/read     { ids? }       → { marked }   (no ids: all)
  *   GET    /api/v1/me/email                                 → { email, verified }
  *   PUT    /api/v1/me/email                  { email }      → { email, verified } + confirmation link
+ *                                                             (the email is also the login, ADR-0017)
  *   POST   /api/v1/me/email/resend                          → { email, verified }
- *   DELETE /api/v1/me/email                                 → { email: null, verified: false }
  *   POST   /api/v1/email/verify              { token }      → { email, verified }   (signed out ok)
  */
 import { Router, type RequestHandler } from 'express';
@@ -18,7 +18,7 @@ import { parseInput, sendData } from '../../core/http.js';
 import type { Db } from '../../infra/db.js';
 import type { createAuthModule } from '../auth/index.js';
 import { requireAuth } from '../auth/index.js';
-import { createConsoleSender, createResendSender, type EmailSender } from './email.js';
+import { createEmailSender, type EmailSender } from './email.js';
 import { createNotificationsService } from './notifications.service.js';
 
 const listQuery = z.object({
@@ -46,17 +46,13 @@ export function createNotificationsModule(deps: {
   /** Tests inject a sender to read what was "sent". */
   email?: EmailSender;
 }) {
-  const email =
-    deps.email ??
-    (deps.config.email.provider === 'resend'
-      ? createResendSender(deps.config.email)
-      : createConsoleSender(deps.logger));
+  const email = deps.email ?? createEmailSender(deps.config.email, deps.logger);
   const notifications = createNotificationsService({
     db: deps.db,
     redis: deps.redis,
     email,
     publicWebUrl: deps.config.publicWebUrl,
-    secret: deps.config.auth.otpSecret,
+    secret: deps.config.auth.secret,
     logger: deps.logger,
   });
   const authenticate: RequestHandler = deps.auth.authenticate('web');
@@ -92,9 +88,6 @@ export function createNotificationsModule(deps: {
       });
       me.post('/email/resend', async (req, res) => {
         sendData(res, await notifications.resendVerification(userId(req)));
-      });
-      me.delete('/email', async (req, res) => {
-        sendData(res, await notifications.removeEmail(userId(req)));
       });
       v1.use('/me', me);
 

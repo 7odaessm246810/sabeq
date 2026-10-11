@@ -16,7 +16,7 @@ export interface CheckoutInput {
   amountPiasters: number;
   method: PayMethod;
   itemName: string;
-  billing: { firstName: string; lastName: string; phone: string; email: string | null };
+  billing: { firstName: string; lastName: string; phone: string | null; email: string | null };
   /** Where Paymob posts the transaction (our webhook). */
   notificationUrl: string;
   /** Where the student's browser lands after paying (card / wallet). */
@@ -75,7 +75,7 @@ export function createPaymobGateway(cfg: Config['payments']): PaymentGateway {
           billing_data: {
             first_name: input.billing.firstName,
             last_name: input.billing.lastName || input.billing.firstName,
-            phone_number: input.billing.phone,
+            phone_number: input.billing.phone ?? 'NA',
             email: input.billing.email ?? 'NA',
             country: 'EG',
             city: 'NA',

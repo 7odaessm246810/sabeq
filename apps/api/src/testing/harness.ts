@@ -1,6 +1,6 @@
 /**
  * The whole API wired like server.ts, against the test database, Redis db 15 and the local S3
- * gateway (bucket `sabeq-test`), with an in-memory SMS sender — for integration tests.
+ * gateway (bucket `sabeq-test`), with in-memory email and a fake Google — for integration tests.
  */
 import { Redis } from 'ioredis';
 import { pino } from 'pino';
@@ -13,7 +13,9 @@ import { createDocumentCrypto } from '../infra/document-crypto.js';
 import { createObjectStore } from '../infra/storage.js';
 import { createAccountModule } from '../modules/account/index.js';
 import { createAuthModule } from '../modules/auth/index.js';
-import type { SmsSender } from '../modules/auth/sms.js';
+import type { GoogleClient } from '../modules/auth/google.js';
+import { hashPassword } from '../modules/auth/password.js';
+import { currentStep, newTotpSecret, totpAt } from '../modules/auth/totp.js';
 import { createBookingsModule } from '../modules/bookings/index.js';
 import { createCatalogModule } from '../modules/catalog/index.js';
 import { createPaymentsModule } from '../modules/payments/index.js';
@@ -43,16 +45,39 @@ export function createHarness() {
   const redis = new Redis(redisUrl.toString(), { maxRetriesPerRequest: 2 });
   const store = createObjectStore(config.storage);
   const crypto = createDocumentCrypto(config.documentKeys);
-  const codes = new Map<string, string>();
-  const sms: SmsSender = {
-    insecure: false,
-    sendOtp(phone, code) {
-      codes.set(phone, code);
-      return Promise.resolve();
+  const emails = createConsoleSender(logger);
+  /** What Google "returns" for the next sign-in (tests set it; the nonce is filled in). */
+  const google = {
+    next: null as Record<string, unknown> | null,
+    lastAuthorize: null as URL | null,
+  };
+  const googleClient: GoogleClient = {
+    authorizeUrl(p) {
+      const u = new URL('https://accounts.google.test/auth');
+      for (const [k, v] of Object.entries(p)) u.searchParams.set(k, v);
+      google.lastAuthorize = u;
+      return u.toString();
+    },
+    exchange() {
+      if (!google.next) return Promise.reject(new Error('no google answer set'));
+      return Promise.resolve({
+        ...google.next,
+        nonce: google.lastAuthorize?.searchParams.get('nonce'),
+      });
     },
   };
 
-  const auth = createAuthModule({ config, db, redis, logger, sms });
+  const auth = createAuthModule({
+    config,
+    db,
+    redis,
+    logger,
+    crypto,
+    email: emails,
+    sendVerification: (userId, address) =>
+      notifications.notifications.sendVerification(userId, address),
+    google: { client: googleClient, clientId: 'test-client.apps.googleusercontent.com' },
+  });
   const account = createAccountModule({ db, auth });
   const media = createMediaModule({ store });
   const catalog = createCatalogModule({ db, auth, logos: media.logos });
@@ -90,7 +115,6 @@ export function createHarness() {
     auth,
     onRatingChanged: () => mentors.mentors.invalidate(),
   });
-  const emails = createConsoleSender(logger);
   const notifications = createNotificationsModule({
     db,
     redis,
@@ -137,19 +161,40 @@ export function createHarness() {
   const newPhone = () => `015${String(++seq % 1e8).padStart(8, '0')}`;
   const e164 = (local: string) => `+20${local.slice(1)}`;
 
-  async function login(phone: string, base: string, role?: 'student' | 'mentor') {
-    await redis.del(`otp:cooldown:${e164(phone)}`);
-    // Every test signs in from the same address; the per-IP hourly limits (tested on their own in
-    // auth.db.test) would otherwise trip across files and across runs within the hour.
-    const ipKeys = await redis.keys('otp:*ip:*');
-    if (ipKeys.length) await redis.del(...ipKeys);
+  const newEmail = () => `user${++seq}-${Date.now().toString(36)}@test.sabeq`;
+  const PASSWORD = 'test-password-123';
+
+  // Every test signs in from the same address; the per-IP limits (tested on their own in
+  // auth.db.test) would otherwise trip across files and across runs within the hour.
+  async function clearIpLimits() {
+    const keys = await redis.keys('auth:*:ip:*');
+    if (keys.length) await redis.del(...keys);
+  }
+
+  /**
+   * A new website account through the real sign-up, then (directly) a confirmed email and a phone,
+   * as most tests need someone who can book.
+   */
+  async function loginWeb(role: 'student' | 'mentor', phone = newPhone()) {
+    await clearIpLimits();
     const agent = request.agent(app);
-    await agent.post(`${base}/otp/request`).send({ phone }).expect(202);
+    const email = newEmail();
     const res = await agent
-      .post(`${base}/otp/verify`)
-      .send({ phone, code: codes.get(e164(phone)), ...(role ? { role } : {}) })
-      .expect(200);
-    return { agent, userId: res.body.data.user.id as string, phone };
+      .post('/api/v1/auth/register')
+      .send({
+        fullName: role === 'student' ? 'Student Test' : 'Mentor Test',
+        email,
+        password: PASSWORD,
+        role,
+      })
+      .expect(201);
+    const userId = res.body.data.user.id as string;
+    await db.user.update({
+      where: { id: userId },
+      // No name yet, like a phone sign-up used to be: tests of the profile step start from there.
+      data: { emailVerifiedAt: new Date(), phone: e164(phone), fullName: null },
+    });
+    return { agent, userId, phone, email };
   }
 
   return {
@@ -171,21 +216,50 @@ export function createHarness() {
     emails: emails.sent,
     crypto,
     newPhone,
-    /** A website account (new number unless one is given). */
-    loginWeb: (role: 'student' | 'mentor', phone = newPhone()) =>
-      login(phone, '/api/v1/auth', role),
-    /** An admin account created directly (as `pnpm admin:create` does) and signed in. */
+    newEmail,
+    PASSWORD,
+    clearIpLimits,
+    /** Set what the fake Google answers next (`nonce` is copied from the last redirect). */
+    google,
+    /** A website account with a confirmed email (new number unless one is given). */
+    loginWeb,
+    /**
+     * An admin account created directly (as `pnpm admin:create` + its link do) with the app code
+     * already set up, signed in through both steps.
+     */
     async loginAdmin(adminRole: AdminRole) {
-      const phone = newPhone();
-      await db.user.create({
+      await clearIpLimits();
+      const email = newEmail();
+      const totpSecret = newTotpSecret();
+      const user = await db.user.create({
         data: {
-          phone: e164(phone),
+          email,
+          emailVerifiedAt: new Date(),
+          passwordHash: await hashPassword(PASSWORD),
           role: 'admin',
           fullName: `Admin ${adminRole}`,
           admin: { create: { adminRole } },
         },
+        select: { id: true },
       });
-      return login(phone, '/api/v1/admin/auth');
+      const { keyId, blob } = crypto.seal(Buffer.from(totpSecret), `totp:${user.id}`);
+      await db.admin.update({
+        where: { userId: user.id },
+        data: { totpSecretEnc: `${keyId}.${blob.toString('base64')}`, totpEnabledAt: new Date() },
+      });
+      const agent = request.agent(app);
+      const step = await agent
+        .post('/api/v1/admin/auth/login')
+        .send({ email, password: PASSWORD })
+        .expect(200);
+      await agent
+        .post('/api/v1/admin/auth/totp')
+        .send({
+          challenge: step.body.data.challenge,
+          code: totpAt(totpSecret, currentStep(Date.now())),
+        })
+        .expect(200);
+      return { agent, userId: user.id, email, totpSecret };
     },
     async close() {
       await redis.quit();

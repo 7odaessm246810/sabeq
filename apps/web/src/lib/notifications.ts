@@ -44,7 +44,6 @@ export const getEmail = () => api<EmailState>('/me/email');
 export const setEmail = (email: string) =>
   api<EmailState>('/me/email', { method: 'PUT', body: { email } });
 export const resendEmail = () => api<EmailState>('/me/email/resend', { method: 'POST' });
-export const removeEmail = () => api<EmailState>('/me/email', { method: 'DELETE' });
 export const verifyEmail = (token: string) =>
   api<EmailState>('/email/verify', { method: 'POST', body: { token } });
 

@@ -48,6 +48,8 @@ export interface SessionService {
   revoke(sessionId: string): Promise<void>;
   /** Logs a user out everywhere — on suspension, role change or "log out of all devices". */
   revokeAll(userId: string): Promise<void>;
+  /** Every session but this one — after a password change on this device. */
+  revokeOthers(userId: string, keepSessionId: string): Promise<void>;
 }
 
 interface CachedSession extends AuthContext {
@@ -57,6 +59,12 @@ interface CachedSession extends AuthContext {
 export function createSessionService({ db, redis }: { db: Db; redis: Redis }): SessionService {
   async function purge(hashes: string[]) {
     if (hashes.length) await redis.del(...hashes.map(cacheKey));
+  }
+
+  async function revokeWhere(where: { userId: string; revokedAt: null; id?: { not: string } }) {
+    const live = await db.authSession.findMany({ where, select: { tokenHash: true } });
+    await db.authSession.updateMany({ where, data: { revokedAt: new Date() } });
+    await purge(live.map((s) => s.tokenHash));
   }
 
   return {
@@ -132,16 +140,9 @@ export function createSessionService({ db, redis }: { db: Db; redis: Redis }): S
       await purge([row.tokenHash]);
     },
 
-    async revokeAll(userId) {
-      const live = await db.authSession.findMany({
-        where: { userId, revokedAt: null },
-        select: { tokenHash: true },
-      });
-      await db.authSession.updateMany({
-        where: { userId, revokedAt: null },
-        data: { revokedAt: new Date() },
-      });
-      await purge(live.map((s) => s.tokenHash));
-    },
+    revokeAll: (userId) => revokeWhere({ userId, revokedAt: null }),
+
+    revokeOthers: (userId, keepSessionId) =>
+      revokeWhere({ userId, revokedAt: null, id: { not: keepSessionId } }),
   };
 }

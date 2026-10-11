@@ -1,6 +1,7 @@
 /**
- * Phone + OTP login end to end: real PostgreSQL (scripts/test-db.ts) and real Redis (database 15,
- * flushed per test). SMS goes to an in-memory fake so tests can read the codes.
+ * Email + password, Google and admin app-code login end to end (ADR-0017): real PostgreSQL
+ * (scripts/test-db.ts) and real Redis (database 15, flushed per test). Emails go to the console
+ * sender (kept in memory) and Google is a fake that answers what the test sets.
  */
 import { Router } from 'express';
 import { Redis } from 'ioredis';
@@ -12,8 +13,13 @@ import { createApp } from '../../app.js';
 import { loadConfig } from '../../config/env.js';
 import { sendData } from '../../core/http.js';
 import { createDb } from '../../infra/db.js';
+import { createDocumentCrypto } from '../../infra/document-crypto.js';
+import { createConsoleSender } from '../notifications/email.js';
+import { AUTH_LIMITS } from './auth.service.js';
+import type { GoogleClient } from './google.js';
 import { createAuthModule, requireAdmin, requireRole } from './index.js';
-import type { SmsSender } from './sms.js';
+import { hashPassword } from './password.js';
+import { currentStep, totpAt } from './totp.js';
 
 const dbUrl = process.env.DATABASE_URL;
 if (!dbUrl?.includes('_test'))
@@ -24,65 +30,98 @@ redisUrl.pathname = '/15';
 const silent = pino({ level: 'silent' });
 const db = createDb({ url: dbUrl, poolMax: 4, logger: silent });
 const redis = new Redis(redisUrl.toString(), { maxRetriesPerRequest: 2 });
+const config = loadConfig({
+  ...TEST_ENV,
+  APP_ENV: 'local',
+  DATABASE_URL: dbUrl,
+  REDIS_URL: redisUrl.toString(),
+});
+const crypto = createDocumentCrypto(config.documentKeys);
+const mail = createConsoleSender(silent);
+const verifications: { userId: string; email: string }[] = [];
 
-const sent: { phone: string; code: string }[] = [];
-const fakeSms: SmsSender = {
-  insecure: false,
-  sendOtp(phone, code) {
-    sent.push({ phone, code });
-    return Promise.resolve();
+const CLIENT_ID = 'test-client.apps.googleusercontent.com';
+let googleAnswer: Record<string, unknown> = {};
+let lastNonce = '';
+const google: GoogleClient = {
+  authorizeUrl(p) {
+    lastNonce = p.nonce;
+    return `https://accounts.google.test/auth?state=${p.state}`;
   },
+  exchange: () => Promise.resolve({ ...googleAnswer, nonce: lastNonce }),
 };
-const lastCode = (phone: string) => sent.findLast((s) => s.phone === phone)?.code ?? '';
 
-function build(env: NodeJS.ProcessEnv = {}, sms: SmsSender | null = fakeSms) {
-  const config = loadConfig({
-    ...TEST_ENV,
-    APP_ENV: 'local',
-    DATABASE_URL: dbUrl,
-    REDIS_URL: redisUrl.toString(),
-    ...env,
+const auth = createAuthModule({
+  config,
+  db,
+  redis,
+  logger: silent,
+  crypto,
+  email: mail,
+  sendVerification: (userId, email) => {
+    verifications.push({ userId, email });
+    return Promise.resolve({ devLink: 'http://localhost:3000/verify-email?token=x' });
+  },
+  google: { client: google, clientId: CLIENT_ID },
+});
+const app = createApp({
+  config,
+  logger: silent,
+  mountV1(v1) {
+    auth.mount(v1);
+    const probe = Router();
+    probe.use(auth.authenticate('web'));
+    probe.get('/student-only', requireRole('student'), (_req, res) => sendData(res, 'ok'));
+    v1.use('/probe', probe);
+    const adminProbe = Router();
+    adminProbe.use(auth.authenticate('admin'));
+    adminProbe.get('/finance', requireAdmin('finance'), (_req, res) => sendData(res, 'ok'));
+    v1.use('/admin/probe', adminProbe);
+  },
+});
+
+// Unique per run: the test database persists between tests in one run.
+let seq = Math.floor(Math.random() * 1e6);
+const newEmail = () => `auth${++seq}-${Date.now().toString(36)}@test.sabeq`;
+const PASSWORD = 'correct horse battery';
+
+async function register(
+  over: Partial<{ email: string; role: 'student' | 'mentor'; password: string }> = {},
+) {
+  const agent = request.agent(app);
+  const email = over.email ?? newEmail();
+  const res = await agent.post('/api/v1/auth/register').send({
+    fullName: 'ملك أشرف',
+    email,
+    password: over.password ?? PASSWORD,
+    role: over.role ?? 'student',
   });
-  const auth = createAuthModule({ config, db, redis, logger: silent, ...(sms ? { sms } : {}) });
-  return {
-    auth,
-    app: createApp({
-      config,
-      logger: silent,
-      mountV1(v1) {
-        auth.mount(v1);
-        const probe = Router();
-        probe.use(auth.authenticate('web'));
-        probe.get('/student-only', requireRole('student'), (_req, res) => sendData(res, 'ok'));
-        v1.use('/probe', probe);
-        const adminProbe = Router();
-        adminProbe.use(auth.authenticate('admin'));
-        adminProbe.get('/finance', requireAdmin('finance'), (_req, res) => sendData(res, 'ok'));
-        v1.use('/admin/probe', adminProbe);
-      },
-    }),
-  };
+  return { agent, res, email };
 }
 
-const { app, auth } = build();
+const login = (email: string, password = PASSWORD, agent = request.agent(app)) =>
+  agent.post('/api/v1/auth/login').send({ email, password });
 
-// Unique numbers per run: the test database persists between tests in one run.
-let seq = Math.floor(Math.random() * 1e6);
-const newPhone = () => `010${String(++seq).padStart(8, '0')}`;
-const e164 = (local: string) => `+20${local.slice(1)}`;
-
-async function login(phone: string, role: 'student' | 'mentor' = 'student', base = '/api/v1/auth') {
+/** Follows /auth/google → fake Google → callback; returns where the browser lands. */
+async function googleSignIn(answer: Record<string, unknown>, role = 'student') {
+  googleAnswer = {
+    iss: 'https://accounts.google.com',
+    aud: CLIENT_ID,
+    exp: Date.now() / 1000 + 300,
+    email_verified: true,
+    ...answer,
+  };
   const agent = request.agent(app);
-  await agent.post(`${base}/otp/request`).send({ phone }).expect(202);
-  const res = await agent
-    .post(`${base}/otp/verify`)
-    .send({ phone, code: lastCode(e164(phone)), role });
-  return { agent, res };
+  const start = await agent.get(`/api/v1/auth/google?role=${role}`).expect(303);
+  const state = new URL(String(start.headers.location)).searchParams.get('state');
+  const back = await agent.get(`/api/v1/auth/google/callback?code=abc&state=${state}`).expect(303);
+  return { agent, location: String(back.headers.location) };
 }
 
 beforeEach(async () => {
   await redis.flushdb();
-  sent.length = 0;
+  mail.sent.length = 0;
+  verifications.length = 0;
 });
 
 afterAll(async () => {
@@ -90,194 +129,331 @@ afterAll(async () => {
   await db.$disconnect();
 });
 
-describe('OTP request', () => {
-  it('accepts Egyptian numbers in any common format and refuses others', async () => {
-    const local = newPhone();
-    const res = await request(app)
-      .post('/api/v1/auth/otp/request')
-      .send({ phone: `+20 ${local.slice(1)}` })
-      .expect(202);
-    expect(res.body.data).toEqual({ expiresInSeconds: 300, resendAfterSeconds: 30 });
-    expect(sent).toHaveLength(1);
-    expect(sent[0]?.phone).toBe(e164(local));
-    expect(sent[0]?.code).toMatch(/^\d{6}$/);
-
-    const bad = await request(app)
-      .post('/api/v1/auth/otp/request')
-      .send({ phone: '0123' })
-      .expect(400);
-    expect(bad.body.error.fields.phone).toBeTruthy();
-  });
-
-  it('enforces the resend cooldown with Retry-After', async () => {
-    const phone = newPhone();
-    await request(app).post('/api/v1/auth/otp/request').send({ phone }).expect(202);
-    const res = await request(app).post('/api/v1/auth/otp/request').send({ phone }).expect(429);
-    expect(res.body.error.code).toBe('RATE_LIMITED');
-    expect(Number(res.headers['retry-after'])).toBeGreaterThan(0);
-    expect(sent).toHaveLength(1);
-  });
-
-  it('returns the code to the page only locally with the console sender', async () => {
-    const local = build({}, null).app;
-    const res = await request(local)
-      .post('/api/v1/auth/otp/request')
-      .send({ phone: newPhone() })
-      .expect(202);
-    expect(res.body.data.devCode).toMatch(/^\d{6}$/);
-
-    const staging = build({ APP_ENV: 'staging' }, null).app;
-    const res2 = await request(staging)
-      .post('/api/v1/auth/otp/request')
-      .send({ phone: newPhone() })
-      .expect(202);
-    expect(res2.body.data.devCode).toBeUndefined();
-  });
-});
-
-describe('OTP verify and sessions', () => {
-  it('signs up a new student, sets an httpOnly cookie, and /me works until logout', async () => {
-    const phone = newPhone();
-    const { agent, res } = await login(phone);
-    expect(res.status).toBe(200);
-    expect(res.body.data.isNew).toBe(true);
-    expect(res.body.data.user).toMatchObject({
-      role: 'student',
-      phone: e164(phone),
-      needsProfile: true,
+describe('sign-up', () => {
+  it('makes a student with a profile, signs in, and sends the confirmation link', async () => {
+    const { agent, res, email } = await register({ email: `Mixed.Case${++seq}@Test.Sabeq` });
+    expect(res.status).toBe(201);
+    expect(res.body.data).toMatchObject({
+      isNew: true,
+      devLink: expect.stringContaining('/verify-email'),
+      user: {
+        role: 'student',
+        fullName: 'ملك أشرف',
+        email: email.toLowerCase(),
+        emailVerified: false,
+        hasPassword: true,
+        phone: null,
+      },
     });
-
     const cookie = String(res.headers['set-cookie']);
     expect(cookie).toMatch(/^sb_session=/);
     expect(cookie).toMatch(/HttpOnly/);
     expect(cookie).toMatch(/SameSite=Lax/);
 
     const user = await db.user.findUniqueOrThrow({
-      where: { phone: e164(phone) },
+      where: { email: email.toLowerCase() },
       include: { student: true },
     });
     expect(user.student).not.toBeNull();
+    expect(user.passwordHash).toMatch(/^scrypt\$/);
+    expect(verifications).toEqual([{ userId: user.id, email: email.toLowerCase() }]);
 
-    const me = await agent.get('/api/v1/auth/me').expect(200);
-    expect(me.body.data.user.id).toBe(user.id);
     await agent.get('/api/v1/probe/student-only').expect(200);
-
     await agent.post('/api/v1/auth/logout').expect(200);
     await agent.get('/api/v1/auth/me').expect(401);
   });
 
-  it('rejects a wrong code with the attempts left, and burns it after 5 tries', async () => {
-    const phone = newPhone();
-    await request(app).post('/api/v1/auth/otp/request').send({ phone }).expect(202);
-    const right = lastCode(e164(phone));
-    const wrong = right === '000000' ? '111111' : '000000';
-
-    const first = await request(app)
-      .post('/api/v1/auth/otp/verify')
-      .send({ phone, code: wrong })
+  it('validates in Arabic and refuses a taken email whatever its case', async () => {
+    const bad = await request(app)
+      .post('/api/v1/auth/register')
+      .send({ fullName: 'x', email: 'not-an-email', password: 'short', role: 'admin' })
       .expect(400);
-    expect(first.body.error.fields.code).toContain('4');
+    expect(Object.keys(bad.body.error.fields).sort()).toEqual([
+      'email',
+      'fullName',
+      'password',
+      'role',
+    ]);
 
-    for (let i = 0; i < 4; i++) {
-      await request(app).post('/api/v1/auth/otp/verify').send({ phone, code: wrong }).expect(400);
-    }
-    // Even the right code is useless now.
-    await request(app).post('/api/v1/auth/otp/verify').send({ phone, code: right }).expect(400);
+    const { email } = await register();
+    const again = await register({ email: email.toUpperCase() });
+    expect(again.res.status).toBe(400);
+    expect(again.res.body.error.fields.email).toBeTruthy();
   });
 
-  it('uses a code once only', async () => {
-    const phone = newPhone();
-    const { res } = await login(phone);
-    expect(res.status).toBe(200);
-    await request(app)
-      .post('/api/v1/auth/otp/verify')
-      .send({ phone, code: lastCode(e164(phone)) })
-      .expect(400);
+  it('makes mentor applicants without a student profile', async () => {
+    const { res } = await register({ role: 'mentor' });
+    expect(res.body.data.user.role).toBe('mentor');
+    const user = await db.user.findUniqueOrThrow({
+      where: { id: res.body.data.user.id },
+      include: { student: true },
+    });
+    expect(user.student).toBeNull();
+  });
+});
+
+describe('sign-in', () => {
+  it('signs in with the email in any case, and answers the same for every mistake', async () => {
+    const { email } = await register();
+    const ok = await login(email.toUpperCase()).expect(200);
+    expect(ok.body.data.user.email).toBe(email);
+
+    const wrong = await login(email, 'wrong password').expect(401);
+    const unknown = await login(newEmail()).expect(401);
+    expect(wrong.body.error.message).toBe(unknown.body.error.message);
   });
 
-  it('keeps the existing role whatever is picked on the login screen', async () => {
-    const phone = newPhone();
-    const first = await login(phone, 'mentor');
-    expect(first.res.body.data.user.role).toBe('mentor');
-    await redis.flushdb();
-
-    const again = await login(phone, 'student');
-    expect(again.res.body.data).toMatchObject({ isNew: false, user: { role: 'mentor' } });
-    // Mentors are not students: the student-only route refuses them.
-    await again.agent.get('/api/v1/probe/student-only').expect(403);
+  it('locks an account after too many wrong passwords, even for the right one', async () => {
+    const { email } = await register();
+    for (let i = 0; i < AUTH_LIMITS.failuresPerEmail.limit; i++)
+      await login(email, `wrong-${i}`).expect(401);
+    const locked = await login(email).expect(429);
+    expect(locked.headers['retry-after']).toBeTruthy();
   });
 
   it('refuses suspended accounts and kills their sessions immediately', async () => {
-    const phone = newPhone();
-    const { agent } = await login(phone);
+    const { agent, email, res } = await register();
     await agent.get('/api/v1/auth/me').expect(200); // now cached in Redis
-
-    const user = await db.user.update({
-      where: { phone: e164(phone) },
-      data: { status: 'suspended' },
-    });
-    await auth.sessions.revokeAll(user.id);
+    await db.user.update({ where: { id: res.body.data.user.id }, data: { status: 'suspended' } });
+    await auth.sessions.revokeAll(res.body.data.user.id);
     await agent.get('/api/v1/auth/me').expect(401);
+    await login(email).expect(403);
+  });
+});
 
-    await redis.flushdb();
-    const retry = await login(phone);
-    expect(retry.res.status).toBe(403);
+describe('passwords', () => {
+  it('resets from the emailed link once, confirms the email and signs out everywhere', async () => {
+    const { agent, email } = await register();
+    const unknown = await request(app)
+      .post('/api/v1/auth/password/forgot')
+      .send({ email: newEmail() })
+      .expect(202);
+    expect(unknown.body.data).toEqual({ sent: true });
+    expect(mail.sent).toHaveLength(0);
+
+    const asked = await request(app)
+      .post('/api/v1/auth/password/forgot')
+      .send({ email })
+      .expect(202);
+    expect(mail.sent).toHaveLength(1);
+    const token = new URL(asked.body.data.devLink as string).searchParams.get('token') ?? '';
+
+    await request(app)
+      .post('/api/v1/auth/password/reset')
+      .send({ token, password: 'a brand new password' })
+      .expect(200);
+    await agent.get('/api/v1/auth/me').expect(401);
+    // Used once: the hash changed, so the same link is dead.
+    await request(app)
+      .post('/api/v1/auth/password/reset')
+      .send({ token, password: 'another new password' })
+      .expect(409);
+
+    await login(email).expect(401);
+    const fresh = await login(email, 'a brand new password').expect(200);
+    expect(fresh.body.data.user.emailVerified).toBe(true);
+  });
+
+  it('changes the password with the current one and keeps only this device', async () => {
+    const { agent, email } = await register();
+    const other = request.agent(app);
+    await login(email, PASSWORD, other).expect(200);
+
+    await agent
+      .post('/api/v1/auth/password/change')
+      .send({ current: 'nope', password: 'changed password!' })
+      .expect(400);
+    await agent
+      .post('/api/v1/auth/password/change')
+      .send({ current: PASSWORD, password: 'changed password!' })
+      .expect(200);
+    await agent.get('/api/v1/auth/me').expect(200);
+    await other.get('/api/v1/auth/me').expect(401);
+    await login(email, 'changed password!').expect(200);
+  });
+});
+
+describe('Google', () => {
+  it('makes a confirmed account on the first visit and finds it again by Google id', async () => {
+    const sub = `g-${++seq}`;
+    const email = newEmail();
+    const first = await googleSignIn({ sub, email, name: 'Salma Adel' }, 'mentor');
+    expect(first.location).toBe('/login?google=new');
+    const me = await first.agent.get('/api/v1/auth/me').expect(200);
+    expect(me.body.data.user).toMatchObject({
+      role: 'mentor',
+      email,
+      emailVerified: true,
+      hasPassword: false,
+      fullName: 'Salma Adel',
+    });
+
+    const again = await googleSignIn({ sub, email: 'changed@test.sabeq' });
+    expect(again.location).toBe('/login?google=ok');
+  });
+
+  it('links an unconfirmed password account and drops the password whoever set it', async () => {
+    const { agent, email } = await register();
+    const linked = await googleSignIn({ sub: `g-${++seq}`, email });
+    expect(linked.location).toBe('/login?google=ok');
+    // The address was never proven: the old password and its sessions are gone.
+    await agent.get('/api/v1/auth/me').expect(401);
+    await login(email).expect(401);
+    const me = await linked.agent.get('/api/v1/auth/me').expect(200);
+    expect(me.body.data.user).toMatchObject({ emailVerified: true, hasPassword: false });
+  });
+
+  it('refuses a bad state, an unverified Google email and admin accounts', async () => {
+    googleAnswer = {};
+    const agent = request.agent(app);
+    await agent.get('/api/v1/auth/google').expect(303);
+    const forged = await agent
+      .get('/api/v1/auth/google/callback?code=abc&state=forged')
+      .expect(303);
+    expect(forged.headers.location).toBe('/login?google=failed');
+
+    const unverified = await googleSignIn({
+      sub: `g-${++seq}`,
+      email: newEmail(),
+      email_verified: false,
+    });
+    expect(unverified.location).toBe('/login?google=failed');
+
+    const adminEmail = newEmail();
+    await db.user.create({
+      data: {
+        email: adminEmail,
+        role: 'admin',
+        fullName: 'Admin',
+        admin: { create: { adminRole: 'support' } },
+      },
+    });
+    const admin = await googleSignIn({ sub: `g-${++seq}`, email: adminEmail });
+    expect(admin.location).toBe('/login?google=admin');
+
+    const cancelled = await request(app)
+      .get('/api/v1/auth/google/callback?error=access_denied')
+      .expect(303);
+    expect(cancelled.headers.location).toBe('/login?google=cancelled');
   });
 });
 
 describe('admin login', () => {
   async function makeAdmin(adminRole: 'finance' | 'support') {
-    const phone = newPhone();
+    const email = newEmail();
     await db.user.create({
       data: {
-        phone: e164(phone),
+        email,
+        passwordHash: await hashPassword(PASSWORD),
         role: 'admin',
         fullName: 'Admin',
         admin: { create: { adminRole } },
       },
     });
-    return phone;
+    return email;
   }
 
-  it('sends no SMS to numbers that are not admins, with the same answer', async () => {
-    const res = await request(app)
-      .post('/api/v1/admin/auth/otp/request')
-      .send({ phone: newPhone() })
-      .expect(202);
-    expect(res.body.data).toEqual({ expiresInSeconds: 300, resendAfterSeconds: 30 });
-    expect(sent).toHaveLength(0);
-  });
+  const adminLogin = (
+    agent: ReturnType<typeof request.agent>,
+    email: string,
+    password = PASSWORD,
+  ) => agent.post('/api/v1/admin/auth/login').send({ email, password });
 
-  it('logs admins into the admin app only, with a separate cookie, and audits it', async () => {
-    const phone = await makeAdmin('finance');
+  it('sets up the app code on the first sign-in, then asks for it every time', async () => {
+    const email = await makeAdmin('finance');
+    const agent = request.agent(app);
+    const first = await adminLogin(agent, email).expect(200);
+    expect(first.body.data).toMatchObject({
+      step: 'setup',
+      uri: expect.stringMatching(/^otpauth:\/\/totp\//),
+    });
+    const secret = first.body.data.secret as string;
 
-    const web = await login(phone);
-    expect(web.res.status).toBe(403);
-    await redis.flushdb();
-
-    const { agent, res } = await login(phone, 'student', '/api/v1/admin/auth');
-    expect(res.status).toBe(200);
-    expect(String(res.headers['set-cookie'])).toMatch(/^sb_admin=/);
-    expect(res.body.data.user).toMatchObject({ role: 'admin', adminRole: 'finance' });
-
+    await agent
+      .post('/api/v1/admin/auth/totp')
+      .send({ challenge: first.body.data.challenge, code: '000000' })
+      .expect(400);
+    const step = currentStep(Date.now());
+    const done = await agent
+      .post('/api/v1/admin/auth/totp')
+      .send({ challenge: first.body.data.challenge, code: totpAt(secret, step) })
+      .expect(200);
+    expect(String(done.headers['set-cookie'])).toMatch(/^sb_admin=/);
+    expect(done.body.data.user).toMatchObject({ role: 'admin', adminRole: 'finance' });
     await agent.get('/api/v1/admin/probe/finance').expect(200);
     // The admin cookie is not a website session.
     await agent.get('/api/v1/auth/me').expect(401);
 
-    const audit = await db.auditLog.findFirst({
-      where: { actorUserId: res.body.data.user.id, action: 'auth.login' },
+    const stored = await db.admin.findFirstOrThrow({ where: { user: { email } } });
+    expect(stored.totpEnabledAt).not.toBeNull();
+    expect(stored.totpSecretEnc).not.toContain(secret);
+
+    // Next time: the code only, and the code just used cannot be replayed.
+    const second = await adminLogin(request.agent(app), email).expect(200);
+    expect(second.body.data).toEqual({ step: 'totp', challenge: expect.any(String) });
+    await request(app)
+      .post('/api/v1/admin/auth/totp')
+      .send({ challenge: second.body.data.challenge, code: totpAt(secret, step) })
+      .expect(400);
+    await request(app)
+      .post('/api/v1/admin/auth/totp')
+      .send({ challenge: second.body.data.challenge, code: totpAt(secret, step + 1) })
+      .expect(200);
+
+    const audit = await db.auditLog.findMany({
+      where: {
+        actorUserId: done.body.data.user.id,
+        action: { in: ['auth.login', 'auth.totp_enabled'] },
+      },
     });
-    expect(audit).not.toBeNull();
+    expect(audit.map((a) => a.action).sort()).toEqual([
+      'auth.login',
+      'auth.login',
+      'auth.totp_enabled',
+    ]);
   });
 
-  it('checks the admin role on admin routes', async () => {
-    const phone = await makeAdmin('support');
-    const { agent } = await login(phone, 'student', '/api/v1/admin/auth');
+  it('burns the step after five wrong codes', async () => {
+    const email = await makeAdmin('support');
+    const first = await adminLogin(request.agent(app), email).expect(200);
+    for (let i = 0; i < AUTH_LIMITS.challengeAttempts; i++)
+      await request(app)
+        .post('/api/v1/admin/auth/totp')
+        .send({ challenge: first.body.data.challenge, code: '000000' })
+        .expect(400);
+    await request(app)
+      .post('/api/v1/admin/auth/totp')
+      .send({
+        challenge: first.body.data.challenge,
+        code: totpAt(first.body.data.secret, currentStep(Date.now())),
+      })
+      .expect(401);
+  });
+
+  it('keeps website and admin accounts apart', async () => {
+    const adminEmail = await makeAdmin('finance');
+    await login(adminEmail).expect(403);
+
+    const { email } = await register();
+    const asAdmin = await adminLogin(request.agent(app), email).expect(401);
+    const wrong = await adminLogin(request.agent(app), adminEmail, 'nope').expect(401);
+    expect(asAdmin.body.error.message).toBe(wrong.body.error.message);
+  });
+
+  it('checks the admin role on admin routes and refuses website sessions there', async () => {
+    const email = await makeAdmin('support');
+    const agent = request.agent(app);
+    const first = await adminLogin(agent, email).expect(200);
+    await agent
+      .post('/api/v1/admin/auth/totp')
+      .send({
+        challenge: first.body.data.challenge,
+        code: totpAt(first.body.data.secret, currentStep(Date.now())),
+      })
+      .expect(200);
     await agent.get('/api/v1/admin/probe/finance').expect(403);
-  });
 
-  it('refuses website sessions on admin routes', async () => {
-    const { agent } = await login(newPhone());
-    await agent.get('/api/v1/admin/probe/finance').expect(401);
+    const web = await register();
+    await web.agent.get('/api/v1/admin/probe/finance').expect(401);
   });
 });

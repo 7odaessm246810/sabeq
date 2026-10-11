@@ -3,16 +3,16 @@
 import { Banner, Icon, useToast } from '@sabeq/ui';
 import { useEffect, useState } from 'react';
 import { ApiError } from '@/lib/api';
-import { getEmail, removeEmail, resendEmail, setEmail, type EmailState } from '@/lib/notifications';
+import { getEmail, resendEmail, setEmail, type EmailState } from '@/lib/notifications';
 
 const errorText = (err: unknown) =>
   err instanceof ApiError ? (err.fields.email ?? err.message) : 'حصلت مشكلة. جرّب تاني.';
 
 /**
- * «إشعارات الإيميل» in the account (Phase 19): add an address, confirm it from the emailed link,
- * change or remove it. Only a confirmed address gets emails.
+ * The account's email (Phase 19; the login since ADR-0017): confirm it from the emailed link, or
+ * change it (the new one needs confirming again). Booking and emails need a confirmed address.
  */
-export function EmailSettings() {
+export function EmailSettings({ onChanged }: { onChanged?: () => void | Promise<void> }) {
   const toast = useToast();
   const [state, setState] = useState<EmailState | null>(null);
   const [draft, setDraft] = useState('');
@@ -37,6 +37,7 @@ export function EmailSettings() {
       const next = await work();
       setState(next);
       setEditing(false);
+      await onChanged?.();
       if (done) toast({ kind: 'success', title: done });
     } catch (err) {
       setError(errorText(err));
@@ -76,7 +77,7 @@ export function EmailSettings() {
             onChange={(e) => setDraft(e.target.value)}
           />
           <span className="sb-hint" id="em-hint" role={error ? 'alert' : undefined}>
-            {error ?? 'هنبعتلك عليه تأكيد الحجز وتذكير قبل الجلسة. مش هنبعت إعلانات.'}
+            {error ?? 'هتدخل بيه من هنا ورايح، وهنبعتلك عليه تأكيد الحجز وتذكير قبل الجلسة.'}
           </span>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
@@ -122,7 +123,7 @@ export function EmailSettings() {
       </div>
       {!state.verified ? (
         <Banner kind="info" title="افتح الرابط اللي بعتناه على الإيميل ده.">
-          الإيميلات بتبدأ توصلك بعد التأكيد. الرابط شغال 24 ساعة.
+          الحجز والإيميلات بيبدأوا بعد التأكيد. الرابط شغال 24 ساعة.
         </Banner>
       ) : null}
       {state.devLink ? (
@@ -158,15 +159,6 @@ export function EmailSettings() {
           }}
         >
           غيّر الإيميل
-        </button>
-        <button
-          type="button"
-          className="sb-btn sb-btn--ghost sb-btn--sm"
-          style={{ color: 'var(--error)' }}
-          disabled={busy}
-          onClick={() => void run(removeEmail, 'شلنا الإيميل ووقفنا الإيميلات')}
-        >
-          شيل الإيميل
         </button>
       </div>
     </div>

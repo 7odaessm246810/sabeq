@@ -1,6 +1,6 @@
 /**
- * Egyptian mobile numbers. Login is phone + OTP (ADR-0005), so every number is stored
- * in one canonical E.164 form: +201XXXXXXXXX (operators 010, 011, 012, 015).
+ * Egyptian mobile numbers (an optional contact field since ADR-0017), stored in one canonical
+ * E.164 form: +201XXXXXXXXX (operators 010, 011, 012, 015).
  */
 const EG_MOBILE = /^1[0125]\d{8}$/;
 
@@ -19,8 +19,11 @@ export function normalizeEgyptianMobile(input: string): string | null {
   return EG_MOBILE.test(digits) ? `+20${digits}` : null;
 }
 
-/** "+201012345678" → "010 1234 5678" for display. */
-export function formatEgyptianMobile(e164: string): string {
+/** "+201012345678" → "010 1234 5678" for display (null stays null). */
+export function formatEgyptianMobile(e164: string): string;
+export function formatEgyptianMobile(e164: string | null): string | null;
+export function formatEgyptianMobile(e164: string | null): string | null {
+  if (e164 === null) return null;
   const local = `0${e164.slice(3)}`;
   return `${local.slice(0, 3)} ${local.slice(3, 7)} ${local.slice(7)}`;
 }

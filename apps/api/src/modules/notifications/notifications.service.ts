@@ -35,8 +35,7 @@ const MESSAGES = {
 const MAX_ATTEMPTS = 5;
 const LINK_HOURS = 24;
 const MIN = 60_000;
-const FOOTER =
-  'وصلك الإيميل ده عشان ضفت إيميلك في حسابك على سابق. تقدر توقف الإيميلات بإنك تشيل الإيميل من «حسابي».';
+const FOOTER = 'وصلك الإيميل ده عشان عندك حساب على سابق بالإيميل ده.';
 
 const b64 = (s: string) => Buffer.from(s).toString('base64url');
 
@@ -72,7 +71,7 @@ export function createNotificationsService(deps: {
     const link = verifyLink(userId, address);
     const { text, html } = renderEmail({
       title: 'أكّد إيميلك',
-      body: 'دوس على الزرار عشان نبدأ نبعتلك إشعارات جلساتك على الإيميل ده. الرابط شغال 24 ساعة.',
+      body: 'دوس على الزرار عشان نأكد إن الإيميل ده بتاعك. بعدها تقدر تحجز جلسات، وهنبعتلك إشعاراتها هنا. الرابط شغال 24 ساعة.',
       action: { label: 'أكّد الإيميل', url: link },
       footer: 'لو مش انت اللي ضفت الإيميل ده على سابق، تجاهل الرسالة دي.',
     });
@@ -271,6 +270,9 @@ export function createNotificationsService(deps: {
       };
     },
 
+    /** Sign-up sends the first link (auth module, late-bound). */
+    sendVerification,
+
     unreadCount: (userId: string) => db.notification.count({ where: { userId, readAt: null } }),
 
     /** Marks these (or, without ids, all) as read. */
@@ -326,11 +328,6 @@ export function createNotificationsService(deps: {
       if (!u.email) throw new AppError('CONFLICT', MESSAGES.noEmail);
       const sent = u.emailVerifiedAt ? {} : await sendVerification(userId, u.email);
       return { email: u.email, verified: u.emailVerifiedAt !== null, ...sent };
-    },
-
-    async removeEmail(userId: string) {
-      await db.user.update({ where: { id: userId }, data: { email: null, emailVerifiedAt: null } });
-      return { email: null, verified: false };
     },
 
     /** The link from the confirmation email (works signed out, on any device). */

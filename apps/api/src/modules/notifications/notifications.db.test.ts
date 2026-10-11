@@ -72,6 +72,8 @@ describe('email', () => {
   it('is used only after its owner confirms it with the emailed link', async () => {
     const s = await student();
     const address = addresses();
+    // Sign-up just sent a link for the first address; this test changes it right away.
+    await h.redis.del(`email:verify:cooldown:${s.userId}`);
     await s.agent.put('/api/v1/me/email').send({ email: 'not-an-email' }).expect(400);
 
     const set = (
@@ -116,12 +118,8 @@ describe('email', () => {
     // Someone else can't take a used address.
     const other = await student();
     await other.agent.put('/api/v1/me/email').send({ email: address }).expect(400);
-
-    await s.agent.delete('/api/v1/me/email').expect(200);
-    expect((await s.agent.get('/api/v1/me/email')).body.data).toEqual({
-      email: null,
-      verified: false,
-    });
+    // The email is the login now (ADR-0017): it can be changed, never removed.
+    await s.agent.delete('/api/v1/me/email').expect(404);
   });
 
   it('every new notification is emailed once, to confirmed addresses only', async () => {
@@ -133,7 +131,10 @@ describe('email', () => {
     });
     const unconfirmed = await student();
     const other = addresses();
-    await h.db.user.update({ where: { id: unconfirmed.userId }, data: { email: other } });
+    await h.db.user.update({
+      where: { id: unconfirmed.userId },
+      data: { email: other, emailVerifiedAt: null },
+    });
 
     for (const u of [confirmed.userId, unconfirmed.userId])
       await h.db.notification.create({

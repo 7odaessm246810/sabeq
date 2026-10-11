@@ -58,6 +58,11 @@ export function createConsoleSender(logger: Logger): EmailSender & { sent: Email
   };
 }
 
+/** The configured sender — one per process, shared by auth (password links) and notifications. */
+export function createEmailSender(cfg: Config['email'], logger: Logger): EmailSender {
+  return cfg.provider === 'resend' ? createResendSender(cfg) : createConsoleSender(logger);
+}
+
 const escape = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
 /** One plain, right-to-left layout for every Sabeq email. */

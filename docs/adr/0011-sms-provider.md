@@ -1,5 +1,7 @@
 # 0011 — SMS provider for OTP
 
+> **Superseded by [0017](0017-email-password-google-auth.md) (2026-10-11): no SMS login, so no provider for launch.**
+
 **Context.** OTP delivery must be fast and reliable on Vodafone, Orange, e& (Etisalat) and WE, and cheap at scale.
 
 **Decision (proposed).**

@@ -17,13 +17,14 @@ export interface StudentProfile {
 
 export interface Profile {
   fullName: string | null;
-  phone: string;
+  phone: string | null;
   role: 'student' | 'mentor' | 'admin';
   student: StudentProfile | null;
 }
 
 export interface ProfileUpdate {
   fullName?: string | undefined;
+  phone?: string | null | undefined;
   track?: StudentTrack | null | undefined;
   schoolYear?: number | null | undefined;
   governorate?: string | null | undefined;
@@ -131,9 +132,23 @@ export function createAccountService({ db, sessions }: { db: Db; sessions: Sessi
         kindIds = kinds.map((k) => k.id);
       }
 
+      if (input.phone) {
+        const taken = await db.user.findFirst({
+          where: { phone: input.phone, id: { not: userId } },
+          select: { id: true },
+        });
+        if (taken) throw Errors.validation({ phone: 'الرقم ده مستخدم في حساب تاني.' });
+      }
+
       await db.$transaction(async (tx) => {
-        if (input.fullName !== undefined) {
-          await tx.user.update({ where: { id: userId }, data: { fullName: input.fullName } });
+        if (input.fullName !== undefined || input.phone !== undefined) {
+          await tx.user.update({
+            where: { id: userId },
+            data: {
+              ...(input.fullName !== undefined ? { fullName: input.fullName } : {}),
+              ...(input.phone !== undefined ? { phone: input.phone } : {}),
+            },
+          });
         }
         if (role !== 'student') return;
         const data = {

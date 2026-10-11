@@ -19,5 +19,6 @@ describe('normalizeEgyptianMobile', () => {
 
   it('formats for display', () => {
     expect(formatEgyptianMobile('+201512345678')).toBe('015 1234 5678');
+    expect(formatEgyptianMobile(null)).toBeNull();
   });
 });

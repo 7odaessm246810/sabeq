@@ -58,8 +58,8 @@ export interface BookingDetail {
   cancelledBy: { name: string | null; role: string } | null;
   refundShareBps: number | null;
   completedAt: string | null;
-  student: { id: string; name: string | null; phone: string };
-  mentor: { id: string; slug: string; name: string | null; phone: string };
+  student: { id: string; name: string | null; phone: string | null };
+  mentor: { id: string; slug: string; name: string | null; phone: string | null };
   meeting: {
     provider: string;
     studentJoinedAt: string | null;
@@ -132,7 +132,9 @@ export const setReviewStatus = (id: string, status: 'published' | 'hidden', note
 export interface UserRow {
   id: string;
   name: string | null;
-  phone: string;
+  phone: string | null;
+  /** The login (ADR-0017). */
+  email: string | null;
   role: 'student' | 'mentor';
   status: 'active' | 'suspended';
   createdAt: string;
@@ -151,7 +153,7 @@ export interface BalanceRow {
   mentorId: string;
   slug: string;
   name: string;
-  phone: string;
+  phone: string | null;
   balanceEgp: number;
   account: { method: PayoutMethod; display: string } | null;
   lastPaidAt: string | null;

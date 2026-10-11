@@ -46,6 +46,23 @@ test('mentors: the list, filters and a profile with real slots', async ({ page }
 test('signed-out pages send you to sign in and back', async ({ page }) => {
   await page.goto('/sessions');
   await expect(page).toHaveURL(/\/login/);
-  await expect(page.getByRole('button', { name: 'ابعتلي الكود' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'دخول', exact: true })).toBeVisible();
   await a11y(page, 'login');
+
+  // A wrong password: one answer whatever was wrong.
+  await page.locator('#em').fill('nobody@test.sabeq');
+  await page.locator('#pw').fill('not the password');
+  await page.getByRole('button', { name: 'دخول', exact: true }).click();
+  await expect(page.getByText('الإيميل أو الباسورد غلط.')).toBeVisible();
+
+  await page.getByRole('link', { name: 'اعمل حساب' }).click();
+  await expect(page).toHaveURL(/\/register/);
+  await expect(page.getByRole('button', { name: 'اعمل الحساب' })).toBeVisible();
+  await a11y(page, 'register');
+
+  await page.goto('/forgot-password');
+  await page.locator('#em').fill('nobody@test.sabeq');
+  await page.getByRole('button', { name: 'ابعتلي الرابط' }).click();
+  await expect(page.getByRole('heading', { name: 'شوف إيميلك' })).toBeVisible();
+  await a11y(page, 'forgot password');
 });

@@ -1,7 +1,8 @@
 /**
  * Direct database access for what a browser can't do in a test's time: move a session to "now",
- * end it, or create the admin who signs in. Local / CI databases only.
+ * end it, confirm an email, or create the admin who signs in. Local / CI databases only.
  */
+import { randomBytes, scryptSync } from 'node:crypto';
 import pg from 'pg';
 import { DATABASE_URL } from './env.js';
 
@@ -21,6 +22,36 @@ export async function closeDb() {
 }
 
 const e164 = (local: string) => `+20${local.slice(1)}`;
+
+/**
+ * Journeys name people by a fresh phone number (unique per run); since ADR-0017 they sign in with an
+ * email made from it and this password.
+ */
+export const emailFor = (phone: string) => `e2e-${phone}@test.sabeq`;
+export const E2E_PASSWORD = 'e2e-password-123';
+
+/** The API's scrypt format (apps/api/src/modules/auth/password.ts), for accounts made here. */
+function passwordHash(password: string) {
+  const salt = randomBytes(16);
+  const key = scryptSync(password, salt, 32, { N: 2 ** 15, r: 8, p: 3, maxmem: 256 * 2 ** 15 * 8 });
+  return ['scrypt', 2 ** 15, 8, 3, salt.toString('base64'), key.toString('base64')].join('$');
+}
+
+export async function accountExists(phone: string) {
+  const rows = await sql('SELECT 1 FROM users WHERE email = $1', [emailFor(phone)]);
+  return rows.length > 0;
+}
+
+/**
+ * Right after signing up in the browser: the phone (journeys look people up by it), and the email
+ * confirmed (clicking the emailed link is covered by the API tests).
+ */
+export async function afterSignUp(phone: string) {
+  await sql('UPDATE users SET phone = $2, email_verified_at = now() WHERE email = $1', [
+    emailFor(phone),
+    e164(phone),
+  ]);
+}
 
 /** The user id behind a local phone number (01…). */
 export async function userId(phone: string) {
@@ -50,17 +81,22 @@ export async function moveSession(bookingId: string, minutesFromNow: number) {
   );
 }
 
-/** An admin account for this phone (as `pnpm admin:create` would). */
+/**
+ * An admin account for this phone (as `pnpm admin:create` + its password link would), with no app
+ * code yet — so the journey sets one up on its first sign-in.
+ */
 export async function ensureAdmin(phone: string, role = 'super_admin', name = 'أدمن الاختبارات') {
   const [user] = await sql<{ id: string }>(
-    `INSERT INTO users (id, phone, role, full_name, updated_at)
-     VALUES (gen_random_uuid(), $1, 'admin', $2, now())
-     ON CONFLICT (phone) DO UPDATE SET status = 'active' RETURNING id`,
-    [e164(phone), name],
+    `INSERT INTO users (id, phone, email, email_verified_at, password_hash, role, full_name, updated_at)
+     VALUES (gen_random_uuid(), $1, $2, now(), $3, 'admin', $4, now())
+     ON CONFLICT (email) DO UPDATE SET status = 'active', password_hash = EXCLUDED.password_hash
+     RETURNING id`,
+    [e164(phone), emailFor(phone), passwordHash(E2E_PASSWORD), name],
   );
   await sql(
     `INSERT INTO admins (user_id, admin_role) VALUES ($1, $2)
-     ON CONFLICT (user_id) DO UPDATE SET admin_role = EXCLUDED.admin_role`,
+     ON CONFLICT (user_id) DO UPDATE SET admin_role = EXCLUDED.admin_role,
+       totp_secret_enc = NULL, totp_enabled_at = NULL`,
     [user?.id, role],
   );
 }
@@ -76,9 +112,9 @@ export async function createMentor(phone: string, name: string) {
   );
   if (!faculty) throw new Error('catalog not seeded (no Cairo medicine)');
   const [user] = await sql<{ id: string }>(
-    `INSERT INTO users (id, phone, role, full_name, updated_at)
-     VALUES (gen_random_uuid(), $1, 'mentor', $2, now()) RETURNING id`,
-    [e164(phone), name],
+    `INSERT INTO users (id, phone, email, email_verified_at, password_hash, role, full_name, updated_at)
+     VALUES (gen_random_uuid(), $1, $2, now(), $3, 'mentor', $4, now()) RETURNING id`,
+    [e164(phone), emailFor(phone), passwordHash(E2E_PASSWORD), name],
   );
   const id = user?.id;
   const slug = `e2e-${phone.slice(-8)}`;

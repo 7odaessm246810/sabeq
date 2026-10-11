@@ -53,15 +53,20 @@ describe('loadConfig', () => {
         CORS_ORIGINS: 'http://sabeq.example',
       }),
     ).toThrow(/https[\s\S]*NODE_ENV|NODE_ENV[\s\S]*https/);
-    // Until a real SMS provider exists, production refuses to start rather than log OTP codes.
+  });
+
+  it('Google sign-in needs both its id and secret', () => {
+    expect(loadConfig(BASE).auth.google).toBeUndefined();
     expect(() =>
+      loadConfig({ ...BASE, GOOGLE_CLIENT_ID: 'id.apps.googleusercontent.com' }),
+    ).toThrow(/GOOGLE_CLIENT_SECRET/);
+    expect(
       loadConfig({
         ...BASE,
-        APP_ENV: 'production',
-        NODE_ENV: 'production',
-        CORS_ORIGINS: 'https://sabeq.example',
-      }),
-    ).toThrow(/SMS_PROVIDER/);
+        GOOGLE_CLIENT_ID: 'id.apps.googleusercontent.com',
+        GOOGLE_CLIENT_SECRET: 'GOCSPX-secret-value',
+      }).auth.google,
+    ).toEqual({ clientId: 'id.apps.googleusercontent.com', clientSecret: 'GOCSPX-secret-value' });
   });
 
   it('production sends real emails; Resend needs its key', () => {

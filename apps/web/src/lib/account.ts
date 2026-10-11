@@ -11,13 +11,16 @@ export interface StudentProfile {
 
 export interface Profile {
   fullName: string | null;
-  phone: string;
+  /** Optional contact number (E.164); the email is the login. */
+  phone: string | null;
   role: 'student' | 'mentor' | 'admin';
   student: StudentProfile | null;
 }
 
 export type ProfileUpdate = Partial<{
   fullName: string;
+  /** As typed — the API normalizes it; '' clears it. */
+  phone: string;
   track: StudentTrack | null;
   schoolYear: number | null;
   governorate: string | null;

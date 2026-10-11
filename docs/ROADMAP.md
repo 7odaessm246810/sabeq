@@ -55,7 +55,7 @@ sabeq/
 | 04  | Frontend Design System Implementation (components + كل الصفحات بـ mock data)      | ✅ done                      |
 | 05  | Backend Foundation (Express 5, errors, logging, validation, `/api/v1`, health)    | ✅ done                      |
 | 06  | Database Architecture — PostgreSQL + Prisma (ERD أولًا)                           | ✅ done                      |
-| 07  | Authentication & Authorization — Phone + OTP، roles: student / mentor / admin     | ✅ done                      |
+| 07  | Authentication & Authorization — roles: student / mentor / admin (ADR-0017)       | ✅ done                      |
 | 08  | Student Account                                                                   | ✅ done                      |
 | 09  | Mentor Onboarding (Draft → Submitted → Under Review → Approved/Rejected)          | ✅ done                      |
 | 10  | Admin Verification System + Audit trail                                           | ✅ done                      |
@@ -105,6 +105,7 @@ sabeq/
 | 2026-10-10 | Phase 20: لوحة الأدمن = نظرة عامة، الحجوزات (استرداد كامل لحل أي خلاف، حتى بعد الجلسة — مكسب المرشد بيتشال)، التقييمات (إخفاء / رجوع)، الحسابات (إيقاف / رجوع)، فلوس المرشدين. المرشد بيضيف طريقة الاستلام (InstaPay / فودافون كاش / بنك) متشفّرة؛ المالية بتحوّل برّه سابق وبتسجّل التحويل برقم العملية. كل حاجة في سجل العمليات. |
 | 2026-10-11 | Phase 21: IP الزائر بيوصل للـ API من الـ proxy بسر مشترك (`API_PROXY_SECRET`) — مفيش X-Forwarded-For مزوّر؛ حدود الطلبات في Redis + حدود أضيق للعمليات الحساسة؛ CSP بـ nonce للموقع واللوحة (كل الصفحات بتترندر مع كل طلب). التفاصيل: [security.md](security.md).                                                                  |
 | 2026-10-11 | Phase 22: Playwright لرحلات المستخدم الكاملة (زائر، طالب، جلسة، مرشد، أدمن، موبايل) + axe للـ accessibility؛ اختبارات unit للـ types و Modal؛ تغطية الـ API بحد أدنى؛ GitHub Actions بيشغّل الكل. التفاصيل: [testing.md](testing.md).                                                                                              |
+| 2026-10-11 | الدخول بقى إيميل + باسورد أو جوجل، والتسجيل بالاسم والإيميل (ADR-0017، بدل OTP). الحجز بعد تأكيد الإيميل. الأدمن: إيميل + باسورد + كود من تطبيق مصادقة. الموبايل خانة اختيارية — مفيش SMS provider مطلوب للإطلاق.                                                                                                                  |
 | 2026-10-06 | TypeScript 6.0.3 مثبت (typescript-eslint لسه ما يدعمش 7) — ADR-0002.                                                                                                                                                                                                                                                               |
 
 كل القرارات بالتفصيل: [docs/adr/](adr/README.md).

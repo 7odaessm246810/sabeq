@@ -13,9 +13,9 @@ import { createDocumentCrypto } from '../../infra/document-crypto.js';
 import { createObjectStore } from '../../infra/storage.js';
 import { TEST_ENV } from '../../testing/env.js';
 import { createAuthModule } from '../auth/index.js';
-import type { SmsSender } from '../auth/sms.js';
 import { createCatalogModule } from '../catalog/index.js';
 import { createMediaModule } from '../media/index.js';
+import { createConsoleSender } from '../notifications/email.js';
 import { createMentorApplicationModule } from './index.js';
 
 const dbUrl = process.env.DATABASE_URL;
@@ -29,15 +29,15 @@ const db = createDb({ url: dbUrl, poolMax: 4, logger: silent });
 const redis = new Redis(redisUrl.toString(), { maxRetriesPerRequest: 2 });
 const store = createObjectStore(config.storage);
 const crypto = createDocumentCrypto(config.documentKeys);
-const codes = new Map<string, string>();
-const sms: SmsSender = {
-  insecure: false,
-  sendOtp(phone, code) {
-    codes.set(phone, code);
-    return Promise.resolve();
-  },
-};
-const auth = createAuthModule({ config, db, redis, logger: silent, sms });
+const auth = createAuthModule({
+  config,
+  db,
+  redis,
+  logger: silent,
+  crypto,
+  email: createConsoleSender(silent),
+  sendVerification: () => Promise.resolve({}),
+});
 const mentorApplication = createMentorApplicationModule({ db, store, crypto, auth });
 const app = createApp({
   config,
@@ -63,17 +63,18 @@ function must<T>(value: T | null | undefined, what: string): T {
 }
 
 let seq = 200_000 + Math.floor(Math.random() * 300_000);
-const newPhone = () => `012${String(++seq).padStart(8, '0')}`;
+const newEmail = () => `applicant${++seq}-${Date.now().toString(36)}@test.sabeq`;
 
 async function login(role: 'student' | 'mentor' = 'mentor') {
-  const phone = newPhone();
   const agent = request.agent(app);
-  await agent.post('/api/v1/auth/otp/request').send({ phone }).expect(202);
   const res = await agent
-    .post('/api/v1/auth/otp/verify')
-    .send({ phone, role, code: codes.get(`+20${phone.slice(1)}`) })
-    .expect(200);
-  return { agent, userId: res.body.data.user.id as string };
+    .post('/api/v1/auth/register')
+    .send({ fullName: 'Applicant Test', email: newEmail(), password: 'applicant-pass', role })
+    .expect(201);
+  const userId = res.body.data.user.id as string;
+  // The application's first step asks for the name, as it did after a phone sign-up.
+  await db.user.update({ where: { id: userId }, data: { fullName: null } });
+  return { agent, userId };
 }
 
 let cairo: { slug: string; faculties: { id: string; kind: string }[] };
@@ -292,7 +293,7 @@ describe('submit', () => {
     await agent.post(`${BASE}/submit`).expect(200);
 
     const admin = await db.user.create({
-      data: { phone: `+20${newPhone().slice(1)}`, role: 'admin', fullName: 'Reviewer' },
+      data: { email: newEmail(), role: 'admin', fullName: 'Reviewer' },
     });
     await db.mentorApplication.update({
       where: { id: submitted.id },

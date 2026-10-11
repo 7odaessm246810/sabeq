@@ -10,6 +10,7 @@ import {
   type StudentTrack,
 } from '@sabeq/types';
 import { FieldError } from '@sabeq/ui';
+import { formatEgyptianMobile } from '@sabeq/utils';
 import { useState, type FormEvent } from 'react';
 import { Field, Select } from '@/components/form';
 import { ApiError } from '@/lib/api';
@@ -17,11 +18,15 @@ import { updateProfile, type Profile } from '@/lib/account';
 import { FACULTIES } from '@/lib/mock/data';
 
 type Errors = Partial<
-  Record<'fullName' | 'track' | 'schoolYear' | 'governorate' | 'interests' | 'form', string>
+  Record<
+    'fullName' | 'phone' | 'track' | 'schoolYear' | 'governorate' | 'interests' | 'form',
+    string
+  >
 >;
 
 /**
- * Name for everyone; track, school year, governorate and faculty interests for students.
+ * Name and an optional phone for everyone; track, school year, governorate and faculty interests
+ * for students.
  * Used by the first-login step (/welcome) and the account page.
  */
 export function ProfileForm({
@@ -36,6 +41,8 @@ export function ProfileForm({
   const isStudent = profile.role === 'student';
   const s = profile.student;
   const [fullName, setFullName] = useState(profile.fullName ?? '');
+  const initialPhone = profile.phone ? formatEgyptianMobile(profile.phone) : '';
+  const [phone, setPhone] = useState(initialPhone);
   const [track, setTrack] = useState<StudentTrack | ''>(s?.track ?? '');
   const [year, setYear] = useState<number | null>(s?.schoolYear ?? null);
   const [governorate, setGovernorate] = useState(s?.governorate ?? '');
@@ -62,6 +69,7 @@ export function ProfileForm({
     try {
       const saved = await updateProfile({
         fullName: fullName.replace(/\s+/g, ' ').trim(),
+        ...(phone.trim() !== initialPhone ? { phone: phone.trim() } : {}),
         ...(isStudent
           ? { track: track || null, schoolYear: year, governorate: governorate || null, interests }
           : {}),
@@ -97,6 +105,26 @@ export function ProfileForm({
           aria-invalid={Boolean(errors.fullName)}
           aria-describedby={errors.fullName ? 'pf-name-err' : undefined}
           onChange={(e) => setFullName(e.target.value)}
+        />
+      </Field>
+      <Field
+        id="pf-phone"
+        label="رقم الموبايل (اختياري)"
+        error={errors.phone}
+        hint="لو حصل حاجة في جلسة ونحتاج نكلمك. مش بيظهر لحد."
+      >
+        <input
+          className="sb-input"
+          id="pf-phone"
+          dir="ltr"
+          style={{ textAlign: 'right' }}
+          inputMode="tel"
+          autoComplete="tel-national"
+          placeholder="01x xxxx xxxx"
+          value={phone}
+          aria-invalid={Boolean(errors.phone)}
+          aria-describedby={errors.phone ? 'pf-phone-err' : 'pf-phone-hint'}
+          onChange={(e) => setPhone(e.target.value)}
         />
       </Field>
 

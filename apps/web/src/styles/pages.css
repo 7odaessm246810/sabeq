@@ -777,32 +777,39 @@
   flex-direction: column;
   gap: 16px;
 }
-.phone {
+.pw {
+  position: relative;
+}
+.pw .sb-input {
+  padding-inline-end: 48px;
+}
+/* The input is ltr; the toggle sits on its right edge whatever the page direction. */
+.pw .sb-btn {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+}
+.auth-or {
   display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.auth-or::before,
+.auth-or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.auth-links {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 8px;
-  direction: ltr;
-}
-.phone .cc {
-  height: 48px;
-  padding: 0 14px;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  font-family: var(--font-mono);
-  background: var(--surface-sunken);
-}
-.otp {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 8px;
-}
-.otp input {
-  text-align: center;
-  font-family: var(--font-mono);
-  font-size: 22px;
-  padding: 0;
-  height: 56px;
+  font-size: 14px;
 }
 
 /* become mentor */

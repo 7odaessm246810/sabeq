@@ -87,10 +87,14 @@ const schema = z
           `must be a redis:// or rediss:// URL (${schemeOf(i.input)}) — on Upstash: the TCP / ioredis URL, not the REST one`,
       }),
     ),
-    /** HMAC key for OTP codes at rest (Redis). One per environment, never shared. */
+    /**
+     * Signs email links (confirmation, password reset) and the Google sign-in state. One per
+     * environment, never shared. (The name is from the phone-OTP days; kept so hosts need no change.)
+     */
     AUTH_OTP_SECRET: z.string().min(32, 'must be at least 32 characters'),
-    /** Where OTP codes go. `console` logs them — never allowed in production. */
-    SMS_PROVIDER: z.enum(['console']).default('console'),
+    /** "Sign in with Google" (ADR-0017). Both or neither; without them the button is hidden. */
+    GOOGLE_CLIENT_ID: z.preprocess(unsetIfEmpty, z.string().min(10).optional()),
+    GOOGLE_CLIENT_SECRET: z.preprocess(unsetIfEmpty, z.string().min(10).optional()),
     /** S3-compatible object storage (AWS S3, Cloudflare R2, or the local gateway in Docker). */
     STORAGE_ENDPOINT: z.preprocess(endpointOrigin, z.url().optional()),
     STORAGE_REGION: z.string().min(1).default('auto'),
@@ -184,6 +188,12 @@ const schema = z
           message: 'set at least one integration id (card or wallet)',
         });
     }
+    if (Boolean(env.GOOGLE_CLIENT_ID) !== Boolean(env.GOOGLE_CLIENT_SECRET))
+      ctx.addIssue({
+        code: 'custom',
+        path: [env.GOOGLE_CLIENT_ID ? 'GOOGLE_CLIENT_SECRET' : 'GOOGLE_CLIENT_ID'],
+        message: 'set both GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET, or neither',
+      });
     if (env.EMAIL_PROVIDER === 'resend' && !env.EMAIL_API_KEY)
       ctx.addIssue({
         code: 'custom',
@@ -230,13 +240,6 @@ const schema = z
           });
         }
       }
-      if (env.SMS_PROVIDER === 'console') {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['SMS_PROVIDER'],
-          message: 'production needs a real SMS provider (console only logs codes)',
-        });
-      }
       if (env.NODE_ENV !== 'production') {
         ctx.addIssue({
           code: 'custom',
@@ -271,8 +274,9 @@ export interface Config {
   };
   documentKeys: { active: string; keys: ReadonlyMap<string, Buffer> };
   auth: {
-    otpSecret: string;
-    smsProvider: 'console';
+    /** HMAC key for email links and the Google sign-in state (AUTH_OTP_SECRET). */
+    secret: string;
+    google: { clientId: string; clientSecret: string } | undefined;
     /** Secure + `__Host-` cookies everywhere except plain-http local development. */
     secureCookies: boolean;
   };
@@ -334,8 +338,11 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     },
     documentKeys: { active: e.DOCUMENTS_ENCRYPTION_ACTIVE_KEY, keys: e.DOCUMENTS_ENCRYPTION_KEYS },
     auth: {
-      otpSecret: e.AUTH_OTP_SECRET,
-      smsProvider: e.SMS_PROVIDER,
+      secret: e.AUTH_OTP_SECRET,
+      google:
+        e.GOOGLE_CLIENT_ID && e.GOOGLE_CLIENT_SECRET
+          ? { clientId: e.GOOGLE_CLIENT_ID, clientSecret: e.GOOGLE_CLIENT_SECRET }
+          : undefined,
       secureCookies: e.APP_ENV !== 'local',
     },
     publicWebUrl: e.API_PUBLIC_WEB_URL.replace(/\/$/, ''),

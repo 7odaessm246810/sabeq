@@ -291,8 +291,13 @@ export function createBookingsService(deps: {
         },
       });
       if (!m) throw Errors.notFound(MESSAGES.mentorNotFound);
-      const me = await db.user.findUnique({ where: { id: studentId }, select: { fullName: true } });
+      const me = await db.user.findUnique({
+        where: { id: studentId },
+        select: { fullName: true, emailVerifiedAt: true },
+      });
       if (!me?.fullName) throw new AppError('CONFLICT', MESSAGES.needsName);
+      // ADR-0017: a booking is money and a mentor's time — only for a confirmed email.
+      if (!me.emailVerifiedAt) throw Errors.emailUnverified();
       if (!m.acceptsBookings || !m.basePricePiasters)
         throw new AppError('CONFLICT', MESSAGES.notTaking);
       const offering = m.offerings[0];

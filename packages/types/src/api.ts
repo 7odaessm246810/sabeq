@@ -33,6 +33,8 @@ export const API_ERROR_CODES = [
   'VALIDATION_FAILED',
   'UNAUTHENTICATED',
   'FORBIDDEN',
+  /** Booking and paying need a confirmed email (ADR-0017); the page offers to resend the link. */
+  'EMAIL_UNVERIFIED',
   'NOT_FOUND',
   'CONFLICT',
   'RATE_LIMITED',

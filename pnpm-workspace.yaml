@@ -49,6 +49,8 @@ catalog:
   '@types/pg': 8.23.1
   ioredis: 6.0.0
   '@aws-sdk/client-s3': 3.1146.0 # private document storage (S3 / R2 / local S3 gateway)
+  qrcode: 1.5.4 # admin app: QR for setting up the authenticator-app code (ADR-0017)
+  '@types/qrcode': 1.5.6
   # testing (Phase 22)
   '@playwright/test': 1.64.0
   '@axe-core/playwright': 4.13.0

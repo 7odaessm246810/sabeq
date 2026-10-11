@@ -64,7 +64,7 @@ export const ACTION_LABELS: Record<string, string> = {
 export interface QueueItem {
   id: string;
   status: ReviewStatus;
-  applicant: { fullName: string | null; phone: string };
+  applicant: { fullName: string | null; phone: string | null };
   kind: string | null;
   major: string | null;
   faculty: string | null;
@@ -92,7 +92,7 @@ export interface ApplicationDetail {
   };
   university: string | null;
   faculty: string | null;
-  applicant: { id: string; fullName: string | null; phone: string; createdAt: string };
+  applicant: { id: string; fullName: string | null; phone: string | null; createdAt: string };
   submittedAt: string | null;
   decidedAt: string | null;
   decisionNote: string | null;
@@ -117,7 +117,7 @@ export interface AuditEntry {
   after: unknown;
   ip: string | null;
   createdAt: string;
-  actor: { fullName: string | null; phone: string } | null;
+  actor: { fullName: string | null; phone: string | null } | null;
 }
 
 export const listApplications = (status: ReviewStatus | undefined, page: number) =>

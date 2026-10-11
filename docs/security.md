@@ -4,19 +4,19 @@ How Sabeq protects its users, their money and their documents. Phase 21 (2026-10
 
 ## What we protect
 
-| Asset                                             | Where                                | Main risks                                       |
-| ------------------------------------------------- | ------------------------------------ | ------------------------------------------------ |
-| Accounts (phone + OTP)                            | `auth_sessions`, Redis               | OTP guessing, SMS flooding, session theft        |
-| Students' and mentors' personal data              | PostgreSQL                           | leaks through logs, errors or other users' views |
-| Mentor documents (national ID, certificates)      | object storage                       | access by anyone but verifiers                   |
-| Payout details (InstaPay, wallets, bank accounts) | `payout_accounts`                    | leaks, changes before a transfer                 |
-| Money (payments, refunds, mentor balances)        | Paymob, `payments`, `ledger_entries` | forged confirmations, double refunds or payouts  |
+| Asset                                             | Where                                | Main risks                                         |
+| ------------------------------------------------- | ------------------------------------ | -------------------------------------------------- |
+| Accounts (email + password, Google, admin TOTP)   | `users`, `auth_sessions`, Redis      | password guessing, account takeover, session theft |
+| Students' and mentors' personal data              | PostgreSQL                           | leaks through logs, errors or other users' views   |
+| Mentor documents (national ID, certificates)      | object storage                       | access by anyone but verifiers                     |
+| Payout details (InstaPay, wallets, bank accounts) | `payout_accounts`                    | leaks, changes before a transfer                   |
+| Money (payments, refunds, mentor balances)        | Paymob, `payments`, `ledger_entries` | forged confirmations, double refunds or payouts    |
 
 ## Controls in place
 
 **Identity and sessions**
 
-- Phone OTP only, no passwords (ADR-0005). Codes are hashed, expire in minutes, 5 tries; per-number cooldown and per-IP hourly limits.
+- Email + password or Google (ADR-0017). Passwords: scrypt, same answer and timing for any mistake, per-IP limit and a per-account lock after 10 wrong tries. Reset links are signed, single use (bound to the current hash), 1 hour. Google: code flow + PKCE + nonce, verified emails only; linking to an unconfirmed account drops its password. Admins: password + authenticator-app code (TOTP, encrypted secret, no replay). Booking needs a confirmed email.
 - Opaque session tokens in `httpOnly`, `SameSite=Lax` cookies (`Secure` + `__Host-` outside local); only their hash is stored; a different lifetime per app; checked on every request, so suspending an account or signing out ends it at once (ADR-0015).
 - Roles checked on the server for every route (`requireRole`, `requireAdmin(…)`); admin sessions are separate from website sessions.
 
@@ -45,7 +45,7 @@ How Sabeq protects its users, their money and their documents. Phase 21 (2026-10
 - Refunds recorded before they are sent and retried; payouts recorded under a row lock, never above the ledger balance; the ledger is append-only.
 - Every admin change (refunds, reviews, accounts, payouts, catalog, verification) goes to the append-only `audit_logs` in the same transaction.
 
-**Production refuses to start** without: HTTPS origins, a real SMS provider, `PAYMOB_MODE=paymob`, `VIDEO_PROVIDER=daily`, `EMAIL_PROVIDER=resend`, `API_PROXY_SECRET`, the document keys, a production build.
+**Production refuses to start** without: HTTPS origins, `PAYMOB_MODE=paymob`, `VIDEO_PROVIDER=daily`, `EMAIL_PROVIDER=resend`, `API_PROXY_SECRET`, the document keys, a production build.
 
 ## Dependencies
 

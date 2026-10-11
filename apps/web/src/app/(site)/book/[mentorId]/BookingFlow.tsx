@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, type KeyboardEvent } from 'react';
 import { Crumb } from '@/components/Crumb';
+import { VerifyEmailBanner } from '@/components/account/VerifyEmailBanner';
 import { ApiError } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import { getAvailability, type Availability } from '@/lib/availability';
@@ -109,6 +110,8 @@ export function BookingFlow({
   const [booking, setBooking] = useState<Booking | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /** The API (or the signed-in user) says the email still needs confirming (ADR-0017). */
+  const [unverified, setUnverified] = useState(false);
   const [failed, setFailed] = useState(false);
   const [phase, setPhase] = useState<Phase>(returning ? 'checking' : 'pay');
   const [poll, setPoll] = useState(0);
@@ -244,8 +247,14 @@ export function BookingFlow({
         ...(note.trim() ? { note: note.trim() } : {}),
       });
       setBooking(b);
+      setUnverified(false);
       setStep(3);
     } catch (err) {
+      if (err instanceof ApiError && err.code === 'EMAIL_UNVERIFIED') {
+        setUnverified(true);
+        setBusy(false);
+        return;
+      }
       setError(errorText(err));
       // The slot may be gone: show what's left and suggest the nearest two.
       const fresh = await getAvailability(m.slug, kind).catch(() => null);
@@ -266,7 +275,8 @@ export function BookingFlow({
       const { redirectUrl } = await startPayment(booking.id, pay);
       window.location.assign(redirectUrl); // the gateway's page; busy until the browser leaves
     } catch (err) {
-      setError(errorText(err));
+      if (err instanceof ApiError && err.code === 'EMAIL_UNVERIFIED') setUnverified(true);
+      else setError(errorText(err));
       setBusy(false);
     }
   }
@@ -442,6 +452,7 @@ export function BookingFlow({
                 <h2 className="sb-h2" style={{ fontSize: 26 }}>
                   اختار الوقت
                 </h2>
+                {unverified ? <VerifyEmailBanner email={auth.user?.email ?? null} /> : null}
                 {error ? (
                   <Banner kind="error" title={error}>
                     {suggestions.length ? (
@@ -626,6 +637,7 @@ export function BookingFlow({
                     </button>
                   </Banner>
                 ) : null}
+                {unverified ? <VerifyEmailBanner email={auth.user?.email ?? null} /> : null}
                 {error ? <Banner kind="error" title={error} /> : null}
                 <div role="radiogroup" aria-label="طريقة الدفع" className="opts">
                   {PAY_METHODS.map(([method, icon, label, sub]) => {

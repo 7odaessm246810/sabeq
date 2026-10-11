@@ -1,12 +1,13 @@
 'use client';
 
-import { formatEgyptianMobile } from '@sabeq/utils';
+import { formatEgyptianMobile, normalizeEgyptianMobile } from '@sabeq/utils';
 import { Banner, FieldError, Icon, Stepper, SuccessRing, cx } from '@sabeq/ui';
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Crumb } from '@/components/Crumb';
 import { Field, Select } from '@/components/form';
 import { ApiError } from '@/lib/api';
+import { updateProfile } from '@/lib/account';
 import { useAuth } from '@/lib/auth';
 import {
   MENTOR_KIND_LABELS,
@@ -33,6 +34,7 @@ const ACCEPT = 'application/pdf,image/jpeg,image/png,image/webp';
 type Slot = 'credential' | 'national_id_front';
 type FieldKey =
   | 'fullName'
+  | 'phone'
   | 'kind'
   | 'universitySlug'
   | 'facultyId'
@@ -49,6 +51,7 @@ type Errors = Partial<Record<FieldKey, string>>;
 /** Which wizard step owns each field — server errors jump back to the first one affected. */
 const STEP_OF: Record<Exclude<FieldKey, 'form'>, number> = {
   fullName: 0,
+  phone: 0,
   kind: 0,
   universitySlug: 1,
   facultyId: 1,
@@ -63,6 +66,8 @@ const STEP_OF: Record<Exclude<FieldKey, 'form'>, number> = {
 
 interface Form {
   fullName: string;
+  /** As typed; saved to the profile (the email is the login, the phone is how we call mentors). */
+  phone: string;
   kind: MentorKind | '';
   uni: string;
   fac: string;
@@ -181,7 +186,7 @@ export function ApplyForm() {
   );
 }
 
-function Submitted({ name, phone }: { name: string | null; phone: string }) {
+function Submitted({ name, phone }: { name: string | null; phone: string | null }) {
   return (
     <div className="done-ok">
       <SuccessRing />
@@ -189,8 +194,14 @@ function Submitted({ name, phone }: { name: string | null; phone: string }) {
         طلبك وصل
       </h2>
       <p className="sb-lead" style={{ maxWidth: 460 }}>
-        شكرًا{name ? ` يا ${name.split(' ')[0]}` : ''}. هنراجع المستندات ونكلمك خلال يومين عمل على{' '}
-        <span className="sb-num">{formatEgyptianMobile(phone).replace(/\s/g, '')}</span>.
+        شكرًا{name ? ` يا ${name.split(' ')[0]}` : ''}. هنراجع المستندات ونكلمك خلال يومين عمل
+        {phone ? (
+          <>
+            {' '}
+            على <span className="sb-num">{formatEgyptianMobile(phone).replace(/\s/g, '')}</span>
+          </>
+        ) : null}
+        .
       </p>
       <Link className="sb-btn sb-btn--primary" href="/">
         رجوع للرئيسية
@@ -210,7 +221,7 @@ function Wizard({
   initial: Application | null;
   unis: CatalogUniversity[];
   fullName: string;
-  phone: string;
+  phone: string | null;
   shell: (children: React.ReactNode, current?: number) => React.ReactNode;
   onSubmitted: (a: Application) => Promise<void>;
 }) {
@@ -219,6 +230,7 @@ function Wizard({
   const [step, setStep] = useState(0);
   const [f, setF] = useState<Form>({
     fullName,
+    phone: phone ? formatEgyptianMobile(phone) : '',
     kind: rejected ? '' : (p.kind ?? ''),
     uni: rejected ? '' : (p.universitySlug ?? ''),
     fac: rejected ? '' : (p.facultyId ?? ''),
@@ -280,6 +292,8 @@ function Wizard({
     if (step === 0) {
       if (f.fullName.trim().split(/\s+/).length < 2)
         e.fullName = 'اكتب اسمك الأول واسم العيلة على الأقل.';
+      if (!normalizeEgyptianMobile(f.phone))
+        e.phone = 'اكتب رقم موبايل مصري صحيح (010، 011، 012 أو 015).';
       if (!f.kind) e.kind = 'اختار صفتك.';
     }
     if (step === 1) {
@@ -331,6 +345,7 @@ function Wizard({
         return;
       }
       const patch = patchForStep();
+      if (step === 0) await updateProfile({ phone: f.phone });
       if (patch) await saveApplication(patch);
       setStep((s) => s + 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -376,7 +391,8 @@ function Wizard({
     [uni],
   );
 
-  if (done) return shell(<Submitted name={f.fullName} phone={phone} />, 5);
+  if (done)
+    return shell(<Submitted name={f.fullName} phone={normalizeEgyptianMobile(f.phone)} />, 5);
 
   const nav = (
     <div className="nav-b">
@@ -441,15 +457,24 @@ function Wizard({
               onChange={(e) => update('fullName', e.target.value)}
             />
           </Field>
-          <Field id="phone" label="رقم الموبايل" error={undefined} hint="ده الرقم اللي بتدخل بيه.">
+          <Field
+            id="phone"
+            label="رقم الموبايل"
+            error={errors.phone}
+            hint="هنكلمك عليه في المراجعة. مش هيظهر للطلاب."
+          >
             <input
               className="sb-input"
               id="phone"
               dir="ltr"
+              inputMode="tel"
+              autoComplete="tel-national"
+              placeholder="01x xxxx xxxx"
               style={{ textAlign: 'right' }}
-              value={formatEgyptianMobile(phone)}
-              readOnly
-              aria-readonly="true"
+              value={f.phone}
+              aria-invalid={Boolean(errors.phone)}
+              aria-describedby={errors.phone ? 'phone-err' : undefined}
+              onChange={(e) => update('phone', e.target.value)}
             />
           </Field>
           <div className="sb-field">
@@ -672,7 +697,7 @@ function Wizard({
                 [
                   'الموبايل',
                   <span key="p" className="sb-num">
-                    {formatEgyptianMobile(phone).replace(/\s/g, '')}
+                    {f.phone.replace(/\s/g, '')}
                   </span>,
                 ],
                 ['الصفة', f.kind ? MENTOR_KIND_LABELS[f.kind] : ''],

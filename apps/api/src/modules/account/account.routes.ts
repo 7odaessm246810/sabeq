@@ -2,11 +2,12 @@
  * /api/v1/me/* — the signed-in website user's own account.
  *
  *   GET    profile         → { profile }
- *   PATCH  profile         { fullName?, track?, schoolYear?, governorate?, interests? } → { profile }
+ *   PATCH  profile         { fullName?, phone?, track?, schoolYear?, governorate?, interests? } → { profile }
  *   GET    devices         → { devices }   (live website sessions, current one flagged)
  *   DELETE devices/:id     → sign that device out
  */
 import { GOVERNORATES, SCHOOL_YEARS, STUDENT_TRACKS } from '@sabeq/types';
+import { normalizeEgyptianMobile } from '@sabeq/utils';
 import { Router, type RequestHandler } from 'express';
 import { z } from 'zod';
 import { Errors } from '../../core/errors.js';
@@ -25,9 +26,27 @@ const fullName = z
       .regex(/^[\p{L}\p{M}' .-]+$/u, 'الاسم يكون حروف بس.'),
   );
 
+/** Optional contact number; empty clears it. */
+const phone = z
+  .string()
+  .max(20, 'الرقم ده مش مظبوط.')
+  .transform((v, ctx) => {
+    if (!v.trim()) return null;
+    const e164 = normalizeEgyptianMobile(v);
+    if (!e164) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'اكتب رقم موبايل مصري صحيح (010، 011، 012 أو 015).',
+      });
+      return z.NEVER;
+    }
+    return e164;
+  });
+
 const profileSchema = z
   .object({
     fullName: fullName.optional(),
+    phone: phone.nullable().optional(),
     track: z.enum(STUDENT_TRACKS, { error: 'اختار الشعبة.' }).nullable().optional(),
     schoolYear: z
       .number({ error: 'اختار الصف.' })

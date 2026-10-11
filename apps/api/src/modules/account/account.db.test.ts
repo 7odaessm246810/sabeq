@@ -9,8 +9,9 @@ import { TEST_ENV } from '../../testing/env.js';
 import { createApp } from '../../app.js';
 import { loadConfig } from '../../config/env.js';
 import { createDb } from '../../infra/db.js';
+import { createDocumentCrypto } from '../../infra/document-crypto.js';
 import { createAuthModule } from '../auth/index.js';
-import type { SmsSender } from '../auth/sms.js';
+import { createConsoleSender } from '../notifications/email.js';
 import { createAccountModule } from './index.js';
 
 const dbUrl = process.env.DATABASE_URL;
@@ -21,21 +22,21 @@ redisUrl.pathname = '/15';
 const silent = pino({ level: 'silent' });
 const db = createDb({ url: dbUrl, poolMax: 4, logger: silent });
 const redis = new Redis(redisUrl.toString(), { maxRetriesPerRequest: 2 });
-const codes = new Map<string, string>();
-const sms: SmsSender = {
-  insecure: false,
-  sendOtp(phone, code) {
-    codes.set(phone, code);
-    return Promise.resolve();
-  },
-};
 
 const config = loadConfig({
   ...TEST_ENV,
   DATABASE_URL: dbUrl,
   REDIS_URL: redisUrl.toString(),
 });
-const auth = createAuthModule({ config, db, redis, logger: silent, sms });
+const auth = createAuthModule({
+  config,
+  db,
+  redis,
+  logger: silent,
+  crypto: createDocumentCrypto(config.documentKeys),
+  email: createConsoleSender(silent),
+  sendVerification: () => Promise.resolve({}),
+});
 const account = createAccountModule({ db, auth });
 const app = createApp({
   config,
@@ -47,17 +48,29 @@ const app = createApp({
 });
 
 let seq = 500_000 + Math.floor(Math.random() * 400_000);
-const newPhone = () => `011${String(++seq).padStart(8, '0')}`;
+const newEmail = () => `account${++seq}-${Date.now().toString(36)}@test.sabeq`;
+const PASSWORD = 'account-test-pass';
 
-async function login(role: 'student' | 'mentor' = 'student', phone = newPhone(), ua = 'test') {
+/** A new account (or, for an email already used, another sign-in to it from this user agent). */
+async function login(role: 'student' | 'mentor' = 'student', email = newEmail(), ua = 'test') {
   const agent = request.agent(app);
-  await agent.post('/api/v1/auth/otp/request').send({ phone }).expect(202);
-  await agent
-    .post('/api/v1/auth/otp/verify')
-    .set('User-Agent', ua)
-    .send({ phone, role, code: codes.get(`+20${phone.slice(1)}`) })
-    .expect(200);
-  return { agent, phone };
+  const known = await db.user.findUnique({ where: { email }, select: { id: true } });
+  if (known) {
+    await agent
+      .post('/api/v1/auth/login')
+      .set('User-Agent', ua)
+      .send({ email, password: PASSWORD })
+      .expect(200);
+  } else {
+    const res = await agent
+      .post('/api/v1/auth/register')
+      .set('User-Agent', ua)
+      .send({ fullName: 'Account Test', email, password: PASSWORD, role })
+      .expect(201);
+    // Starts without a name, as the profile tests expect.
+    await db.user.update({ where: { id: res.body.data.user.id }, data: { fullName: null } });
+  }
+  return { agent, email };
 }
 
 beforeEach(async () => {
@@ -134,7 +147,19 @@ describe('profile', () => {
       .patch('/api/v1/me/profile')
       .send({ interests: ['eng', 'med', 'pharm', 'dent', 'cs', 'law'] })
       .expect(400);
-    await agent.patch('/api/v1/me/profile').send({ phone: '+201000000000' }).expect(400);
+    await agent.patch('/api/v1/me/profile').send({ phone: '0123' }).expect(400);
+  });
+
+  it('keeps an optional contact number, one account per number', async () => {
+    const a = await login();
+    const b = await login();
+    const local = `015${String(seq).padStart(8, '0')}`;
+    const saved = await a.agent.patch('/api/v1/me/profile').send({ phone: local }).expect(200);
+    expect(saved.body.data.profile.phone).toBe(`+20${local.slice(1)}`);
+    const taken = await b.agent.patch('/api/v1/me/profile').send({ phone: local }).expect(400);
+    expect(taken.body.error.fields.phone).toBeTruthy();
+    const cleared = await a.agent.patch('/api/v1/me/profile').send({ phone: '' }).expect(200);
+    expect(cleared.body.data.profile.phone).toBeNull();
   });
 
   it('keeps student fields away from mentors', async () => {
@@ -147,16 +172,15 @@ describe('profile', () => {
 
 describe('devices', () => {
   it('lists signed-in devices and signs one out remotely', async () => {
-    const phone = newPhone();
+    const email = newEmail();
     const laptop = await login(
       'student',
-      phone,
+      email,
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140.0 Safari/537.36',
     );
-    await redis.flushdb(); // resend cooldown
     const mobile = await login(
       'student',
-      phone,
+      email,
       'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/140.0 Mobile Safari/537.36',
     );
 

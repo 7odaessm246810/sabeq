@@ -1,10 +1,10 @@
 'use client';
 
-import { formatEgyptianMobile } from '@sabeq/utils';
 import { Icon, Modal, useToast } from '@sabeq/ui';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { EmailSettings } from '@/components/account/EmailSettings';
+import { PasswordSettings } from '@/components/account/PasswordSettings';
 import { ProfileForm } from '@/components/account/ProfileForm';
 import { PageHead } from '@/components/PageHead';
 import { getProfile, listDevices, signOutDevice, type Device, type Profile } from '@/lib/account';
@@ -78,10 +78,7 @@ export function AccountClient() {
           <div>
             <h1 className="sb-h1">حسابي</h1>
             <p className="sb-lead">
-              بتدخل برقم{' '}
-              <span className="sb-num" dir="ltr">
-                {formatEgyptianMobile(user.phone)}
-              </span>
+              بتدخل بـ <span dir="ltr">{user.email}</span>
             </p>
           </div>
           <Link
@@ -126,16 +123,26 @@ export function AccountClient() {
         </div>
 
         <div className="sb-card acct-card">
-          <h2 className="sb-h3">إشعارات الإيميل</h2>
+          <h2 className="sb-h3">الإيميل</h2>
           <p className="sb-small">
-            الإشعارات بتوصلك هنا على الموقع دايمًا. ضيف إيميلك لو عايزها توصلك عليه كمان.
+            بتدخل بيه، وبتوصلك عليه إشعارات جلساتك. الإشعارات بتظهر هنا على الموقع كمان.
           </p>
-          <EmailSettings />
+          <EmailSettings onChanged={refresh} />
+        </div>
+
+        <div className="sb-card acct-card">
+          <h2 className="sb-h3">الباسورد</h2>
+          <p className="sb-small">
+            {user.hasPassword
+              ? 'لو حاسس إن حد عرف الباسورد، غيّره وهنخرّج أي جهاز تاني.'
+              : 'دخلت بجوجل. لو عايز تدخل بالإيميل كمان، ضيف باسورد.'}
+          </p>
+          <PasswordSettings hasPassword={user.hasPassword} />
         </div>
 
         <div className="sb-card acct-card">
           <h2 className="sb-h3">الأجهزة اللي داخل منها</h2>
-          <p className="sb-small">لو في جهاز مش عارفه، خرّجه وغيّر الرقم لو لزم.</p>
+          <p className="sb-small">لو في جهاز مش عارفه، خرّجه وغيّر الباسورد.</p>
           <ul className="acct-devices">
             {(devices ?? []).map((d) => (
               <li key={d.id}>

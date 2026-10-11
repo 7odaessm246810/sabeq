@@ -78,17 +78,25 @@ An invalid value stops the process with a list of every problem.
 
 ## Authentication (Phase 07)
 
-Phone + OTP (ADR-0005), opaque session cookies (ADR-0015). Module: `src/modules/auth`.
+Email + password or Google; admins add an authenticator-app code (ADR-0017). Opaque session cookies (ADR-0015). Module: `src/modules/auth`.
 
-| Endpoint (website: `/api/v1/auth`, admin app: `/api/v1/admin/auth`) | Body                     | Result                                                                                       |
-| ------------------------------------------------------------------- | ------------------------ | -------------------------------------------------------------------------------------------- |
-| `POST otp/request`                                                  | `{ phone }`              | `202 { expiresInSeconds, resendAfterSeconds, devCode? }` — `devCode` only in `APP_ENV=local` |
-| `POST otp/verify`                                                   | `{ phone, code, role? }` | `200 { user, isNew }` + session cookie                                                       |
-| `GET me`                                                            | —                        | `200 { user, session }` / `401`                                                              |
-| `POST logout` · `POST logout-all`                                   | —                        | `200`, cookie cleared                                                                        |
+| Endpoint                                               | Body                                  | Result                                                                                        |
+| ------------------------------------------------------ | ------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `GET /auth/providers`                                  | —                                     | `{ google }` (button shown only when configured)                                              |
+| `POST /auth/register`                                  | `{ fullName, email, password, role }` | `201 { user, isNew, devLink? }` + session cookie; confirmation link emailed                   |
+| `POST /auth/login`                                     | `{ email, password }`                 | `200 { user }` + cookie · `401` same message for any mistake · `429` locked                   |
+| `GET /auth/google?role=` → `GET /auth/google/callback` | —                                     | `303` to Google, then to `/login?google=ok                                                    | new | cancelled | failed | admin | suspended` |
+| `POST /auth/password/forgot`                           | `{ email }`                           | `202` always (`devLink` locally)                                                              |
+| `POST /auth/password/reset`                            | `{ token, password }`                 | `200 { role }` — email confirmed, every device signed out · `409` bad/used link               |
+| `POST /auth/password/change`                           | `{ current?, password }`              | `200` — other devices signed out (`current` not needed for Google-only accounts)              |
+| `POST /admin/auth/login`                               | `{ email, password }`                 | `200 { step: "totp", challenge }` or, first time, `{ step: "setup", challenge, secret, uri }` |
+| `POST /admin/auth/totp`                                | `{ challenge, code }`                 | `200 { user }` + admin cookie · 5 wrong codes end the step                                    |
+| `GET me` · `POST logout` · `POST logout-all` (both)    | —                                     | as before                                                                                     |
 
-- **OTP:** 6 digits, 5 minutes, single use, 5 wrong guesses burn it. Stored as an HMAC in Redis. Throttled: 30 s between sends, 10 per number per day, 30 sends and 60 checks per IP per hour (`429` + `Retry-After`).
-- **Accounts:** a new number on the website becomes a student (with a student profile) or a mentor applicant, as picked on the login screen. An existing account keeps its role. Admin numbers cannot log into the website; admins log in only through `/admin/auth` and only if created with `pnpm admin:create` (no SMS is sent to other numbers there, same answer either way).
+- **User:** `{ id, role, adminRole, fullName, email, emailVerified, phone, hasPassword, needsProfile }`.
+- **Booking needs a confirmed email:** `POST /bookings` and `/bookings/:id/pay` answer `403 EMAIL_UNVERIFIED` until then.
+- **Limits (Redis):** login 30 / IP / 15 min; 10 wrong passwords lock that email for the hour; sign-up 10 / IP / hour; forgot 10 / IP and 3 / email per hour.
+- **Admins:** made only with `pnpm admin:create` (emails a 24-hour link to choose the password; for an existing admin it resets password + app). Website accounts get the same answer as a wrong password on the admin app.
 - **Protecting routes:** `router.use(auth.authenticate('web' | 'admin'))`, then `requireAuth()`, `requireRole('student')`, `requireAdmin('finance')` (`super_admin` passes every admin check). No session → `401`; wrong role → `403`.
 - **Revocation:** `sessions.revokeAll(userId)` on suspension / role change — takes effect immediately (Redis cache entry deleted).
 
@@ -291,8 +299,6 @@ Admin app only (admin session cookie), module `src/modules/verification`. Review
 ## Known limits (tracked)
 
 - Rate limits use an in-memory store — exact per instance. **Phase 21** switches to Redis so the budget is shared across containers.
-- OTP codes are logged (console SMS) — a real SMS provider is required before production; config refuses `SMS_PROVIDER=console` there.
-- Admin second factor (TOTP) — **Phase 21**.
 - **Client IP behind the Next.js rewrite — must be fixed before deploying (Phase 21).** Next's rewrite proxy does not add `X-Forwarded-For`, and it passes a client-sent one through unchanged. With `API_TRUST_PROXY=1` the API therefore sees either the Next server's IP (every visitor looks the same to the per-IP limits) or a value the client chose (per-IP OTP limits can be dodged; per-phone limits still hold). Fix: the Next apps forward the platform-verified client IP in a dedicated header signed with a shared secret, and the API trusts only that.
 
 ## Tests

@@ -27,6 +27,22 @@
   place-items: center;
   padding: 24px 16px;
 }
+.adm-totp-setup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+.adm-totp-setup img {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fff;
+}
+.adm-totp-setup code {
+  font-family: var(--font-mono);
+  word-break: break-all;
+}
 .adm-auth-card {
   width: min(420px, 100%);
   padding: 28px;
