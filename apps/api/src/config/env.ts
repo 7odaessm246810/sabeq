@@ -17,6 +17,16 @@ const csv = z
 
 /** Empty variables (`KEY=` in .env) count as unset. */
 const unsetIfEmpty = (v: unknown) => (v === '' ? undefined : v);
+/** Keys pasted into a dashboard often carry spaces or quotes around them. */
+const pastedKey = (v: unknown) =>
+  unsetIfEmpty(
+    typeof v === 'string'
+      ? v
+          .trim()
+          .replace(/^['"]|['"]$/g, '')
+          .trim()
+      : v,
+  );
 
 /**
  * Connection URLs pasted from a provider's dashboard: trims spaces and surrounding quotes, and takes
@@ -93,8 +103,8 @@ const schema = z
      */
     AUTH_OTP_SECRET: z.string().min(32, 'must be at least 32 characters'),
     /** "Sign in with Google" (ADR-0017). Both or neither; without them the button is hidden. */
-    GOOGLE_CLIENT_ID: z.preprocess(unsetIfEmpty, z.string().min(10).optional()),
-    GOOGLE_CLIENT_SECRET: z.preprocess(unsetIfEmpty, z.string().min(10).optional()),
+    GOOGLE_CLIENT_ID: z.preprocess(pastedKey, z.string().min(10).optional()),
+    GOOGLE_CLIENT_SECRET: z.preprocess(pastedKey, z.string().min(10).optional()),
     /** S3-compatible object storage (AWS S3, Cloudflare R2, or the local gateway in Docker). */
     STORAGE_ENDPOINT: z.preprocess(endpointOrigin, z.url().optional()),
     STORAGE_REGION: z.string().min(1).default('auto'),

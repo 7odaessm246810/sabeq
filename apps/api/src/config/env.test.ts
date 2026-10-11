@@ -78,6 +78,14 @@ describe('loadConfig', () => {
         GOOGLE_CLIENT_SECRET: 'GOCSPX-secret-value',
       }).auth.google,
     ).toEqual({ clientId: 'id.apps.googleusercontent.com', clientSecret: 'GOCSPX-secret-value' });
+    // As pasted into a dashboard: spaces and quotes around the value are dropped.
+    expect(
+      loadConfig({
+        ...BASE,
+        GOOGLE_CLIENT_ID: ' id.apps.googleusercontent.com\n',
+        GOOGLE_CLIENT_SECRET: '  "GOCSPX-secret-value" ',
+      }).auth.google,
+    ).toEqual({ clientId: 'id.apps.googleusercontent.com', clientSecret: 'GOCSPX-secret-value' });
   });
 
   it('production sends real emails; Resend needs its key', () => {
