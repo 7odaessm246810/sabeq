@@ -67,6 +67,12 @@ jobs:
       CI: 'true'
     steps:
       - uses: actions/checkout@v4
+      - name: Local environment (random, test-only secrets)
+        run: |
+          cp .env.example .env
+          sed -i "s|^AUTH_OTP_SECRET=.*|AUTH_OTP_SECRET=$(openssl rand -hex 32)|" .env
+          sed -i "s|^DOCUMENTS_ENCRYPTION_KEYS=.*|DOCUMENTS_ENCRYPTION_KEYS=ci-1:$(openssl rand -base64 32)|" .env
+          sed -i "s|^DOCUMENTS_ENCRYPTION_ACTIVE_KEY=.*|DOCUMENTS_ENCRYPTION_ACTIVE_KEY=ci-1|" .env
       - name: Start the stack
         run: docker compose up -d --build --wait
       - uses: pnpm/action-setup@v4
