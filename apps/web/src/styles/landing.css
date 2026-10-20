@@ -32,6 +32,7 @@
   gap: 28px;
 }
 .hero-copy .sb-display {
+  overflow-wrap: anywhere;
   max-width: 560px;
   font-size: 56px;
   line-height: 1.22;
@@ -230,11 +231,26 @@
 .layer {
   transition: transform 600ms var(--ease-out);
 }
+/* The hero text never waits for JavaScript: it is the largest paint on the page, and hiding it until
+   hydration cost ~5s of LCP on a mid-range phone. A transform-only rise keeps the entrance. */
+.hero-copy .in {
+  opacity: 1;
+  transform: none;
+  transition: none;
+  animation: hero-rise 520ms var(--ease-out) both;
+}
+@keyframes hero-rise {
+  from {
+    transform: translateY(10px);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .in {
+  .in,
+  .hero-copy .in {
     opacity: 1;
     transform: none;
     transition: none;
+    animation: none;
   }
 }
 
@@ -1364,6 +1380,15 @@
   /* Three on a phone; the rest are one tap away on /mentors. */
   .home-mgrid > :nth-child(n + 4) {
     display: none;
+  }
+}
+@media (max-width: 1100px) {
+  /* minmax(0, …): the column follows the screen, never its widest child (text was cut on 360px phones). */
+  .hero .hero-in {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero .hero-copy {
+    min-width: 0;
   }
 }
 @media (max-width: 720px) {

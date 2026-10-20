@@ -39,6 +39,15 @@ body {
 .skip-link:focus {
   top: 12px;
 }
+/* Out of sight it takes no room: off-screen boxes made small phones scroll sideways. */
+.skip-link:not(:focus) {
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 
 /* ---------- nav ---------- */
 .site-nav {
@@ -319,6 +328,8 @@ body {
 }
 .foot .news input {
   flex: 1;
+  /* An input's default width is ~20 characters: without this it widened 320px phones. */
+  min-width: 0;
   height: 44px;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(238, 241, 238, 0.25);
@@ -390,9 +401,14 @@ body {
 }
 
 /* Small phones: a little more room for the logo, «ابدأ الآن» and the menu button (Phase 22). */
-@media (max-width: 360px) {
+@media (max-width: 380px) {
   .site-nav .sb-nav-in {
     padding-inline: 12px;
+    gap: 8px;
+  }
+  /* The Arabic name and the mark stay; the Latin «SABEQ» goes. */
+  .site-nav .sb-logo-en {
+    display: none;
   }
   .site-nav .sb-nav-burger {
     padding-inline: 8px;

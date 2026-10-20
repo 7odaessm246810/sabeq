@@ -147,7 +147,7 @@ export function SearchSuggest() {
   let i = -1;
 
   return (
-    <div className="sb-search sb-reveal" ref={wrapRef} style={{ zIndex: 5 }}>
+    <div className="sb-search" ref={wrapRef} style={{ zIndex: 5 }}>
       <div className="sb-search-box">
         <span style={{ display: 'inline-flex', width: 20, height: 20 }}>
           <Icon name="search" />

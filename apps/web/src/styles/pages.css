@@ -356,8 +356,18 @@
 .disc-top {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 16px;
+}
+/* The sort menu shrinks instead of pushing the row off a small phone. */
+.disc-top .sb-select-wrap {
+  min-width: 0;
+  flex: 1 1 140px;
+}
+.disc-top .sb-select-wrap select {
+  width: 100%;
+  min-width: 0;
 }
 .sb-select-wrap > span {
   position: absolute;
