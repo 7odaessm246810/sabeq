@@ -1,9 +1,15 @@
 import { IBM_Plex_Mono, IBM_Plex_Sans_Arabic, Readex_Pro } from 'next/font/google';
 
+/*
+ * 'optional' for the Arabic faces: used if they arrive within the first moments (they are preloaded),
+ * otherwise the system font stays for that view and the next page has them cached. 'swap' made the
+ * hero text jump when the font landed after the (now inlined) CSS painted it — CLS 0.19.
+ */
+
 /** Display — headlines (README §4). Variable font. */
 export const readexPro = Readex_Pro({
   subsets: ['arabic', 'latin'],
-  display: 'swap',
+  display: 'optional',
   variable: '--nf-display',
 });
 
@@ -11,7 +17,7 @@ export const readexPro = Readex_Pro({
 export const plexArabic = IBM_Plex_Sans_Arabic({
   subsets: ['arabic', 'latin'],
   weight: ['400', '500', '600', '700'],
-  display: 'swap',
+  display: 'optional',
   variable: '--nf-sans',
 });
 
