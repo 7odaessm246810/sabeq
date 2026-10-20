@@ -21,7 +21,7 @@ export { requireAdmin, requireAuth, requireRole } from './auth.middleware.js';
 export type { AuthContext } from './session.service.js';
 
 export interface AuthModuleDeps {
-  config: Pick<Config, 'auth' | 'publicWebUrl'>;
+  config: Pick<Config, 'auth' | 'publicWebUrl' | 'appEnv'>;
   db: Db;
   redis: Redis;
   logger: Logger;
@@ -51,6 +51,7 @@ export function createAuthModule(deps: AuthModuleDeps) {
     publicWebUrl: config.publicWebUrl,
     google,
     emailConfirmation: config.auth.emailConfirmation,
+    exposeLinks: config.appEnv === 'local',
     sendVerification: deps.sendVerification,
   });
   const secureCookies = config.auth.secureCookies;

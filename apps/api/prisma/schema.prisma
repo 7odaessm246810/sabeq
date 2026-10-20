@@ -146,6 +146,8 @@ enum PaymentStatus {
 
 enum RefundStatus {
   pending
+  /// Claimed by one API instance and on its way to the gateway (never sent twice).
+  sending
   succeeded
   failed
 }
@@ -707,7 +709,8 @@ model Payment {
 
   booking Booking        @relation(fields: [bookingId], references: [id])
   events  PaymentEvent[]
-  refunds Refund[]
+  /// At most one (refunds.payment_id is unique): a partial or full refund, sent once.
+  refund  Refund?
 
   @@index([bookingId])
   @@index([providerOrderId])
@@ -746,7 +749,7 @@ model Refund {
   payment     Payment @relation(fields: [paymentId], references: [id])
   requestedBy User?   @relation("RefundRequestedBy", fields: [requestedById], references: [id])
 
-  @@index([paymentId])
+  @@unique([paymentId])
   @@map("refunds")
 }
 

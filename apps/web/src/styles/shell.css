@@ -380,12 +380,6 @@ body {
   max-width: 640px;
   padding-top: 64px;
 }
-.narrow-page {
-  max-width: 760px;
-}
-.placeholder-card {
-  margin-top: 20px;
-}
 .error-ref {
   text-align: center;
   padding-bottom: 24px;

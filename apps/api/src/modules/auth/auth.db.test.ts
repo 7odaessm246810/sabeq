@@ -223,6 +223,45 @@ describe('sign-in', () => {
 });
 
 describe('passwords', () => {
+  it('never hands a reset link back outside local development', async () => {
+    const { email } = await register();
+    // A hosted environment without a real email sender (staging before Resend).
+    for (const env of [
+      { APP_ENV: 'staging', AUTH_EMAIL_CONFIRMATION: 'false' },
+      { APP_ENV: 'staging', AUTH_EMAIL_CONFIRMATION: 'true' },
+    ]) {
+      const hostedConfig = loadConfig({
+        ...TEST_ENV,
+        ...env,
+        DATABASE_URL: dbUrl,
+        REDIS_URL: redisUrl.toString(),
+      });
+      const hosted = createAuthModule({
+        config: hostedConfig,
+        db,
+        redis,
+        logger: silent,
+        crypto,
+        email: mail,
+        sendVerification: () => Promise.resolve({}),
+      });
+      const hostedApp = createApp({
+        config: hostedConfig,
+        logger: silent,
+        mountV1: (v1) => hosted.mount(v1),
+      });
+      await redis.flushdb();
+      mail.sent.length = 0;
+      const res = await request(hostedApp)
+        .post('/api/v1/auth/password/forgot')
+        .send({ email })
+        .expect(202);
+      expect(res.body.data).toEqual({ sent: true });
+      // With confirmation off there is no sender to trust, so no link is made at all.
+      expect(mail.sent).toHaveLength(env.AUTH_EMAIL_CONFIRMATION === 'true' ? 1 : 0);
+    }
+  });
+
   it('resets from the emailed link once, confirms the email and signs out everywhere', async () => {
     const { agent, email } = await register();
     const unknown = await request(app)

@@ -156,12 +156,6 @@
   margin-top: 24px;
   flex-wrap: wrap;
 }
-.hscroll-row {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  flex-wrap: wrap;
-}
 
 /* grids */
 .fgrid-site {
@@ -172,11 +166,6 @@
 .mgrid-site {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
-}
-.tgrid-site {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
 
@@ -676,7 +665,6 @@
     stroke-dashoffset: 0;
   }
 }
-.cardf,
 .two {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -942,58 +930,22 @@
   .tries {
     grid-template-columns: repeat(2, 1fr);
   }
-  .verdict {
-    grid-template-columns: 1fr;
-  }
-  .vline {
-    display: none;
-  }
-  .cmp {
-    grid-template-columns: 1fr;
-  }
-  .cmp-side + .cmp-side {
-    border-inline-start: 0;
-    border-top: 1px solid var(--border);
-  }
   .how {
     grid-template-columns: 1fr;
   }
   .stage {
     display: none;
   }
-  .st p {
-    max-height: 60px;
-    opacity: 1;
-  }
-  .ver,
   .book,
-  .forM,
   .bm-in {
     grid-template-columns: 1fr;
     gap: 40px;
   }
-  .ex-top {
-    /* minmax(0, …): the search box must not widen the page on phones */
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .fgrid,
   .fgrid-site {
     grid-template-columns: repeat(2, 1fr);
   }
-  .mgrid,
-  .tgrid {
+  .mgrid {
     grid-template-columns: 1fr 1fr;
-  }
-  .bento {
-    grid-template-columns: 1fr 1fr;
-  }
-  .c2,
-  .c3,
-  .c4 {
-    grid-column: span 1;
-  }
-  .journey {
-    display: none;
   }
   .final h2 {
     font-size: 44px;
@@ -1028,22 +980,9 @@
   .hero-copy .sb-display {
     font-size: 36px;
   }
-  .q-big {
-    font-size: 30px;
-  }
-  .verdict .sb-h1 {
-    font-size: 28px;
-  }
   .tries,
-  .fgrid,
   .fgrid-site,
   .mgrid,
-  .tgrid,
-  .tgrid-site,
-  .bento,
-  .ben,
-  .kpis,
-  .book-body,
   .gen-real,
   .dept-grid,
   .bm-steps,
@@ -1059,10 +998,6 @@
   .fac-stats {
     grid-template-columns: 1fr 1fr;
   }
-  .book-body > div + div {
-    border-inline-start: 0;
-    border-top: 1px solid var(--border);
-  }
   .final {
     padding: 96px 0;
   }
@@ -1072,20 +1007,8 @@
   .final p.l {
     font-size: 22px;
   }
-  .final .ctas,
   .hero-ctas {
     flex-direction: column;
-  }
-  .disc-bar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .sec-head-row {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-  }
-  .cmp-side {
-    padding: 20px;
   }
   .prof-top {
     flex-direction: column;

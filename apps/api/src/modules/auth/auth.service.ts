@@ -71,8 +71,14 @@ export type AdminStep =
 
 export const AUTH_LIMITS = {
   loginPerIp: { limit: 30, windowSeconds: 900 },
-  /** Wrong passwords per account before it is locked for the rest of the hour. */
+  /**
+   * Sign-in attempts per hour before a lock: per account from one address (so a stranger cannot
+   * lock someone out from their own device), and per account from everywhere (spread guessing).
+   */
   failuresPerEmail: { limit: 10, windowSeconds: 3600 },
+  failuresPerAccount: { limit: 50, windowSeconds: 3600 },
+  /** Wrong app codes per admin per hour, across every sign-in attempt. */
+  totpFailuresPerAdmin: { limit: 10, windowSeconds: 3600 },
   registerPerIp: { limit: 10, windowSeconds: 3600 },
   forgotPerIp: { limit: 10, windowSeconds: 3600 },
   forgotPerEmail: { limit: 3, windowSeconds: 3600 },
@@ -150,6 +156,11 @@ export interface AuthServiceDeps {
   google: { client: GoogleClient; clientId: string } | null;
   /** Off while no email is really sent: sign-up sends no link and booking does not wait. */
   emailConfirmation: boolean;
+  /**
+   * APP_ENV=local only: hand the emailed link back in the response (no email leaves the machine).
+   * Never on a hosted environment — anyone could ask for a reset link for someone else's account.
+   */
+  exposeLinks: boolean;
   /** Late-bound to the notifications module: sends the "confirm your email" link. */
   sendVerification: (userId: string, email: string) => Promise<{ devLink?: string }>;
   now?: () => Date;
@@ -194,24 +205,35 @@ export function createAuthService(deps: AuthServiceDeps) {
   /** Email + password, with the per-IP budget and the per-account lockout. */
   async function checkPassword(address: string, password: string, ip: string): Promise<UserRow> {
     await limit(`auth:login:ip:${ip}`, AUTH_LIMITS.loginPerIp, MESSAGES.tooMany);
-    const failKey = `auth:login:fail:${sha(address)}`;
-    const failures = Number((await redis.get(failKey)) ?? 0);
-    if (failures >= AUTH_LIMITS.failuresPerEmail.limit) {
-      const ttl = await redis.ttl(failKey);
-      throw Errors.rateLimited(MESSAGES.locked, ttl > 0 ? ttl : 60);
-    }
+    // Counted before checking (atomic INCR), so parallel guesses cannot slip past the cap.
+    const accountKey = `auth:login:fail:${sha(address)}`;
+    const deviceKey = `${accountKey}:${sha(ip).slice(0, 16)}`;
+    const fromHere = await hitWindow(
+      redis,
+      deviceKey,
+      AUTH_LIMITS.failuresPerEmail.limit,
+      AUTH_LIMITS.failuresPerEmail.windowSeconds,
+    );
+    const overall = await hitWindow(
+      redis,
+      accountKey,
+      AUTH_LIMITS.failuresPerAccount.limit,
+      AUTH_LIMITS.failuresPerAccount.windowSeconds,
+    );
+    if (!fromHere.allowed || !overall.allowed)
+      throw Errors.rateLimited(
+        MESSAGES.locked,
+        Math.max(
+          fromHere.allowed ? 0 : fromHere.retryAfter,
+          overall.allowed ? 0 : overall.retryAfter,
+        ),
+      );
     const user = await findByEmail(address);
     const ok = await verifyPassword(password, user?.passwordHash ?? null);
-    if (!user || !ok) {
-      await hitWindow(
-        redis,
-        failKey,
-        AUTH_LIMITS.failuresPerEmail.limit,
-        AUTH_LIMITS.failuresPerEmail.windowSeconds,
-      );
-      throw new AppError('UNAUTHENTICATED', MESSAGES.badLogin);
-    }
-    await redis.del(failKey);
+    if (!user || !ok) throw new AppError('UNAUTHENTICATED', MESSAGES.badLogin);
+    // The right password: this attempt was not a failure after all.
+    await redis.del(deviceKey);
+    await redis.decr(accountKey);
     if (user.passwordHash && needsRehash(user.passwordHash)) {
       await db.user.update({
         where: { id: user.id },
@@ -237,7 +259,7 @@ export function createAuthService(deps: AuthServiceDeps) {
     const token = passwordToken(secret, user, now().getTime() + LINK_MINUTES.reset * 60_000);
     const link = `${publicWebUrl}/reset-password?token=${token}`;
     await email.send({ to: user.email, ...passwordEmail('reset', link) });
-    return email.name === 'console' ? { devLink: link } : {};
+    return deps.exposeLinks ? { devLink: link } : {};
   }
 
   return {
@@ -337,10 +359,25 @@ export function createAuthService(deps: AuthServiceDeps) {
         setupSecret ??
         (user.admin.totpSecretEnc ? openTotp(user.id, user.admin.totpSecretEnc) : null);
       if (!totpSecret) throw new AppError('UNAUTHENTICATED', MESSAGES.challengeGone);
+      // Per admin across every challenge: a new password sign-in does not buy fresh guesses.
+      const totpFailKey = `auth:totp:fail:${user.id}`;
+      if (Number((await redis.get(totpFailKey)) ?? 0) >= AUTH_LIMITS.totpFailuresPerAdmin.limit) {
+        const ttl = await redis.ttl(totpFailKey);
+        throw Errors.rateLimited(MESSAGES.locked, ttl > 0 ? ttl : 60);
+      }
       const lastKey = `auth:totp:last:${user.id}`;
       const last = await redis.get(lastKey);
       const step = matchTotp(totpSecret, input.code, now().getTime(), last ? Number(last) : null);
-      if (step === null) throw Errors.validation({ code: MESSAGES.badCode }, MESSAGES.badCode);
+      if (step === null) {
+        await hitWindow(
+          redis,
+          totpFailKey,
+          AUTH_LIMITS.totpFailuresPerAdmin.limit,
+          AUTH_LIMITS.totpFailuresPerAdmin.windowSeconds,
+        );
+        throw Errors.validation({ code: MESSAGES.badCode }, MESSAGES.badCode);
+      }
+      await redis.del(totpFailKey);
       // Single use: of two parallel correct answers only the one that deletes the challenge goes on.
       if ((await redis.del(key)) !== 1)
         throw new AppError('UNAUTHENTICATED', MESSAGES.challengeGone);
@@ -462,6 +499,8 @@ export function createAuthService(deps: AuthServiceDeps) {
         AUTH_LIMITS.forgotPerEmail.windowSeconds,
       );
       if (!perEmail.allowed) return {};
+      // No real email sender: there is nowhere safe to send a link, so nothing is made at all.
+      if (!deps.emailConfirmation && !deps.exposeLinks) return {};
       const user = await findByEmail(address);
       if (!user || user.status !== 'active') return {};
       return sendResetEmail(user);
@@ -485,7 +524,9 @@ export function createAuthService(deps: AuthServiceDeps) {
           ...(user.emailVerifiedAt ? {} : { emailVerifiedAt: now() }),
         },
       });
-      await redis.del(`auth:login:fail:${sha(user.email ?? '')}`);
+      // A new password unlocks the account everywhere.
+      const failKeys = await redis.keys(`auth:login:fail:${sha(user.email ?? '')}*`);
+      if (failKeys.length) await redis.del(...failKeys);
       await sessions.revokeAll(user.id);
       return { role: user.role };
     },

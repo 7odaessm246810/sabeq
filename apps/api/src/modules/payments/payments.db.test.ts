@@ -167,14 +167,21 @@ describe('paying for a held booking', () => {
       status: 'pending',
       payment: { status: 'pending' },
     });
+    // Unsigned callbacks leave nothing behind; the signed one with the wrong amount is recorded.
     const events = await h.db.paymentEvent.findMany({ where: { paymentId } });
-    expect(events).toHaveLength(3);
-    expect(events.filter((e) => e.hmacValid)).toHaveLength(1);
-    expect(events.map((e) => e.processingError).sort()).toEqual([
-      'amount mismatch',
-      'bad hmac',
-      'bad hmac',
-    ]);
+    expect(events.map((e) => e.processingError)).toEqual(['amount mismatch']);
+  });
+
+  it('a forged callback cannot block the real one for the same transaction', async () => {
+    const m = await mentor();
+    const s = await student();
+    const b = await hold(s.agent, m.slug, (await slots(m.slug))[0] ?? '');
+    const { paymentId } = await startPay(s.agent, b.id);
+    const real = txn(paymentId, 21_500);
+    // An attacker guesses the next transaction id and sends it first, unsigned.
+    await webhook(real, 'a'.repeat(128));
+    await webhook(real);
+    expect((await getBooking(s.agent, b.id)).status).toBe('confirmed');
   });
 
   it('records a repeated callback once', async () => {

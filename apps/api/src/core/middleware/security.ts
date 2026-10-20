@@ -154,6 +154,8 @@ export const SENSITIVE_LIMITS: readonly {
   { name: 'email', method: 'PUT', path: /^\/me\/email$/, perHour: 10 },
   { name: 'email-verify', method: 'POST', path: /^\/email\/verify$/, perHour: 30 },
   { name: 'upload', method: 'PUT', path: /\/(photo|documents\/[^/]+)$/, perHour: 30 },
+  // Mentor applications upload with POST (…/application/documents/:slot, up to 10 MB each).
+  { name: 'upload-post', method: 'POST', path: /\/documents\/[^/]+$/, perHour: 30 },
 ];
 
 export function sensitiveRateLimits(redis?: Redis, logger?: Logger): RequestHandler {

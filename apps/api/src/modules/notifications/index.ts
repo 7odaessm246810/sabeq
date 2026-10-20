@@ -41,7 +41,7 @@ export function createNotificationsModule(deps: {
   db: Db;
   redis: Redis;
   auth: ReturnType<typeof createAuthModule>;
-  config: Pick<Config, 'email' | 'publicWebUrl' | 'auth'>;
+  config: Pick<Config, 'email' | 'publicWebUrl' | 'auth' | 'appEnv'>;
   logger: Logger;
   /** Tests inject a sender to read what was "sent". */
   email?: EmailSender;
@@ -54,6 +54,7 @@ export function createNotificationsModule(deps: {
     publicWebUrl: deps.config.publicWebUrl,
     secret: deps.config.auth.secret,
     logger: deps.logger,
+    exposeLinks: deps.config.appEnv === 'local',
   });
   const authenticate: RequestHandler = deps.auth.authenticate('web');
 

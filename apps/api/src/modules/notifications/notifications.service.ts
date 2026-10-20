@@ -47,6 +47,8 @@ export function createNotificationsService(deps: {
   /** Signs email-confirmation links. */
   secret: string;
   logger: Logger;
+  /** APP_ENV=local only: return the confirmation link to the page (see auth.service). */
+  exposeLinks?: boolean;
   now?: () => Date;
 }) {
   const { db, redis, email, publicWebUrl, secret, logger, now = () => new Date() } = deps;
@@ -76,8 +78,9 @@ export function createNotificationsService(deps: {
       footer: 'لو مش انت اللي ضفت الإيميل ده على سابق، تجاهل الرسالة دي.',
     });
     await email.send({ to: address, subject: 'أكّد إيميلك على سابق', text, html });
-    // Local development: no email leaves the machine, so the page shows the link (never in production).
-    return email.name === 'console' ? { devLink: link } : {};
+    // Local development: no email leaves the machine, so the page shows the link. Never on a hosted
+    // environment: it would let anyone "confirm" an address they do not own.
+    return deps.exposeLinks ? { devLink: link } : {};
   }
 
   /** Each new notification → one email delivery, for people with a confirmed address. */

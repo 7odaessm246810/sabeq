@@ -56,6 +56,12 @@ export function createPaymentsService(deps: {
       },
     });
     if (r.status !== 'pending' || !r.payment.providerTxnId) return;
+    // Claim it: of two API instances (or the sweeper racing a cancel) only one sends it.
+    const claimed = await db.refund.updateMany({
+      where: { id: r.id, status: 'pending' },
+      data: { status: 'sending' },
+    });
+    if (claimed.count !== 1) return;
     try {
       const { providerRefundId } = await gateway.refund({
         providerTxnId: r.payment.providerTxnId,
@@ -76,6 +82,11 @@ export function createPaymentsService(deps: {
         }),
       ]);
     } catch (err) {
+      // The gateway refused or was unreachable: release the claim so the sweeper retries it.
+      await db.refund.updateMany({
+        where: { id: r.id, status: 'sending' },
+        data: { status: 'pending' },
+      });
       logger.error({ err, refundId: r.id }, 'refund failed — will retry');
     }
   }
@@ -83,9 +94,19 @@ export function createPaymentsService(deps: {
   /** Records and sends a refund of `amountPiasters` for a succeeded payment. Idempotent per payment. */
   async function refundPayment(paymentId: string, amountPiasters: number, reason: string) {
     if (amountPiasters <= 0) return;
-    const existing = await db.refund.findFirst({ where: { paymentId }, select: { id: true } });
-    const refund =
-      existing ?? (await db.refund.create({ data: { paymentId, amountPiasters, reason } }));
+    // One refund per payment (unique in the database): a second caller finds the first one.
+    let refund = await db.refund.findUnique({ where: { paymentId }, select: { id: true } });
+    if (!refund) {
+      try {
+        refund = await db.refund.create({
+          data: { paymentId, amountPiasters, reason },
+          select: { id: true },
+        });
+      } catch (err) {
+        if ((err as { code?: string }).code !== 'P2002') throw err;
+        refund = await db.refund.findUniqueOrThrow({ where: { paymentId }, select: { id: true } });
+      }
+    }
     await runRefund(refund.id);
   }
 
@@ -153,30 +174,51 @@ export function createPaymentsService(deps: {
         hmac,
         gateway.hmacSecret,
       );
+      const eventId = `txn:${obj.id}:${obj.success}:${obj.pending}:${obj.is_refunded}:${obj.is_voided}`;
+      // Nothing is stored for an unsigned callback: forged ones must not take the event ids real
+      // callbacks will need (they would then be dropped as duplicates), nor fill the table.
+      if (!valid) {
+        logger.warn({ eventId }, 'payment callback with a bad HMAC — ignored');
+        return 'invalid' as const;
+      }
+      if (obj.currency && obj.currency !== 'EGP') {
+        logger.error({ eventId }, 'payment callback in another currency — ignored');
+        return 'invalid' as const;
+      }
+      // Found by the signed Paymob order id. merchant_order_id is not covered by the HMAC, so it is
+      // trusted only from the fake gateway (local development).
+      const merchantId = obj.order?.merchant_order_id;
       const payment = await db.payment.findFirst({
         where: {
           OR: [
             { providerOrderId: String(obj.order?.id ?? '') },
-            ...(obj.order?.merchant_order_id && /^[0-9a-f-]{36}$/.test(obj.order.merchant_order_id)
-              ? [{ id: obj.order.merchant_order_id }]
+            ...(gateway.name === 'fake' && merchantId && /^[0-9a-f-]{36}$/.test(merchantId)
+              ? [{ id: merchantId }]
               : []),
           ],
         },
       });
-      const eventId = `txn:${obj.id}:${obj.success}:${obj.pending}:${obj.is_refunded}:${obj.is_voided}`;
-      let event;
+      let event: { id: string };
       try {
         event = await db.paymentEvent.create({
           data: {
             providerEventId: eventId,
             type: 'TRANSACTION',
             payload: obj as unknown as object,
-            hmacValid: valid,
+            hmacValid: true,
             paymentId: payment?.id ?? null,
           },
+          select: { id: true },
         });
       } catch {
-        return 'duplicate' as const;
+        // Seen before. Finished then → a retry to ignore. Not finished (the process stopped
+        // half-way) → finish it now; every step below is safe to run twice.
+        const seen = await db.paymentEvent.findUnique({
+          where: { providerEventId: eventId },
+          select: { id: true, processedAt: true },
+        });
+        if (!seen || seen.processedAt) return 'duplicate' as const;
+        event = seen;
       }
       const done = (processingError?: string) =>
         db.paymentEvent.update({
@@ -184,11 +226,6 @@ export function createPaymentsService(deps: {
           data: { processedAt: now(), ...(processingError ? { processingError } : {}) },
         });
 
-      if (!valid) {
-        logger.warn({ eventId }, 'payment callback with a bad HMAC — ignored');
-        await done('bad hmac');
-        return 'invalid' as const;
-      }
       if (!payment) {
         await done('unknown payment');
         return 'unknown' as const;
@@ -267,6 +304,12 @@ export function createPaymentsService(deps: {
         take: 20,
       });
       for (const r of due) await runRefund(r.id);
+      // A refund left 'sending' means the process stopped while talking to the gateway: it may or
+      // may not have gone out, so a person checks it in the Paymob dashboard (never re-sent blindly).
+      const stuck = await db.refund.count({
+        where: { status: 'sending', updatedAt: { lt: new Date(now().getTime() - 15 * 60_000) } },
+      });
+      if (stuck) logger.error({ stuck }, 'refunds stuck while sending — check them in Paymob');
       return { retried: due.length };
     },
   };

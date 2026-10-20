@@ -236,7 +236,7 @@ export function createAdminService(deps: {
               failureReason: true,
               providerTxnId: true,
               createdAt: true,
-              refunds: { select: { amountPiasters: true, status: true, createdAt: true } },
+              refund: { select: { amountPiasters: true, status: true, createdAt: true } },
             },
           },
           review: { select: { id: true, rating: true, text: true, status: true } },
@@ -295,7 +295,8 @@ export function createAdminService(deps: {
           failureReason: p.failureReason,
           providerTxnId: p.providerTxnId,
           createdAt: p.createdAt.toISOString(),
-          refunds: p.refunds.map((r) => ({
+          // The admin app shows a list; a payment has at most one refund.
+          refunds: (p.refund ? [p.refund] : []).map((r) => ({
             amountEgp: egp(r.amountPiasters),
             status: r.status,
             createdAt: r.createdAt.toISOString(),
