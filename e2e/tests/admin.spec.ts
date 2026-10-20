@@ -42,7 +42,7 @@ test('refund a booking, suspend an account, pay a mentor — all audited', async
   await a11y(page, 'booking detail');
   await page.getByRole('button', { name: 'رجّع المبلغ كله' }).click();
   const refund = page.getByRole('dialog');
-  await refund.getByLabel('سبب الاسترداد').pressSequentially('المرشد اعتذر في آخر لحظة');
+  await refund.getByLabel('سبب الاسترداد').pressSequentially('المستشار اعتذر في آخر لحظة');
   await refund.getByRole('button', { name: /^رجّع/ }).click();
   await expect(page.getByText('اترجع المبلغ كله للطالب')).toBeVisible();
   await expect(page.getByText(/ملغاة · تم الاسترداد/)).toBeVisible();
@@ -74,7 +74,9 @@ test('refund a booking, suspend an account, pay a mentor — all audited', async
   await expect(mentor.getByText(/InstaPay · he•••@instapay/)).toBeVisible();
 
   await page.goto(`${ADMIN}/payouts`);
-  const owed = page.getByRole('row').filter({ hasText: 'هبة سليمان' });
+  // Name and number: an earlier run may have left another mentor with the same name.
+  const shown = `${mentorPhone.slice(0, 3)} ${mentorPhone.slice(3, 7)} ${mentorPhone.slice(7)}`;
+  const owed = page.getByRole('row').filter({ hasText: 'هبة سليمان' }).filter({ hasText: shown });
   await expect(owed).toContainText('360');
   await owed.getByRole('button', { name: 'سجّل تحويل' }).click();
   const transfer = page.getByRole('dialog');
@@ -94,8 +96,8 @@ test('refund a booking, suspend an account, pay a mentor — all audited', async
   for (const action of [
     'استرداد كامل من الدعم',
     'اتوقف حساب',
-    'اتفتحت بيانات تحويل مرشد',
-    'اتسجل تحويل لمرشد',
+    'اتفتحت بيانات تحويل مستشار',
+    'اتسجل تحويل لمستشار',
   ])
     await expect(page.getByText(action).first()).toBeVisible();
   await a11y(page, 'audit log');

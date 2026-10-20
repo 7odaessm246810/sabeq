@@ -116,7 +116,7 @@ export function BookingBox({
             href={`/mentors/${m.field.slug}`}
             style={{ alignSelf: 'center', fontSize: 14 }}
           >
-            مرشدين مشابهين
+            مستشارين مشابهين
           </Link>
         </>
       )}

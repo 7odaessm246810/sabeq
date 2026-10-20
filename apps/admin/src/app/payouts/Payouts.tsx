@@ -26,7 +26,7 @@ import { formatDate, type PageInfo } from '@/lib/verification';
  */
 export function Payouts() {
   return (
-    <AdminShell title="فلوس المرشدين">
+    <AdminShell title="فلوس المستشارين">
       {(admin) =>
         ['super_admin', 'finance'].includes(admin.adminRole) ? (
           <Body />
@@ -127,7 +127,7 @@ function Body() {
       toast({
         kind: 'success',
         title: `اتسجل تحويل ${egp(p.amountEgp)}`,
-        description: `ووصل للمرشد إشعار. باقي له ${egp(p.balanceEgp)}.`,
+        description: `ووصل للمستشار إشعار. باقي له ${egp(p.balanceEgp)}.`,
       });
       setPaying(null);
       setReload((n) => n + 1);
@@ -147,7 +147,7 @@ function Body() {
   return (
     <>
       <Tabs
-        label="فلوس المرشدين"
+        label="فلوس المستشارين"
         value={tab}
         onChange={(t) => setTab(t)}
         items={[
@@ -160,12 +160,12 @@ function Body() {
           !owed ? (
             <div aria-busy="true" style={{ minHeight: 200 }} />
           ) : owed.length === 0 ? (
-            <EmptyState title="مفيش فلوس مستحقة" description="كل المرشدين واخدين حقهم." />
+            <EmptyState title="مفيش فلوس مستحقة" description="كل المستشارين واخدين حقهم." />
           ) : (
             <table className="adm-table">
               <thead>
                 <tr>
-                  <th scope="col">المرشد</th>
+                  <th scope="col">المستشار</th>
                   <th scope="col">المستحق</th>
                   <th scope="col">طريقة الاستلام</th>
                   <th scope="col">آخر تحويل</th>
@@ -197,7 +197,9 @@ function Body() {
                         type="button"
                         className="sb-btn sb-btn--primary sb-btn--sm"
                         disabled={!b.account}
-                        title={b.account ? undefined : 'المرشد لازم يضيف طريقة استلام الفلوس الأول'}
+                        title={
+                          b.account ? undefined : 'المستشار لازم يضيف طريقة استلام الفلوس الأول'
+                        }
                         onClick={() => open(b)}
                       >
                         سجّل تحويل
@@ -217,7 +219,7 @@ function Body() {
             <thead>
               <tr>
                 <th scope="col">إمتى</th>
-                <th scope="col">المرشد</th>
+                <th scope="col">المستشار</th>
                 <th scope="col">المبلغ</th>
                 <th scope="col">الطريقة / المرجع</th>
                 <th scope="col">مين سجله</th>

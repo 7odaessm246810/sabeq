@@ -103,9 +103,9 @@ export const PAYMENT_STATUS_LABELS: Record<string, string> = {
   partially_refunded: 'اترجع جزء',
 };
 export const LEDGER_LABELS: Record<string, string> = {
-  mentor_earning: 'مكسب المرشد',
+  mentor_earning: 'مكسب المستشار',
   refund_reversal: 'اتشال بسبب استرداد',
-  payout: 'اتحوّل للمرشد',
+  payout: 'اتحوّل للمستشار',
   platform_fee: 'عمولة سابق',
 };
 

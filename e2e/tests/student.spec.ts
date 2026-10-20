@@ -10,7 +10,7 @@ import { a11y, expect, test } from '../support/fixtures.js';
 test.afterAll(closeDb);
 
 test('book, a refused card, pay by wallet, then cancel with a refund', async ({ page }) => {
-  const slug = await createMentor(newPhone(), 'مرشد الطالب');
+  const slug = await createMentor(newPhone(), 'مستشار الطالب');
 
   await signIn(page, newPhone(), { name: 'سما يوسف' });
   await expect(page.getByRole('link', { name: 'جلساتي' }).first()).toBeVisible();
@@ -28,7 +28,7 @@ test('book, a refused card, pay by wallet, then cancel with a refund', async ({ 
   await a11y(page, 'booking confirmed');
 
   await page.getByRole('link', { name: 'روح لجلساتي' }).click();
-  const row = page.locator('.sess-row').filter({ hasText: 'مرشد الطالب' });
+  const row = page.locator('.sess-row').filter({ hasText: 'مستشار الطالب' });
   await expect(row).toBeVisible();
   await expect(row.getByText('قادمة')).toBeVisible();
   await a11y(page, 'sessions');
@@ -44,6 +44,6 @@ test('book, a refused card, pay by wallet, then cancel with a refund', async ({ 
   await expect(page.getByText('اتلغت الجلسة')).toBeVisible();
 
   await page.getByRole('tab', { name: 'السابقة' }).click();
-  const past = page.locator('.sess-row').filter({ hasText: 'مرشد الطالب' });
+  const past = page.locator('.sess-row').filter({ hasText: 'مستشار الطالب' });
   await expect(past.getByText(/تم الاسترداد/)).toBeVisible();
 });

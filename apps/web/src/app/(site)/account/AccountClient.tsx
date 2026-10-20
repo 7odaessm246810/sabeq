@@ -86,7 +86,7 @@ export function AccountClient() {
             href={user.role === 'mentor' ? '/account/mentor' : '/sessions'}
           >
             <Icon name={user.role === 'mentor' ? 'user' : 'calendar'} />
-            {user.role === 'mentor' ? 'ملفي كمرشد' : 'جلساتي'}
+            {user.role === 'mentor' ? 'ملفي كمستشار' : 'جلساتي'}
           </Link>
           {user.role === 'mentor' ? (
             <Link className="sb-btn sb-btn--secondary" href="/account/availability">

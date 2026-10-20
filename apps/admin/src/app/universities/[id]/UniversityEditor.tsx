@@ -172,7 +172,7 @@ function Editor({ id }: { id: string }) {
                         {f.kind.nameAr}
                         {f.city ? ` · ${f.city}` : ''} ·{' '}
                         {ACCREDITATION_LABELS[f.accreditationStatus]}
-                        {f._count.mentors ? ` · ${f._count.mentors} مرشد` : ''}
+                        {f._count.mentors ? ` · ${f._count.mentors} مستشار` : ''}
                         {f.isActive ? '' : ' · مخفية'}
                       </span>
                     </span>

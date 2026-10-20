@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { MentorProfileEditor } from './MentorProfileEditor';
 
 export const metadata: Metadata = {
-  title: 'ملفي كمرشد',
+  title: 'ملفي كمستشار',
   robots: { index: false, follow: false },
 };
 

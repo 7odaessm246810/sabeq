@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: PageProps<'/faculty/[id]'>): 
   const f = page.faculty;
   return {
     title: f.full,
-    description: `${f.full}: ${f.desc}. اسأل طلاب وخريجين موثقين درسوا فيها فعلًا.`,
+    description: `${f.full}: ${f.desc}. اسأل مستشارين أكاديميين موثقين درسوا فيها فعلًا.`,
     alternates: { canonical: `/faculty/${f.id}` },
   };
 }

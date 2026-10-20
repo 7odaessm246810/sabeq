@@ -142,7 +142,7 @@ describe('email', () => {
           userId: u,
           type: 'booking.cancelled',
           title: 'جلسة اتلغت',
-          body: 'المرشد لغى جلسة بكرة، وهترجعلك فلوسك كاملة.',
+          body: 'المستشار لغى جلسة بكرة، وهترجعلك فلوسك كاملة.',
           data: { bookingId: '01a12688-abd1-7004-a9c7-d1d02e910a8a' },
         },
       });

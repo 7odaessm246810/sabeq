@@ -195,7 +195,7 @@ function Body({ id, universityId }: { id?: string; universityId?: string }) {
                 امسح الكلية
               </button>
               <span className="sb-caption">
-                مينفعش تتمسح لو ليها مرشدين أو طلبات انضمام — اخفيها بدل كده.
+                مينفعش تتمسح لو ليها مستشارين أو طلبات انضمام — اخفيها بدل كده.
               </span>
             </div>
           ) : null}

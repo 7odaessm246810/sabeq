@@ -29,12 +29,12 @@ test('pages fit the screen and the menu opens', async ({ page }) => {
 });
 
 test('a student books and pays on a phone', async ({ page }) => {
-  const slug = await createMentor(newPhone(), 'مرشد الموبايل');
+  const slug = await createMentor(newPhone(), 'مستشار الموبايل');
   await signIn(page, newPhone(), { name: 'ليلى منصور' });
   await bookAndPay(page, slug);
   await noSideScroll(page, 'booking confirmed');
   await page.goto('/sessions');
-  await expect(page.locator('.sess-row').filter({ hasText: 'مرشد الموبايل' })).toBeVisible();
+  await expect(page.locator('.sess-row').filter({ hasText: 'مستشار الموبايل' })).toBeVisible();
   await noSideScroll(page, 'sessions');
   await a11y(page, 'sessions on a phone');
 });

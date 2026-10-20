@@ -69,7 +69,7 @@ beforeAll(async () => {
   });
 
   const mentorUser = await db.user.create({
-    data: { phone: '+201099900001', role: 'mentor', fullName: 'مرشد اختبار' },
+    data: { phone: '+201099900001', role: 'mentor', fullName: 'مستشار اختبار' },
   });
   await db.mentor.create({
     data: {

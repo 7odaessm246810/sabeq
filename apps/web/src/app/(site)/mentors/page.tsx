@@ -4,8 +4,8 @@ import { filtersFromParams, searchMentorsServer } from '@/lib/mentors';
 import { MentorsClient } from './MentorsClient';
 
 export const metadata: Metadata = {
-  title: 'المرشدين',
-  description: 'طلاب وخريجين موثقين من كل الكليات. قارن بالجامعة والتقييم والسعر واحجز جلسة.',
+  title: 'المستشارين',
+  description: 'مستشارين أكاديميين موثقين من كل الكليات. قارن بالجامعة والتقييم والسعر واحجز جلسة.',
   alternates: { canonical: '/mentors' },
 };
 

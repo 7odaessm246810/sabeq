@@ -122,7 +122,7 @@ export async function createMentor(phone: string, name: string) {
     `INSERT INTO mentors (user_id, slug, kind, faculty_id, major_label, base_price_piasters,
        is_listed, listed_at, accepts_bookings, bio, updated_at)
      VALUES ($1, $2, 'graduate', $3, 'طب وجراحة', 20000, true, now(), true,
-       'مرشد اختبارات آلية.', now())`,
+       'مستشار اختبارات آلية.', now())`,
     [id, slug, faculty.id],
   );
   await sql(

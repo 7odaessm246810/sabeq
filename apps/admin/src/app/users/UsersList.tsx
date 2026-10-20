@@ -12,7 +12,7 @@ import { formatDate, type PageInfo } from '@/lib/verification';
 
 const ROLES = [
   ['student', 'طلبة'],
-  ['mentor', 'مرشدين'],
+  ['mentor', 'مستشارين'],
 ] as const;
 const STATUSES = [
   ['active', 'شغال'],
@@ -132,7 +132,7 @@ function Body() {
                     {u.phone ? <span className="sb-caption adm-ltr">{u.phone}</span> : null}
                   </td>
                   <td>
-                    {u.role === 'mentor' ? 'مرشد' : 'طالب'}
+                    {u.role === 'mentor' ? 'مستشار' : 'طالب'}
                     {u.mentor ? (
                       <span className="sb-caption">
                         {u.mentor.listed ? 'ظاهر في البحث' : 'مش ظاهر'}
@@ -174,7 +174,7 @@ function Body() {
           }
           description={
             acting.status === 'active'
-              ? 'هيخرج من كل أجهزته فورًا ومش هيقدر يدخل تاني لحد ما ترجّعه. لو مرشد، هيختفي من البحث.'
+              ? 'هيخرج من كل أجهزته فورًا ومش هيقدر يدخل تاني لحد ما ترجّعه. لو مستشار، هيختفي من البحث.'
               : 'هيقدر يدخل تاني عادي.'
           }
           confirmLabel={acting.status === 'active' ? 'وقّف الحساب' : 'رجّع الحساب'}

@@ -75,14 +75,14 @@ export function AvailabilityEditor() {
           </div>
           <Link className="sb-btn sb-btn--secondary" href="/account/mentor">
             <Icon name="user" />
-            ملفي كمرشد
+            ملفي كمستشار
           </Link>
         </div>
       </PageHead>
       <section className="sb-container page-body acct">
         {user.role !== 'mentor' ? (
-          <Banner kind="info" title="الصفحة دي للمرشدين">
-            حسابك حساب طالب. <Link href="/become-mentor">اعرف إزاي تبقى مرشد</Link>.
+          <Banner kind="info" title="الصفحة دي للمستشارين">
+            حسابك حساب طالب. <Link href="/become-mentor">اعرف إزاي تبقى مستشار</Link>.
           </Banner>
         ) : state === 'loading' ? (
           <div className="sb-card acct-card" aria-busy="true" style={{ minHeight: 280 }} />

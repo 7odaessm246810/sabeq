@@ -1,10 +1,11 @@
 'use client';
 
-import { Avatar, AvatarGroup, Icon, VerifiedBadge, cx } from '@sabeq/ui';
+import { Avatar, Icon, VerifiedBadge, cx } from '@sabeq/ui';
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { drawPath, hidePath, useMagnetic, useParallax } from '@/lib/motion';
 import { useHomeMentors } from './HomeMentors';
+import { SearchSuggest } from './SearchSuggest';
 
 const PATHS = [
   'M470 300 C400 300 390 120 290 120',
@@ -41,8 +42,6 @@ const CARDS = [
     top: 480,
   },
 ] as const;
-
-const PROOF_AVATARS = ['أحمد محمد', 'سارة عبد', 'يوسف حسن', 'مريم خالد'];
 
 /** Hero: «you» → three faculties → the people who walked each path (Landing01Hero). */
 export function Hero() {
@@ -127,9 +126,6 @@ export function Hero() {
       <div className="hero-grid" aria-hidden="true" />
       <div className="sb-container hero-in">
         <div className="hero-copy">
-          <span className="sb-pill in" style={{ transitionDelay: '80ms' }}>
-            <span className="tag">تنسيق 2026</span>لطلاب الثانوية قبل ما يكتبوا الرغبات
-          </span>
           <h1 className="sb-display in" style={{ transitionDelay: '160ms' }}>
             قبل ما تختار مستقبلك، اسأل حد{' '}
             <span className="sb-hl">
@@ -141,9 +137,11 @@ export function Hero() {
             قبلك.
           </h1>
           <p className="sb-lead in" style={{ maxWidth: 520, transitionDelay: '260ms' }}>
-            سابق بيوصلك بطلاب وخريجين موثقين درسوا فعلًا في الكلية اللي بتفكر فيها. احجز جلسة، واسمع
-            التجربة من جوه.
+            اتكلم مع مستشار أكاديمي درس فعلًا في الكلية اللي بتفكر فيها، قبل ما تكتب رغباتك.
           </p>
+          <div className="hero-search in" style={{ transitionDelay: '320ms' }}>
+            <SearchSuggest />
+          </div>
           <div className="hero-ctas in" style={{ transitionDelay: '360ms' }}>
             <Link href="/explore" className="sb-btn sb-btn--primary sb-btn--lg" ref={ctaRef}>
               استكشف الكليات{' '}
@@ -152,19 +150,8 @@ export function Hero() {
               </span>
             </Link>
             <Link href="/become-mentor" className="sb-btn sb-btn--secondary sb-btn--lg">
-              أنا خريج — عايز أبقى مرشد
+              انضم كمستشار
             </Link>
-          </div>
-          <div className="hero-proof in" style={{ transitionDelay: '460ms' }}>
-            <AvatarGroup>
-              {PROOF_AVATARS.map((n, i) => (
-                <Avatar key={n} name={n} size="sm" tone={((i % 3) + 1) as 1 | 2 | 3} />
-              ))}
-            </AvatarGroup>
-            <span className="sb-small">
-              مرشدين موثقين من جامعات حكومية وخاصة في{' '}
-              <b style={{ color: 'var(--ink)' }}>القاهرة، الإسكندرية، المنصورة، وأسيوط</b>
-            </span>
           </div>
         </div>
 

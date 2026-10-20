@@ -28,3 +28,6 @@ Thumbs.db
 
 # local uploads during development
 uploads/
+
+# Playwright MCP plugin screenshots and logs
+.playwright-mcp/

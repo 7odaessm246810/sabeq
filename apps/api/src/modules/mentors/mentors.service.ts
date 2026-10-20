@@ -30,8 +30,8 @@ import {
 } from './mentors.search.js';
 
 const MESSAGES = {
-  notFound: 'المرشد ده مش موجود أو مش متاح دلوقتي.',
-  noProfile: 'لسه مالكش ملف مرشد. ملفك بيتعمل لما طلب انضمامك يتقبل.',
+  notFound: 'المستشار ده مش موجود أو مش متاح دلوقتي.',
+  noProfile: 'لسه مالكش ملف مستشار. ملفك بيتعمل لما طلب انضمامك يتقبل.',
   departmentOutside: 'القسم ده مش في كليتك.',
 };
 
@@ -73,7 +73,7 @@ type CardRow = Prisma.MentorGetPayload<{ select: typeof CARD_SELECT }>;
 function card(m: CardRow, next: Date | null = null) {
   return {
     slug: m.slug,
-    name: m.user.fullName ?? 'مرشد سابق',
+    name: m.user.fullName ?? 'مستشار سابق',
     photo: avatarUrl(m.user.avatarKey),
     tone: toneOf(m.slug),
     kind: m.kind,

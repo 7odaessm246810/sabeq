@@ -42,7 +42,7 @@ const usersQuery = z.object({
   status: z.enum(['active', 'suspended']).optional(),
   page,
 });
-const refundBody = z.object({ reason: note('اكتب سبب الاسترداد (بيوصل للمرشد).') }).strict();
+const refundBody = z.object({ reason: note('اكتب سبب الاسترداد (بيوصل للمستشار).') }).strict();
 const reviewBody = z
   .object({ status: z.enum(['published', 'hidden']), note: note('اكتب السبب (بيتسجل في السجل).') })
   .strict();

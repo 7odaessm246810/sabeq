@@ -39,14 +39,14 @@ export default async function BookPage({ params, searchParams }: PageProps<'/boo
           <EmptyState
             roomy
             title={`مفيش مواعيد متاحة لـ ${first} دلوقتي`}
-            description="احفظه من ملفه وارجعله، أو شوف مرشدين من نفس الكلية."
+            description="احفظه من ملفه وارجعله، أو شوف مستشارين من نفس الكلية."
             actions={
               <>
                 <Link
                   className="sb-btn sb-btn--primary sb-btn--sm"
                   href={`/mentors/${m.field.slug}`}
                 >
-                  مرشدين مشابهين
+                  مستشارين مشابهين
                 </Link>
                 <Link className="sb-btn sb-btn--secondary sb-btn--sm" href={`/mentor/${m.slug}`}>
                   رجوع للملف

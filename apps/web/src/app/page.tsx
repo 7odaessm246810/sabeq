@@ -1,11 +1,10 @@
 import type { Metadata } from 'next';
 import { connection } from 'next/server';
-import { FinalCta, ForMentors, RevealRoot, Testimonials, Trust } from '@/components/home/Close';
-import { BookingWidget, ExploreSection, MentorsSection } from '@/components/home/Discover';
+import { RevealRoot } from '@/components/home/Close';
+import { JoinBand, QuickSteps } from '@/components/home/Compact';
+import { MentorsSection } from '@/components/home/Discover';
 import { Hero } from '@/components/home/Hero';
 import { HomeMentorsProvider } from '@/components/home/HomeMentors';
-import { HowItWorks, Verification } from '@/components/home/HowItWorks';
-import { Compare, Problem, Solution } from '@/components/home/Story';
 import { getExploreData } from '@/lib/catalog';
 import { listMentors, toMentorView } from '@/lib/mentors';
 import { SITE } from '@/lib/site';
@@ -16,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * Landing page — the 14 sections of the design, in order. The hero runs under the transparent navbar,
+ * Landing page, kept short on purpose (2026-10-20): hero, how it works, real mentors, joining. The hero runs under the transparent navbar,
  * so it carries its own top padding instead of using the (site) template.
  */
 export default async function HomePage() {
@@ -34,18 +33,9 @@ export default async function HomePage() {
     >
       <RevealRoot>
         <Hero />
-        <Problem />
-        <Compare />
-        <Solution />
-        <HowItWorks />
-        <Verification />
-        <ExploreSection />
+        <QuickSteps />
         <MentorsSection />
-        <BookingWidget />
-        <Trust />
-        <Testimonials />
-        <ForMentors />
-        <FinalCta />
+        <JoinBand />
       </RevealRoot>
     </HomeMentorsProvider>
   );

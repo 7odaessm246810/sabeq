@@ -79,7 +79,7 @@ function Body() {
             className="sb-input"
             type="search"
             aria-label="دوّر"
-            placeholder="اسم الطالب أو المرشد، رقم الموبايل، أو رقم الحجز"
+            placeholder="اسم الطالب أو المستشار، رقم الموبايل، أو رقم الحجز"
             value={q}
             onChange={(e) => setQ(e.target.value)}
           />
@@ -112,7 +112,7 @@ function Body() {
               <tr>
                 <th scope="col">الميعاد</th>
                 <th scope="col">الطالب</th>
-                <th scope="col">المرشد</th>
+                <th scope="col">المستشار</th>
                 <th scope="col">الحالة</th>
                 <th scope="col">المبلغ</th>
               </tr>

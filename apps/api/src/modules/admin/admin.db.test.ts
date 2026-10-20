@@ -130,7 +130,7 @@ describe('bookings', () => {
     const done = (
       await support.agent
         .post(`/api/v1/admin/bookings/${upcoming}/refund`)
-        .send({ reason: 'المرشد بلّغ إنه مش هيقدر يحضر' })
+        .send({ reason: 'المستشار بلّغ إنه مش هيقدر يحضر' })
         .expect(200)
     ).body.data.booking;
     expect(done).toMatchObject({ status: 'refunded', refundShareBps: 10_000 });

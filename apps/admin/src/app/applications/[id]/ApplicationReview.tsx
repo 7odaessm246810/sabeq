@@ -34,7 +34,7 @@ const sizeLabel = (bytes: number) =>
     : `${Math.ceil(bytes / 1024)} ك.ب`;
 
 export function ApplicationReview({ id }: { id: string }) {
-  return <AdminShell title="مراجعة طلب مرشد">{() => <Review id={id} />}</AdminShell>;
+  return <AdminShell title="مراجعة طلب مستشار">{() => <Review id={id} />}</AdminShell>;
 }
 
 function Review({ id }: { id: string }) {
@@ -287,7 +287,8 @@ function Review({ id }: { id: string }) {
           <div className="adm-modal-body">
             {pending === 'approve' ? (
               <p className="sb-body">
-                هيتعمل بروفايل مرشد لـ {app.applicant.fullName} ويظهر للطلاب، والمتقدم هيوصله إشعار.
+                هيتعمل بروفايل مستشار لـ {app.applicant.fullName} ويظهر للطلاب، والمتقدم هيوصله
+                إشعار.
               </p>
             ) : null}
             <div className="sb-field">

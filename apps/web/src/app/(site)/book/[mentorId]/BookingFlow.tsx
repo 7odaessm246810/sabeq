@@ -339,7 +339,7 @@ export function BookingFlow({
     <section className="sb-container page-body" style={{ maxWidth: 1080, paddingTop: 28 }}>
       <Crumb
         items={[
-          { label: 'المرشدين', href: '/mentors' },
+          { label: 'المستشارين', href: '/mentors' },
           { label: m.name, href: `/mentor/${m.slug}` },
           { label: 'حجز جلسة' },
         ]}
@@ -437,7 +437,7 @@ export function BookingFlow({
                 ) : (
                   <Banner kind="warning" title={`مفيش مواعيد لـ ${first} دلوقتي`}>
                     جرّب نوع جلسة تاني، أو{' '}
-                    <Link href={`/mentors/${m.field.slug}`}>مرشدين مشابهين</Link>.
+                    <Link href={`/mentors/${m.field.slug}`}>مستشارين مشابهين</Link>.
                   </Banner>
                 )}
                 <Banner kind="info" title="الحجز بيتأكد فورًا بعد الدفع.">

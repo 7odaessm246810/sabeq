@@ -343,8 +343,17 @@ body {
 }
 @media (max-width: 720px) {
   .foot-in {
-    /* minmax(0, …): a wide child (the newsletter field) must not widen the page on phones */
-    grid-template-columns: minmax(0, 1fr);
+    /* minmax(0, …): a wide child (the newsletter field) must not widen the page on phones.
+       Two link columns side by side, the brand block across both: half the scroll. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 16px;
+    padding: 40px 0 28px;
+  }
+  .foot-in > :first-child {
+    grid-column: 1 / -1;
+  }
+  .foot ul {
+    gap: 8px;
   }
 }
 

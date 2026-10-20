@@ -15,18 +15,18 @@ import {
 } from '@/lib/verification';
 
 const ENTITY_FILTERS = [
-  ['mentor_application', 'طلبات المرشدين'],
+  ['mentor_application', 'طلبات المستشارين'],
   ['mentor_document', 'فتح المستندات'],
   ['user', 'الحسابات والدخول'],
   ['booking', 'الحجوزات'],
   ['review', 'التقييمات'],
-  ['mentor', 'تحويلات المرشدين'],
+  ['mentor', 'تحويلات المستشارين'],
 ] as const;
 
 const ENTITY_LABELS: Record<string, string> = {
   user: 'حساب',
   review: 'تقييم',
-  mentor: 'مرشد',
+  mentor: 'مستشار',
   mentor_document: 'مستند',
 };
 
@@ -126,7 +126,7 @@ function AuditBody() {
                   </td>
                   <td>
                     {e.entityType === 'mentor_application' ? (
-                      <Link href={`/applications/${e.entityId}`}>طلب مرشد</Link>
+                      <Link href={`/applications/${e.entityId}`}>طلب مستشار</Link>
                     ) : e.entityType === 'booking' ? (
                       <Link href={`/bookings/${e.entityId}`}>حجز</Link>
                     ) : (

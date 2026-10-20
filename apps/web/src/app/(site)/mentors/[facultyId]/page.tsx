@@ -13,8 +13,8 @@ export async function generateMetadata({
   if (!page) return {};
   const f = page.faculty;
   return {
-    title: `مرشدين ${f.name}`,
-    description: `طلاب وخريجين موثقين درسوا ${f.full}. احجز جلسة واسمع التجربة من جوه.`,
+    title: `مستشارين ${f.name}`,
+    description: `مستشارين أكاديميين موثقين درسوا ${f.full}. احجز جلسة واسمع التجربة من جوه.`,
     alternates: { canonical: `/mentors/${f.id}` },
   };
 }

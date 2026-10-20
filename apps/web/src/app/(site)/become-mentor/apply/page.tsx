@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { ApplyForm } from './ApplyForm';
 
 export const metadata: Metadata = {
-  title: 'التقديم كمرشد',
+  title: 'التقديم كمستشار',
   robots: { index: false, follow: false },
 };
 

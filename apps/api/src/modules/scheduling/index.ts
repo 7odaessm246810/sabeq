@@ -80,7 +80,7 @@ export function createSchedulingModule(deps: {
         const { slug } = parseInput(slugParam, req.params);
         const { kind } = parseInput(kindQuery, req.query);
         const availability = await scheduling.availability(slug, kind);
-        if (!availability) throw Errors.notFound('المرشد ده مش موجود أو مش متاح دلوقتي.');
+        if (!availability) throw Errors.notFound('المستشار ده مش موجود أو مش متاح دلوقتي.');
         // Slots change as people book: short cache only.
         res.setHeader('Cache-Control', 'public, max-age=30');
         sendData(res, { availability });

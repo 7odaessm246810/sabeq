@@ -37,9 +37,9 @@ import type { SchedulingService } from '../scheduling/scheduling.service.js';
 import { SCHEDULING, slotsByDay } from '../scheduling/slots.js';
 
 const MESSAGES = {
-  mentorNotFound: 'المرشد ده مش موجود أو مش متاح دلوقتي.',
-  notTaking: 'المرشد ده مش بياخد حجوزات دلوقتي.',
-  noSession: 'المرشد ده مش بيقدّم النوع ده من الجلسات.',
+  mentorNotFound: 'المستشار ده مش موجود أو مش متاح دلوقتي.',
+  notTaking: 'المستشار ده مش بياخد حجوزات دلوقتي.',
+  noSession: 'المستشار ده مش بيقدّم النوع ده من الجلسات.',
   slotGone: 'الموعد ده مبقاش متاح. اختار موعد تاني من المواعيد اللي ظاهرة.',
   slotTaken: 'حد سبقك وحجز الموعد ده دلوقتي. اختار موعد تاني — مفيش أي فلوس اتخصمت.',
   youAreBusy: 'عندك جلسة تانية في نفس الوقت ده.',
@@ -50,13 +50,13 @@ const MESSAGES = {
   devOnly: 'الدفع التجريبي متاح على جهاز التطوير بس.',
   cantCancel: 'الحجز ده مينفعش يتلغي دلوقتي.',
   started: 'الجلسة بدأت بالفعل، مينفعش تتلغي.',
-  needsName: 'اكتب اسمك في حسابك الأول — المرشد بيشوفه مع الحجز.',
+  needsName: 'اكتب اسمك في حسابك الأول — المستشار بيشوفه مع الحجز.',
   notEnded: 'تقدر تعلّم الجلسة بعد ما تخلص.',
   noShowTooEarly: 'تقدر تعلّم إن الطالب ما حضرش بعد 15 دقيقة من بداية الجلسة.',
   notConfirmed: 'الحجز ده مش جلسة مؤكدة.',
   mentorNotJoined: 'لازم تكون دخلت الجلسة الأول.',
   studentJoined: 'الطالب دخل الجلسة، فمينفعش تتعلّم إنه ما حضرش.',
-  mentorAbsent: 'المرشد ما دخلش الجلسة',
+  mentorAbsent: 'المستشار ما دخلش الجلسة',
   adminCantRefund: 'الحجز ده مش مدفوع أو اترجع بالفعل.',
 };
 
@@ -152,7 +152,7 @@ function view(b: Row, viewer: 'student' | 'mentor') {
     review: b.review,
     mentor: {
       slug: b.mentor.slug,
-      name: b.mentor.user.fullName ?? 'مرشد سابق',
+      name: b.mentor.user.fullName ?? 'مستشار سابق',
       photo: avatarUrl(b.mentor.user.avatarKey),
       major: b.mentor.majorLabel,
       faculty: b.mentor.faculty.nameAr,
@@ -443,7 +443,7 @@ export function createBookingsService(deps: {
           'جلسة اتلغت',
           by === 'student'
             ? `${b.student.user.fullName ?? 'الطالب'} لغى جلسة ${when(b.startsAt)}.`
-            : `${b.mentor.user.fullName ?? 'المرشد'} لغى جلسة ${when(b.startsAt)}، وهترجعلك فلوسك كاملة.`,
+            : `${b.mentor.user.fullName ?? 'المستشار'} لغى جلسة ${when(b.startsAt)}، وهترجعلك فلوسك كاملة.`,
           id,
         );
       }
@@ -559,8 +559,8 @@ export function createBookingsService(deps: {
       await notify(
         b.studentId,
         'booking.mentor_absent',
-        'المرشد ما حضرش',
-        `${b.mentor.user.fullName ?? 'المرشد'} ما دخلش جلسة ${when(b.startsAt)}. لغينا الجلسة وهترجعلك فلوسك كاملة (${b.totalPiasters / 100} ج.م).`,
+        'المستشار ما حضرش',
+        `${b.mentor.user.fullName ?? 'المستشار'} ما دخلش جلسة ${when(b.startsAt)}. لغينا الجلسة وهترجعلك فلوسك كاملة (${b.totalPiasters / 100} ج.م).`,
         id,
       );
       await notify(

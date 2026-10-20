@@ -46,7 +46,7 @@ const MESSAGES = {
 
 const NOTIFY: Record<Decision, { title: string; body: (note?: string) => string }> = {
   approve: {
-    title: 'اتقبلت كمرشد في سابق',
+    title: 'اتقبلت كمستشار في سابق',
     body: () => 'مبروك! طلبك اتقبل. حدد مواعيدك عشان الطلاب يقدروا يحجزوا معاك.',
   },
   request_changes: {

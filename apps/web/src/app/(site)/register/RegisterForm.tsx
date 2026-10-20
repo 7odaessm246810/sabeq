@@ -89,7 +89,7 @@ export function RegisterForm() {
         onChange={setRole}
         options={[
           ['student', 'أنا طالب'],
-          ['mentor', 'أنا مرشد'],
+          ['mentor', 'أنا مستشار'],
         ]}
       />
       {providers?.google ? <GoogleButton role={role} label="كمّل بحساب جوجل" /> : null}

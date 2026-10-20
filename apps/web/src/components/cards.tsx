@@ -145,7 +145,7 @@ export function FacultyCard({
       </span>
       <span className="sb-faculty-meta">
         <span>
-          <span className="sb-num">{f.mentors}</span> مرشد موثق
+          <span className="sb-num">{f.mentors}</span> مستشار موثق
         </span>
         <span style={{ display: 'inline-flex', width: 18, height: 18, color: 'var(--primary)' }}>
           <Icon name="arrow" />

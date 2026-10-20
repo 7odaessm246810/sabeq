@@ -69,7 +69,7 @@ export function FacultyClient({
           </div>
           <div>
             <b className="sb-num">{f.mentors}</b>
-            <span>مرشد موثق</span>
+            <span>مستشار موثق</span>
           </div>
           <div>
             <b className="sb-num">{offerings.length}</b>
@@ -96,7 +96,7 @@ export function FacultyClient({
                 key: 'mentors',
                 label: (
                   <>
-                    المرشدين <span className="sb-caption sb-num">{mentors.length}</span>
+                    المستشارين <span className="sb-caption sb-num">{mentors.length}</span>
                   </>
                 ),
               },
@@ -134,8 +134,8 @@ export function FacultyClient({
                       f.real.map((r) => <blockquote key={r}>{r}</blockquote>)
                     ) : (
                       <p className="sb-small">
-                        لسه مفيش تجارب منشورة. أول ما المرشدين الموثّقين من {f.name} يشاركوا تجاربهم
-                        هتظهر هنا.
+                        لسه مفيش تجارب منشورة. أول ما المستشارين الموثّقين من {f.name} يشاركوا
+                        تجاربهم هتظهر هنا.
                       </p>
                     )}
                   </div>
@@ -146,7 +146,7 @@ export function FacultyClient({
                 <p className="sb-small">جلسة 45 دقيقة مع حد درس {f.name} بتوفر عليك شهور تفكير.</p>
                 {mentors[0] ? <MentorCard mentor={mentors[0]} compact /> : null}
                 <Link className="sb-btn sb-btn--primary sb-btn--block" href={`/mentors/${f.id}`}>
-                  شوف كل المرشدين
+                  شوف كل المستشارين
                 </Link>
               </aside>
             </div>
@@ -167,8 +167,8 @@ export function FacultyClient({
               <div className="sb-card">
                 <EmptyState
                   roomy
-                  title="لسه مفيش مرشدين هنا"
-                  description="بنضيف مرشدين جداد كل أسبوع."
+                  title="لسه مفيش مستشارين هنا"
+                  description="بنضيف مستشارين جداد كل أسبوع."
                   actions={
                     <button
                       type="button"
@@ -177,7 +177,7 @@ export function FacultyClient({
                         toast({
                           kind: 'success',
                           title: 'تمام، هنبلغك',
-                          description: `أول ما مرشد من ${f.name} ينضم.`,
+                          description: `أول ما مستشار من ${f.name} ينضم.`,
                         })
                       }
                     >
@@ -194,7 +194,7 @@ export function FacultyClient({
               <EmptyState
                 roomy
                 title="لسه مفيش آراء"
-                description="الآراء هنا بتيجي من طلبة حجزوا جلسات فعلًا مع مرشدين من الكلية دي، وبتظهر بعد الجلسة."
+                description="الآراء هنا بتيجي من طلبة حجزوا جلسات فعلًا مع مستشارين من الكلية دي، وبتظهر بعد الجلسة."
               />
             </div>
           ) : null}

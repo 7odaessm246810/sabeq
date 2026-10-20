@@ -68,7 +68,7 @@ export function Departments({
           >
             <b>{name}</b>
             <span className="sb-small">
-              <span className="sb-num">{mentorCount}</span> مرشد موثق
+              <span className="sb-num">{mentorCount}</span> مستشار موثق
             </span>
             <span className="i18" style={{ color: 'var(--primary)' }}>
               <Icon name="arrow" />

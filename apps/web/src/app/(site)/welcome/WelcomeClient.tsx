@@ -38,7 +38,7 @@ export function WelcomeClient() {
       <p className="sb-lead">
         {user.role === 'mentor'
           ? 'قبل ما تكمّل طلب الانضمام، عرّفنا باسمك.'
-          : 'عرّفنا بيك في دقيقة، عشان نرشحلك المرشدين والكليات المناسبة.'}
+          : 'عرّفنا بيك في دقيقة، عشان نرشحلك المستشارين والكليات المناسبة.'}
       </p>
       <div className="sb-card ap-panel" style={{ minHeight: 0 }}>
         {failed ? (

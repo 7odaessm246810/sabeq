@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: PageProps<'/mentor/[id]'>): P
   if (!m) return {};
   return {
     title: `${m.name} — ${m.major}`,
-    description: `${m.name}، ${m.major} · ${m.university.name}. مرشد موثق على سابق.${m.bio ? ` ${m.bio.slice(0, 120)}` : ''}`,
+    description: `${m.name}، ${m.major} · ${m.university.name}. مستشار موثق على سابق.${m.bio ? ` ${m.bio.slice(0, 120)}` : ''}`,
     alternates: { canonical: `/mentor/${m.slug}` },
   };
 }

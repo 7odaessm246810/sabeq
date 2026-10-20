@@ -102,7 +102,7 @@ export function mentorsRouter({ mentors }: { mentors: MentorsService }): Router 
   r.get('/:slug', async (req, res) => {
     const { slug } = parseInput(slugParam, req.params);
     const mentor = await mentors.profile(slug);
-    if (!mentor) throw Errors.notFound('المرشد ده مش موجود أو مش متاح دلوقتي.');
+    if (!mentor) throw Errors.notFound('المستشار ده مش موجود أو مش متاح دلوقتي.');
     res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=300');
     sendData(res, { mentor });
   });

@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: PageProps<'/college/[id]'>): 
   const title = `${c.name} — ${c.university.name}`;
   return {
     title,
-    description: `${title}: الاعتماد، الحد الأدنى للتنسيق، الأقسام، وطلاب وخريجين موثقين درسوا فيها.`,
+    description: `${title}: الاعتماد، الحد الأدنى للتنسيق، الأقسام، ومستشارين أكاديميين موثقين درسوا فيها.`,
     alternates: { canonical: `/college/${c.id}` },
   };
 }
@@ -118,7 +118,7 @@ export default async function CollegePage({ params }: PageProps<'/college/[id]'>
           </div>
           <div>
             <b className="sb-num">{c.mentorCount}</b>
-            <span>مرشد موثق</span>
+            <span>مستشار موثق</span>
           </div>
         </div>
       </PageHead>
@@ -138,7 +138,7 @@ export default async function CollegePage({ params }: PageProps<'/college/[id]'>
           </article>
 
           <article className="sb-card col-sec">
-            <h2 className="sb-h3">مرشدين درسوا هنا</h2>
+            <h2 className="sb-h3">مستشارين درسوا هنا</h2>
             {mentors.results.length ? (
               <>
                 <div className="col-mentors">
@@ -151,17 +151,17 @@ export default async function CollegePage({ params }: PageProps<'/college/[id]'>
                     className="sb-btn sb-btn--ghost sb-btn--sm"
                     href={`/mentors/${c.kind.slug}`}
                   >
-                    كل مرشدين {c.kind.name} ({mentors.total})
+                    كل مستشارين {c.kind.name} ({mentors.total})
                   </Link>
                 ) : null}
               </>
             ) : (
               <p className="sb-small">
-                لسه مفيش مرشد موثق من {c.name} في {c.university.name}.{' '}
+                لسه مفيش مستشار موثق من {c.name} في {c.university.name}.{' '}
                 <Link href={`/mentors/${c.kind.slug}`}>
-                  شوف مرشدين {c.kind.name} من جامعات تانية
+                  شوف مستشارين {c.kind.name} من جامعات تانية
                 </Link>
-                ، أو <Link href="/become-mentor">انضم كمرشد</Link> لو درست هنا.
+                ، أو <Link href="/become-mentor">انضم كمستشار</Link> لو درست هنا.
               </p>
             )}
           </article>

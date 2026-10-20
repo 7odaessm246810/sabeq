@@ -1287,3 +1287,118 @@
   justify-content: center;
   margin-top: 44px;
 }
+
+/* Short home page (2026-10-20): three steps and one line for graduates. */
+.qsteps-title {
+  margin-bottom: 24px;
+}
+.qsteps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.qsteps li {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.qsteps .n {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+  font-weight: 700;
+}
+.qsteps h3 {
+  margin: 6px 0 0;
+  font-size: 18px;
+}
+.qsteps p {
+  margin: 0;
+  color: var(--muted);
+}
+.join-band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  background: var(--primary-subtle);
+}
+.join-band p {
+  margin: 6px 0 0;
+}
+@media (max-width: 720px) {
+  .qsteps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .qsteps li {
+    padding: 16px;
+  }
+  .join-band {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px;
+  }
+}
+.home-mentors-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+@media (max-width: 720px) {
+  /* Three on a phone; the rest are one tap away on /mentors. */
+  .home-mgrid > :nth-child(n + 4) {
+    display: none;
+  }
+}
+@media (max-width: 720px) {
+  /* The drawing is hidden on phones: no tall empty band under the buttons. */
+  .hero-in {
+    padding-top: 28px;
+    padding-bottom: 8px;
+  }
+  .hero-copy {
+    gap: 20px;
+  }
+}
+.hero-search {
+  max-width: 560px;
+}
+@media (max-width: 720px) {
+  /* Steps as compact rows: the number beside the text. */
+  .qsteps li {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    column-gap: 12px;
+    row-gap: 2px;
+    align-items: start;
+  }
+  .qsteps .n {
+    grid-row: span 2;
+  }
+  .qsteps h3 {
+    margin: 4px 0 0;
+    font-size: 16px;
+  }
+}
+@media (hover: none) {
+  /* The "/" shortcut hint means nothing without a keyboard. */
+  .hero-search .sb-kbd {
+    display: none;
+  }
+}

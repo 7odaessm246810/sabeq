@@ -259,10 +259,10 @@ export function MentorsClient({
 
   return (
     <>
-      <PageHead crumbs={[{ label: 'الرئيسية', href: '/' }, { label: 'المرشدين' }]}>
+      <PageHead crumbs={[{ label: 'الرئيسية', href: '/' }, { label: 'المستشارين' }]}>
         <div className="ph-row">
           <div>
-            <h1 className="sb-h1">{field ? `مرشدين درسوا ${field}` : 'كل المرشدين'}</h1>
+            <h1 className="sb-h1">{field ? `مستشارين درسوا ${field}` : 'كل المستشارين'}</h1>
             <p className="sb-lead">كل الملفات موثقة. الأسعار لجلسة كاملة.</p>
           </div>
           <div className="sb-search" style={{ width: 'min(420px,100%)' }}>
@@ -273,8 +273,8 @@ export function MentorsClient({
               <input
                 value={f.q ?? ''}
                 onChange={(e) => set({ q: e.target.value })}
-                placeholder="اسم مرشد، قسم، أو جامعة"
-                aria-label="بحث في المرشدين"
+                placeholder="اسم مستشار، قسم، أو جامعة"
+                aria-label="بحث في المستشارين"
                 type="search"
               />
             </div>
@@ -297,7 +297,7 @@ export function MentorsClient({
                 الفلاتر
               </button>
               <span className="sb-caption" aria-live="polite">
-                <span className="sb-num">{data.total}</span> مرشد
+                <span className="sb-num">{data.total}</span> مستشار
               </span>
               <div className="sb-select-wrap" style={{ width: 200, marginInlineStart: 'auto' }}>
                 <select
@@ -320,7 +320,7 @@ export function MentorsClient({
             {failed ? (
               <div className="sb-card" role="alert">
                 <EmptyState
-                  title="ما قدرناش نجيب المرشدين"
+                  title="ما قدرناش نجيب المستشارين"
                   description="فلاترك محفوظة. جرّب تاني بعد شوية."
                   actions={
                     <button
@@ -360,7 +360,7 @@ export function MentorsClient({
                       disabled={more}
                       onClick={() => void loadMore()}
                     >
-                      اعرض مرشدين أكتر ({data.total - cards.length})
+                      اعرض مستشارين أكتر ({data.total - cards.length})
                     </button>
                   </div>
                 ) : null}
@@ -371,13 +371,13 @@ export function MentorsClient({
                   roomy
                   title={
                     data.total === 0 && !mentorQuery(f)
-                      ? 'لسه مفيش مرشدين'
-                      : 'مفيش مرشدين بالفلاتر دي'
+                      ? 'لسه مفيش مستشارين'
+                      : 'مفيش مستشارين بالفلاتر دي'
                   }
                   description={
                     mentorQuery(f)
                       ? 'الفلاتر مع بعض ضيّقت النتايج. جرّب تشيل فلتر الجامعة أو تزوّد السعر.'
-                      : 'كل مرشد بيتراجع بمستنداته قبل ما يظهر هنا. أول المرشدين في الطريق.'
+                      : 'كل مستشار بيتراجع بمستنداته قبل ما يظهر هنا. أول المستشارين في الطريق.'
                   }
                   actions={
                     mentorQuery(f) ? (
@@ -407,7 +407,7 @@ export function MentorsClient({
               className="sb-btn sb-btn--primary sb-btn--block sb-btn--lg"
               onClick={() => setSheet(false)}
             >
-              اعرض {data.total} مرشد
+              اعرض {data.total} مستشار
             </button>
           }
         >

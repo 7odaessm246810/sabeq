@@ -115,9 +115,9 @@ export function ApplyForm() {
 
   const shell = (children: React.ReactNode, current = 0) => (
     <section className="sb-container page-body" style={{ maxWidth: 820, paddingTop: 28 }}>
-      <Crumb items={[{ label: 'كن مرشدًا', href: '/become-mentor' }, { label: 'التقديم' }]} />
+      <Crumb items={[{ label: 'كن مستشارًا', href: '/become-mentor' }, { label: 'التقديم' }]} />
       <h1 className="sb-h2" style={{ margin: '12px 0 20px' }}>
-        قدّم كمرشد
+        قدّم كمستشار
       </h1>
       <Stepper steps={STEPS} current={current} />
       <div className="sb-card ap-panel">{children}</div>
@@ -133,7 +133,7 @@ export function ApplyForm() {
           حسابك حساب طالب
         </h2>
         <p className="sb-lead" style={{ maxWidth: 460 }}>
-          كل حساب ليه دور واحد. عشان تقدّم كمرشد، اخرج وادخل برقم تاني واختار «أنا مرشد».
+          كل حساب ليه دور واحد. عشان تقدّم كمستشار، اخرج وادخل برقم تاني واختار «أنا مستشار».
         </p>
         <Link className="sb-btn sb-btn--primary" href="/account">
           حسابي
@@ -159,7 +159,7 @@ export function ApplyForm() {
       <div className="done-ok">
         <SuccessRing />
         <h2 className="sb-h2" style={{ fontSize: 28 }}>
-          اتقبلت كمرشد
+          اتقبلت كمستشار
         </h2>
         <p className="sb-lead">بروفايلك هيظهر للطلاب قريب.</p>
         <Link className="sb-btn sb-btn--primary" href="/">

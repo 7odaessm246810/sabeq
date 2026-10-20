@@ -1037,9 +1037,11 @@
   .gen-real,
   .dept-grid,
   .bm-steps,
-  .two,
-  .vpath {
+  .two {
     grid-template-columns: 1fr;
+  }
+  .vpath {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .mgrid-site {
     grid-template-columns: 1fr;
@@ -1267,6 +1269,11 @@
   margin-top: 16px;
   max-width: 900px;
 }
+/* Phones only: the button that unfolds the dropdowns. */
+.exp-more {
+  display: none;
+  margin-top: 12px;
+}
 .exp-step {
   display: flex;
   flex-direction: column;
@@ -1447,6 +1454,12 @@
   .ph-filters:has(.exp-step-label) {
     flex-wrap: wrap;
   }
+  .exp-more {
+    display: inline-flex;
+  }
+  .exp-steps:not(.is-open) {
+    display: none;
+  }
 }
 
 /* ===== mentor profile: other session types (Phase 12 — design-system pieces) ===== */
@@ -1477,7 +1490,7 @@
   }
 }
 
-/* ===== «ملفي كمرشد» (Phase 12 — not in the handoff; account cards + design-system controls) ===== */
+/* ===== «ملفي كمستشار» (Phase 12 — not in the handoff; account cards + design-system controls) ===== */
 .mp-photo {
   flex-direction: row;
   align-items: center;
@@ -1714,4 +1727,31 @@
 }
 .money-row b {
   font-size: 24px;
+}
+
+/* Mentor profile, phones: price + book button fixed at the bottom. */
+.prof-mbar {
+  display: none;
+}
+@media (max-width: 720px) {
+  .prof-mbar {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+  .prof-mbar b {
+    font-size: 18px;
+  }
+  /* Room for the bar so it never covers the last lines. */
+  body:has(> .prof-mbar) .foot {
+    padding-bottom: 80px;
+  }
 }

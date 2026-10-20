@@ -1,7 +1,7 @@
 'use client';
 
 import { FACULTY_CATEGORY_LABELS, UNIVERSITY_TYPE_LABELS } from '@sabeq/types';
-import { EmptyState, Icon, Segmented } from '@sabeq/ui';
+import { EmptyState, Icon, Segmented, cx } from '@sabeq/ui';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { FacultyCard } from '@/components/cards';
@@ -49,6 +49,8 @@ export function ExploreClient({
   const router = useRouter();
   const pathname = usePathname();
   const [filters, setFilters] = useState<Filters>(initialFilters);
+  /** Phones: the dropdowns fold behind one button so results show on the first screen. */
+  const [moreOpen, setMoreOpen] = useState(false);
   const [data, setData] = useState(initial);
   const [hits, setHits] = useState<FacultyHit[]>(initial.results);
   const [page, setPage] = useState(1);
@@ -127,9 +129,7 @@ export function ExploreClient({
         <div className="ph-row">
           <div>
             <h1 className="sb-h1">استكشف الكليات</h1>
-            <p className="sb-lead">
-              دوّر على الكلية باسمها، أو اختار المحافظة والجامعة والمجال — بالترتيب اللي يريحك.
-            </p>
+            <p className="sb-lead">دوّر باسم الكلية، أو صفّي بالمحافظة والجامعة والمجال.</p>
           </div>
         </div>
 
@@ -149,7 +149,22 @@ export function ExploreClient({
           </div>
         </div>
 
-        <div className="exp-steps" role="group" aria-label="اختار خطوة بخطوة">
+        <button
+          type="button"
+          className="sb-btn sb-btn--secondary sb-btn--sm exp-more"
+          aria-expanded={moreOpen}
+          aria-controls="exp-steps"
+          onClick={() => setMoreOpen((o) => !o)}
+        >
+          <Icon name="filter" />
+          {moreOpen ? 'اخفي الفلاتر' : 'المحافظة والجامعة'}
+        </button>
+        <div
+          className={cx('exp-steps', moreOpen && 'is-open')}
+          id="exp-steps"
+          role="group"
+          aria-label="اختار خطوة بخطوة"
+        >
           <div className="exp-step">
             <label className="sb-small" htmlFor="exp-gov">
               <span className="exp-n">1</span> المحافظة

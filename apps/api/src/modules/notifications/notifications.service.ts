@@ -205,7 +205,7 @@ export function createNotificationsService(deps: {
             userId: b.studentId,
             type: 'session.reminder',
             title: 'جلستك بعد شوية',
-            body: body(b.mentor.user.fullName ?? 'المرشد'),
+            body: body(b.mentor.user.fullName ?? 'المستشار'),
             data: { bookingId: b.id },
           },
           {

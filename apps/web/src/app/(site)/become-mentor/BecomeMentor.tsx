@@ -37,7 +37,7 @@ export function BecomeMentor() {
       <section className="bm-hero">
         <div className="sb-container bm-in">
           <div className="bm-copy">
-            <Crumb items={[{ label: 'الرئيسية', href: '/' }, { label: 'كن مرشدًا' }]} />
+            <Crumb items={[{ label: 'الرئيسية', href: '/' }, { label: 'كن مستشارًا' }]} />
             <h1 className="sb-display" style={{ fontSize: 52 }}>
               أنت عشت الطريق.
               <br />
@@ -101,7 +101,7 @@ export function BecomeMentor() {
       <section className="sb-section sb-section--subtle" style={{ padding: '96px 0' }} id="how-to">
         <div className="sb-container">
           <div className="sb-sec-head">
-            <span className="sb-eyebrow-ar">إزاي تبقى مرشد</span>
+            <span className="sb-eyebrow-ar">إزاي تبقى مستشار</span>
             <h2 className="sb-h1">أربع خطوات، وملفك يبقى موثق.</h2>
           </div>
           <div className="bm-steps">

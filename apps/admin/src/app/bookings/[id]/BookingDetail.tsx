@@ -107,7 +107,7 @@ function Body({ id, canRefund }: { id: string; canRefund: boolean }) {
                 }
               />
               <Row
-                k="المرشد"
+                k="المستشار"
                 v={
                   <>
                     {b.mentor.name ?? '—'} <span className="adm-ltr">{b.mentor.phone}</span>
@@ -192,7 +192,7 @@ function Body({ id, canRefund }: { id: string; canRefund: boolean }) {
                   v={b.meeting.studentJoinedAt ? formatDate(b.meeting.studentJoinedAt) : 'ما دخلش'}
                 />
                 <Row
-                  k="المرشد دخل"
+                  k="المستشار دخل"
                   v={b.meeting.mentorJoinedAt ? formatDate(b.meeting.mentorJoinedAt) : 'ما دخلش'}
                 />
               </ul>
@@ -214,7 +214,7 @@ function Body({ id, canRefund }: { id: string; canRefund: boolean }) {
           ) : null}
           {b.ledger.length ? (
             <section className="sb-card adm-sec">
-              <h2 className="sb-h3 adm-card-title">حساب المرشد</h2>
+              <h2 className="sb-h3 adm-card-title">حساب المستشار</h2>
               <ul className="adm-list">
                 {b.ledger.map((l, i) => (
                   <Row
@@ -231,7 +231,9 @@ function Body({ id, canRefund }: { id: string; canRefund: boolean }) {
               <h2 className="sb-h3 adm-card-title">استرداد كامل</h2>
               <p className="sb-small">
                 بيرجّع للطالب {egp(b.totalEgp)} ويلغي الجلسة.
-                {b.status !== 'confirmed' ? ' ولأن الجلسة خلصت، مكسب المرشد بيتشال من حسابه.' : ''}
+                {b.status !== 'confirmed'
+                  ? ' ولأن الجلسة خلصت، مكسب المستشار بيتشال من حسابه.'
+                  : ''}
               </p>
               <button
                 type="button"
@@ -275,13 +277,13 @@ function Body({ id, canRefund }: { id: string; canRefund: boolean }) {
           }
         >
           <div className="adm-modal-body">
-            <p className="sb-small">السبب بيوصل للمرشد وبيتسجل في سجل العمليات.</p>
+            <p className="sb-small">السبب بيوصل للمستشار وبيتسجل في سجل العمليات.</p>
             <textarea
               className="sb-input"
               style={{ height: 90, padding: '12px 14px' }}
               maxLength={500}
               aria-label="سبب الاسترداد"
-              placeholder="مثلًا: المرشد ما قدرش يكمل الجلسة"
+              placeholder="مثلًا: المستشار ما قدرش يكمل الجلسة"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
             />

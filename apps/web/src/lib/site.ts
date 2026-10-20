@@ -21,8 +21,8 @@ export interface NavLink {
 export const MAIN_NAV: readonly NavLink[] = [
   { label: 'الرئيسية', href: '/', match: ['/'] },
   { label: 'كيف تعمل؟', href: '/#how' },
-  { label: 'المرشدين', href: '/mentors', match: ['/mentors', '/mentor'] },
-  { label: 'للمرشدين', href: '/become-mentor', match: ['/become-mentor'] },
+  { label: 'المستشارين', href: '/mentors', match: ['/mentors', '/mentor'] },
+  { label: 'للمستشارين', href: '/become-mentor', match: ['/become-mentor'] },
   { label: 'استكشف الكليات', href: '/explore', match: ['/explore', '/faculty'] },
 ];
 
@@ -31,8 +31,8 @@ export const MOBILE_NAV: readonly NavLink[] = [
   { label: 'الرئيسية', href: '/' },
   { label: 'كيف تعمل؟', href: '/#how' },
   { label: 'استكشف الكليات', href: '/explore' },
-  { label: 'المرشدين', href: '/mentors' },
-  { label: 'للمرشدين', href: '/become-mentor' },
+  { label: 'المستشارين', href: '/mentors' },
+  { label: 'للمستشارين', href: '/become-mentor' },
   { label: 'جلساتي', href: '/sessions' },
 ];
 
@@ -42,14 +42,14 @@ export const FOOTER_COLUMNS: readonly { title: string; links: readonly NavLink[]
     links: [
       { label: 'كيف تعمل؟', href: '/#how' },
       { label: 'استكشف الكليات', href: '/explore' },
-      { label: 'كل المرشدين', href: '/mentors' },
+      { label: 'كل المستشارين', href: '/mentors' },
       { label: 'دليل التنسيق 2026', href: '/help' },
     ],
   },
   {
-    title: 'للمرشدين',
+    title: 'للمستشارين',
     links: [
-      { label: 'كن مرشدًا', href: '/become-mentor' },
+      { label: 'كن مستشارًا', href: '/become-mentor' },
       { label: 'التوثيق', href: '/become-mentor' },
       { label: 'الأسعار والأرباح', href: '/become-mentor' },
       { label: 'إرشادات الجلسات', href: '/help' },

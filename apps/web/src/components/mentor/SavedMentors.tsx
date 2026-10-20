@@ -28,7 +28,11 @@ export function SavedMentors() {
   if (status === 'signed-in' && !isStudent) {
     return (
       <div className="sb-card">
-        <EmptyState roomy title="الحفظ للطلبة بس" description="حساب المرشد مالوش قائمة محفوظين." />
+        <EmptyState
+          roomy
+          title="الحفظ للطلبة بس"
+          description="حساب المستشار مالوش قائمة محفوظين."
+        />
       </div>
     );
   }
@@ -57,11 +61,11 @@ export function SavedMentors() {
     <div className="sb-card">
       <EmptyState
         roomy
-        title="مفيش مرشدين محفوظين"
-        description="اضغط «احفظ» في ملف أي مرشد عشان ترجعله بسهولة."
+        title="مفيش مستشارين محفوظين"
+        description="اضغط «احفظ» في ملف أي مستشار عشان ترجعله بسهولة."
         actions={
           <Link className="sb-btn sb-btn--primary sb-btn--sm" href="/mentors">
-            استكشف المرشدين
+            استكشف المستشارين
           </Link>
         }
       />

@@ -17,10 +17,10 @@ import type { DocumentCrypto } from '../../infra/document-crypto.js';
 import { writeAudit, type AdminActor } from '../admin/audit.js';
 
 const MESSAGES = {
-  notMentor: 'الحساب ده مش حساب مرشد.',
-  noAccount: 'المرشد ده لسه ما ضافش طريقة استلام الفلوس.',
-  tooMuch: 'المبلغ أكبر من رصيد المرشد.',
-  nothing: 'مفيش رصيد للمرشد ده.',
+  notMentor: 'الحساب ده مش حساب مستشار.',
+  noAccount: 'المستشار ده لسه ما ضافش طريقة استلام الفلوس.',
+  tooMuch: 'المبلغ أكبر من رصيد المستشار.',
+  nothing: 'مفيش رصيد للمستشار ده.',
 };
 
 const aad = (mentorId: string) => `payout-account:${mentorId}`;
@@ -154,7 +154,7 @@ export function createPayoutsService(deps: { db: Db; crypto: DocumentCrypto; now
         .map((m) => ({
           mentorId: m.userId,
           slug: m.slug,
-          name: m.user.fullName ?? 'مرشد',
+          name: m.user.fullName ?? 'مستشار',
           phone: formatEgyptianMobile(m.user.phone),
           balanceEgp: (owed.get(m.userId) ?? 0) / 100,
           account: m.payoutAccount
@@ -273,7 +273,7 @@ export function createPayoutsService(deps: { db: Db; crypto: DocumentCrypto; now
       return {
         items: rows.map((p) => ({
           id: p.id,
-          mentor: p.mentor.user.fullName ?? 'مرشد',
+          mentor: p.mentor.user.fullName ?? 'مستشار',
           slug: p.mentor.slug,
           amountEgp: p.amountPiasters / 100,
           method: p.method,

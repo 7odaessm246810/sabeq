@@ -155,7 +155,7 @@ export function SearchSuggest() {
         <input
           ref={inputRef}
           value={q}
-          placeholder="ابحث عن كلية، قسم، جامعة أو مرشد"
+          placeholder="ابحث عن كلية، قسم، جامعة أو مستشار"
           aria-label="بحث"
           autoComplete="off"
           role="combobox"
@@ -252,7 +252,7 @@ export function SearchSuggest() {
           ) : (
             <div className="sb-empty" style={{ padding: 20 }}>
               <p style={{ fontSize: 14 }}>
-                اكتب اسم كلية أو جامعة أو مرشد — مثلًا «هندسة القاهرة».
+                اكتب اسم كلية أو جامعة أو مستشار — مثلًا «هندسة القاهرة».
               </p>
             </div>
           )
@@ -285,7 +285,7 @@ export function SearchSuggest() {
                       </span>
                       <span>{highlight(f.name, s)}</span>
                       <span className="meta">
-                        {f.mentorCount ? `${f.mentorCount} مرشد` : 'كل الجامعات'}
+                        {f.mentorCount ? `${f.mentorCount} مستشار` : 'كل الجامعات'}
                       </span>
                     </div>
                   ) : null;
@@ -307,7 +307,7 @@ export function SearchSuggest() {
             ) : null}
             {data.mentors.length ? (
               <div className="sb-suggest-group">
-                <div className="sb-suggest-title">مرشدين</div>
+                <div className="sb-suggest-title">مستشارين</div>
                 {data.mentors.map((m) => {
                   i++;
                   const item = items[i];

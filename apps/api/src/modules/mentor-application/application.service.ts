@@ -48,7 +48,7 @@ export interface ApplicationView {
 
 const MESSAGES = {
   inReview: 'طلبك اتبعت وبيتراجع دلوقتي. هنكلمك أول ما نخلص.',
-  alreadyMentor: 'انت مرشد بالفعل.',
+  alreadyMentor: 'انت مستشار بالفعل.',
   facultyMismatch: 'الكلية دي مش في الجامعة اللي اخترتها.',
   noApplication: 'مفيش طلب لسه. ابدأ بالبيانات الأول.',
   badFile: 'ارفع PDF أو صورة (JPG أو PNG أو WebP).',

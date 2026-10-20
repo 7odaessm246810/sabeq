@@ -57,8 +57,8 @@ export const ACTION_LABELS: Record<string, string> = {
   'review.restore': 'رجع تقييم',
   'user.suspend': 'اتوقف حساب',
   'user.reactivate': 'رجع حساب',
-  'payout_account.view': 'اتفتحت بيانات تحويل مرشد',
-  'payout.record': 'اتسجل تحويل لمرشد',
+  'payout_account.view': 'اتفتحت بيانات تحويل مستشار',
+  'payout.record': 'اتسجل تحويل لمستشار',
 };
 
 export interface QueueItem {

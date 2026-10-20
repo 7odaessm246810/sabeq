@@ -13,7 +13,7 @@ const MESSAGES = {
   notCompleted: 'تقدر تقيّم الجلسة بعد ما تخلص.',
   already: 'قيّمت الجلسة دي قبل كده.',
   tooLate: `التقييم متاح لحد ${REVIEW_WINDOW_DAYS} يوم بعد الجلسة.`,
-  mentorNotFound: 'المرشد ده مش موجود.',
+  mentorNotFound: 'المستشار ده مش موجود.',
 };
 
 const PAGE_SIZE = 10;

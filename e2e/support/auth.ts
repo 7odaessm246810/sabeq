@@ -27,8 +27,8 @@ export async function signIn(
   }
 
   await page.goto('/register');
-  if (opts.mentor) await page.getByRole('button', { name: 'أنا مرشد' }).click();
-  await page.locator('#nm').fill(opts.name ?? (opts.mentor ? 'مرشد الاختبار' : 'طالب الاختبار'));
+  if (opts.mentor) await page.getByRole('button', { name: 'أنا مستشار' }).click();
+  await page.locator('#nm').fill(opts.name ?? (opts.mentor ? 'مستشار الاختبار' : 'طالب الاختبار'));
   await page.locator('#em').fill(emailFor(phone));
   await page.locator('#pw').fill(E2E_PASSWORD);
   await page.getByRole('button', { name: 'اعمل الحساب' }).click();

@@ -32,7 +32,7 @@ const PRICES = Array.from(
 );
 
 /**
- * «ملفي كمرشد» (Phase 12 — not in the design handoff; built from the account page's cards and
+ * «ملفي كمستشار» (Phase 12 — not in the design handoff; built from the account page's cards and
  * the design-system form controls). What the mentor owns is editable; verified facts are not.
  */
 export function MentorProfileEditor() {
@@ -60,12 +60,12 @@ export function MentorProfileEditor() {
         crumbs={[
           { label: 'الرئيسية', href: '/' },
           { label: 'حسابي', href: '/account' },
-          { label: 'ملفي كمرشد' },
+          { label: 'ملفي كمستشار' },
         ]}
       >
         <div className="ph-row">
           <div>
-            <h1 className="sb-h1">ملفي كمرشد</h1>
+            <h1 className="sb-h1">ملفي كمستشار</h1>
             <p className="sb-lead">ده اللي الطلبة بيشوفوه قبل ما يحجزوا معاك.</p>
           </div>
           <Link className="sb-btn sb-btn--secondary" href="/account/availability">
@@ -83,15 +83,15 @@ export function MentorProfileEditor() {
 
       <section className="sb-container page-body acct">
         {user.role !== 'mentor' ? (
-          <Banner kind="info" title="الصفحة دي للمرشدين">
+          <Banner kind="info" title="الصفحة دي للمستشارين">
             حسابك حساب طالب. لو درست في كلية وعايز تساعد غيرك،{' '}
-            <Link href="/become-mentor">اعرف إزاي تبقى مرشد</Link>.
+            <Link href="/become-mentor">اعرف إزاي تبقى مستشار</Link>.
           </Banner>
         ) : state === 'loading' ? (
           <div className="sb-card acct-card" aria-busy="true" style={{ minHeight: 280 }} />
         ) : state === 'none' ? (
           <Banner kind="info" title="ملفك لسه ما اتعملش">
-            ملف المرشد بيتعمل لما طلب انضمامك يتقبل.{' '}
+            ملف المستشار بيتعمل لما طلب انضمامك يتقبل.{' '}
             <Link href="/become-mentor/apply">تابع طلبك</Link>.
           </Banner>
         ) : state === 'failed' || !mentor ? (
@@ -174,7 +174,7 @@ function Editor({
   return (
     <>
       <PhotoCard
-        name={mentor.name ?? 'المرشد'}
+        name={mentor.name ?? 'المستشار'}
         tone={mentor.tone}
         photo={photo}
         onChange={setPhoto}

@@ -1,10 +1,12 @@
 'use client';
 
+import Link from 'next/link';
 import { Avatar, Icon, Modal, Stars, VerifiedBadge, useToast } from '@sabeq/ui';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Crumb } from '@/components/Crumb';
 import { BookingBox } from '@/components/mentor/BookingBox';
+import { BottomBar } from '@/components/BottomBar';
 import type { Availability } from '@/lib/availability';
 import { ApiError } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
@@ -48,7 +50,7 @@ function useSaved(slug: string) {
       return;
     }
     if (!isStudent) {
-      toast({ kind: 'info', title: 'حفظ المرشدين للطلبة بس.' });
+      toast({ kind: 'info', title: 'حفظ المستشارين للطلبة بس.' });
       return;
     }
     setBusy(true);
@@ -56,7 +58,7 @@ function useSaved(slug: string) {
       if (saved) await unsaveMentor(slug);
       else await saveMentor(slug);
       setSaved(!saved);
-      toast({ kind: 'info', title: saved ? 'اتشال من المحفوظات' : 'تم حفظ المرشد' });
+      toast({ kind: 'info', title: saved ? 'اتشال من المحفوظات' : 'تم حفظ المستشار' });
     } catch (err) {
       toast({ kind: 'error', title: err instanceof ApiError ? err.message : 'جرّب تاني.' });
     } finally {
@@ -103,7 +105,7 @@ export function MentorProfile({
       <Crumb
         items={[
           { label: 'الرئيسية', href: '/' },
-          { label: 'المرشدين', href: '/mentors' },
+          { label: 'المستشارين', href: '/mentors' },
           { label: m.name },
         ]}
       />
@@ -265,6 +267,18 @@ export function MentorProfile({
           </div>
         </div>
 
+        {/* Phones: the booking box sits at the very end, so the price and the button stay in reach. */}
+        {m.offerings.length ? (
+          <BottomBar>
+            <span>
+              من <b className="sb-num">{Math.min(...m.offerings.map((o) => o.priceEgp))}</b> ج.م
+            </span>
+            <Link href={`/book/${m.slug}`} className="sb-btn sb-btn--primary">
+              احجز جلسة
+            </Link>
+          </BottomBar>
+        ) : null}
+
         <aside className="prof-side">
           <BookingBox
             mentor={m}
@@ -277,7 +291,7 @@ export function MentorProfile({
 
       {why ? (
         <Modal
-          title="إزاي بنوثّق المرشدين؟"
+          title="إزاي بنوثّق المستشارين؟"
           onClose={() => setWhy(false)}
           footer={
             <button type="button" className="sb-btn sb-btn--primary" onClick={() => setWhy(false)}>

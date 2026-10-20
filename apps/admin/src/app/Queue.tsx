@@ -28,7 +28,7 @@ const TABS: ReviewStatus[] = [
 /** Mentor applications waiting for review — oldest first, one tab per status. */
 export function Queue() {
   return (
-    <AdminShell title="طلبات المرشدين">
+    <AdminShell title="طلبات المستشارين">
       {(admin) =>
         admin.adminRole === 'super_admin' || admin.adminRole === 'verifier' ? (
           <QueueBody />
@@ -41,7 +41,7 @@ export function Queue() {
               </>
             ) : (
               <>
-                ، أو <Link href="/payouts">فلوس المرشدين</Link>.
+                ، أو <Link href="/payouts">فلوس المستشارين</Link>.
               </>
             )}
           </Banner>

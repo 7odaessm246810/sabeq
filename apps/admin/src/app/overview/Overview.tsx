@@ -73,7 +73,7 @@ function Body() {
           hint="العمولة ورسوم الخدمة من الجلسات اللي خلصت"
         />
         <Stat
-          label="مستحق للمرشدين"
+          label="مستحق للمستشارين"
           value={<Money egp={data.money.owedToMentorsEgp} />}
           href="/payouts"
           hint="لسه ما اتحوّلش"
@@ -96,8 +96,8 @@ function Body() {
       <h2 className="sb-h3 adm-card-title">الناس</h2>
       <div className="adm-stats">
         <Stat label="طلبة" value={data.people.students} href="/users?role=student" />
-        <Stat label="مرشدين ظاهرين" value={data.people.mentorsListed} href="/users?role=mentor" />
-        <Stat label="طلبات مرشدين مستنية" value={data.people.applicationsWaiting} href="/" />
+        <Stat label="مستشارين ظاهرين" value={data.people.mentorsListed} href="/users?role=mentor" />
+        <Stat label="طلبات مستشارين مستنية" value={data.people.applicationsWaiting} href="/" />
         <Stat label="تقييمات مخفية" value={data.reviewsHidden} href="/reviews?status=hidden" />
       </div>
     </>
