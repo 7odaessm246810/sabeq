@@ -262,7 +262,7 @@ body {
   gap: 40px;
   padding: 72px 0 48px;
 }
-.foot h4 {
+.foot .foot-h {
   font-size: 14px;
   font-weight: 600;
   margin: 0 0 14px;

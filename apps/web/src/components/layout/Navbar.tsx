@@ -40,7 +40,7 @@ export function Navbar() {
     <>
       <nav className={classes.join(' ')} aria-label="التنقل الرئيسي">
         <div className="sb-nav-in">
-          <Link href="/" aria-label="سابق — الرئيسية">
+          <Link href="/" aria-label="سابق SABEQ — الرئيسية">
             <Logo size={32} />
           </Link>
           <ul className="sb-nav-links">

@@ -40,6 +40,8 @@ test('mentors: the list, filters and a profile with real slots', async ({ page }
   await card.click();
   await expect(page).toHaveURL(/\/mentor\//);
   await expect(page.getByRole('heading', { name: 'التقييمات' })).toBeVisible();
+  // A client-side navigation sets the title a moment after the content; check once it is there.
+  await expect(page).toHaveTitle(/سابق/);
   await a11y(page, 'mentor profile');
 });
 
