@@ -23,6 +23,11 @@ const config: NextConfig = {
   output: 'standalone',
   outputFileTracingRoot: path.join(import.meta.dirname, '../..'),
   transpilePackages: ['@sabeq/ui'],
+  experimental: {
+    // CSS comes inside the HTML (~16 KB compressed) instead of as a render-blocking file. On a
+    // slow phone connection the file queued behind the scripts and held the first paint ~1.5s.
+    inlineCss: true,
+  },
   async rewrites() {
     return [{ source: '/api/v1/:path*', destination: `${apiInternalUrl}/:path*` }];
   },
